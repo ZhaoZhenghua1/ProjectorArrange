@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>rect_normal.png</file>
+        <file>rect_pressed.png</file>
+        <file>background.jpg</file>
+        <file>TransCoder.ico</file>
+        <file>arror_normal.png</file>
+        <file>arror_pressed.png</file>
+        <file>logo.png</file>
+    </qresource>
+</RCC>
