@@ -251,7 +251,7 @@ void MainWidget::addToRecentFiles(const QString& file)
 	addRecent();
 }
 
-bool MainWidget::dispatchData()
+bool MainWidget::dispatchData()  
 {
 	QDomElement root = m_doc.firstChildElement("root");
 
