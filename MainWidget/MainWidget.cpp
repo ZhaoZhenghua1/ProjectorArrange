@@ -19,6 +19,9 @@
 #include "ui_ratio.h"
 #include <thread>
 #include "ui_about.h"
+#include "TableView/TreeView.h"
+#include "TableView/ItemModel.h"
+#include "TableView/AllItemModel.h"
 
 const QString RADIO_STYLE = R"(
 QRadioButton{spacing:0px;}
@@ -61,13 +64,30 @@ public:
 
 };
 
+class WidgetRatio : public QDialog
+{
+public:
+	WidgetRatio(QWidget* parent = nullptr) :QDialog(parent)
+	{
+		ui.setupUi(this);
+	}
+	Ui::Dialog ui;
+};
+
 const QString TITLE_HEADER = "LightMagic TransCoder V1.0";
+const QString StatusBarStyle = R"(
+QStatusBar {
+    background-color: rgb(83,83,83);
+	color:rgb(255,255,255);
+})";
+
 MainWidget::MainWidget(const QString& file)
 {
 	setAcceptDrops(true);
 	setWindowTitle(TITLE_HEADER);
+	initMenu();
 
-	QSettings settings("LightMagic", "TransCoder");
+	QSettings settings("LightMagic", "Projector");
 	QSize normalSize = settings.value("geo/size", QSize(1200, 800)).toSize();
 	bool maxed = settings.value("geo/maxed").toBool();
 
@@ -78,23 +98,102 @@ MainWidget::MainWidget(const QString& file)
 	}
 
 	QStatusBar* statusBar = this->statusBar();
-	statusBar->setStyleSheet(R"(
-QStatusBar {
-    background-color: rgb(83,83,83);
-	color:rgb(255,255,255);
-}
-)");
+	statusBar->setStyleSheet(StatusBarStyle);
 	statusBar->showMessage(QString("x:0 y:0"));
 
 	m_clipper = new Clipper;
+	initToolBarItem();
 	connect(m_clipper, &Clipper::mouseTracking, this, &MainWidget::onMouseTracking);
-	connect(m_clipper, &Clipper::createElement, this, &MainWidget::createElement);
+	connect(m_clipper, &Clipper::domDocument, this, &MainWidget::domDocument);
 
 	connect(this, &MainWidget::zoomIn, m_clipper, &Clipper::zoomIn);
 	connect(this, &MainWidget::zoomOut, m_clipper, &Clipper::zoomOut);
 
-	QToolBar* toolBar = new QToolBar("tools");
+	QGroupBox* groupBox1 = new QGroupBox;
+	QHBoxLayout* layout1 = new QHBoxLayout;
+	groupBox1->setLayout(layout1);
+	m_itemView = new TreeView;
+	m_itemModel = new ItemModel;
+	connect(m_clipper, &Clipper::dataChanged, m_itemModel, &ItemModel::dataChanged);
+	connect(m_itemModel, &ItemModel::currentItemData, m_clipper, &Clipper::currentItemData);
+	connect(m_itemModel, &ItemModel::currentItemDataEdited, m_clipper, &Clipper::currentItemDataEdited);
+	m_itemView->setModel(m_itemModel);
+	layout1->addWidget(m_itemView);
 
+	QGroupBox* groupBox2 = new QGroupBox;
+	QHBoxLayout* layout2 = new QHBoxLayout;
+	groupBox2->setLayout(layout2);
+	m_globalView = new TreeView;
+	m_globalModel = new AllItemModel;
+	m_globalView->setModel(m_globalModel);
+	layout2->addWidget(m_globalView);
+
+	QSplitter* splitter = new QSplitter(Qt::Horizontal);
+	splitter->setStyleSheet("QSplitter{background-color: rgb(83, 83, 83);}");
+	
+	splitter->addWidget(groupBox1);
+	splitter->addWidget(m_clipper);
+	splitter->addWidget(groupBox2);
+	
+	splitter->handle(1)->setStyleSheet("background-color: rgb(22, 22, 22);");
+	splitter->handle(2)->setStyleSheet("background-color: rgb(22, 22, 22);");
+	setCentralWidget(splitter);
+
+	setStyleSheet(R"(background-color: rgb(83, 83, 83);color:rgb(255,255,255);)");
+
+	QString fileOpen = file;
+	if (!file.isEmpty())
+	{
+		openFile(file);
+	}
+	else
+	{
+		onNew();
+	}
+}
+enum ECREATE_FLAG
+{
+	eMove,
+	e800x600,
+	e1024x768,
+	e1280x720,
+	e1280x800,
+	e1920x1080,
+	e1920x1200,
+	e2048x1080,
+	e3840x2160,
+	e3840x2400,
+	e4096x2160,
+	eSelfDef
+
+};
+const QList<std::tuple<QString, int, QString, QString> > RATIOS = {
+	{"Guides Tool: Image positioning aid", eMove, ":/arror_normal.png" , ":/arror_pressed.png" },
+	{"800x600",e800x600, ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"1024x768",e1024x768, ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"1280x720",e1280x720 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"1280x800",e1280x800 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"1920x1080",e1920x1080 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"1920x1200",e1920x1200 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"2048x1080",e2048x1080 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"3840x2160",e3840x2160 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"3840x2400",e3840x2400 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"4096x2160",e4096x2160 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"Self Defining", eSelfDef , ":/rect_normal.png" , ":/rect_pressed.png" }};
+
+QList<std::tuple<QString, int, QString, QString> > PUT_STYLES = {
+	{ "Horizontal", Qt::Horizontal , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{ "Vertical" , Qt::Vertical , ":/rect_normal.png" , ":/rect_pressed.png" } };
+
+const QString TOOLBAR_STYLE = R"(QToolBar{background-color: rgb(83,83,83);}
+QToolTip {
+    border: 1px solid white;
+    padding: 2px;
+    border-radius: 3px;
+    opacity: 200;
+})";
+void initToolBar(QToolBar* toolBar)
+{
 	QPalette palette;
 	palette.setColor(QPalette::Light, QColor(83, 83, 83));
 	palette.setColor(QPalette::Midlight, QColor(83, 83, 83));
@@ -102,34 +201,90 @@ QStatusBar {
 	palette.setColor(QPalette::Mid, QColor(83, 83, 83));
 	palette.setColor(QPalette::Shadow, QColor(83, 83, 83));
 	toolBar->setPalette(palette);
-
-	toolBar->setStyleSheet(R"(QToolBar{background-color: rgb(83,83,83);}
-QToolTip {
-    border: 1px solid white;
-    padding: 2px;
-    border-radius: 3px;
-    opacity: 200;
+	toolBar->setStyleSheet(TOOLBAR_STYLE);
+	toolBar->setIconSize(QSize(36, 36));
 }
-)");
-	toolBar->setIconSize(QSize(31,24));
-	addToolBar(Qt::LeftToolBarArea, toolBar);
+void MainWidget::initToolBarItem()
+{
+	QToolBar* toolBarPutStyle = new QToolBar("Put");
+	addToolBar(Qt::TopToolBarArea, toolBarPutStyle);
+	initToolBar(toolBarPutStyle);
+	QButtonGroup* groupPut = new QButtonGroup(this);
+	for (const std::tuple<QString, int, QString, QString>& elem : PUT_STYLES)
+	{
+		QRadioButton* radioBtn = new QRadioButton;
+		radioBtn->setToolTip(std::get<0>(elem));
+		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)));
+		groupPut->addButton(radioBtn, std::get<1>(elem));
+		toolBarPutStyle->addWidget(radioBtn);
+	}
+	groupPut->buttons().first()->setChecked(true);
+	connect(groupPut, SIGNAL(buttonClicked(int)), this, SLOT(onSetOrientation(int)));
 
-	QRadioButton* selLine = new QRadioButton;
-	selLine->setToolTip(tr("Guides Tool: Image positioning aid"));
-	connect(selLine, &QRadioButton::toggled, m_clipper, &Clipper::setLineEnabled);
-	selLine->setChecked(true);
-	selLine->setStyleSheet(RADIO_STYLE.arg(":/arror_normal.png").arg(":/arror_pressed.png"));
-	QRadioButton* selRect = new QRadioButton;
-	selRect->setToolTip(tr("Rectangle Select Tool: Select a rectangular region"));
-	connect(selRect, &QRadioButton::toggled, m_clipper, &Clipper::setRectEnabled);
-	selRect->setStyleSheet(RADIO_STYLE.arg(":/rect_normal.png").arg(":/rect_pressed.png"));
-	QButtonGroup* group = new QButtonGroup(this);
-	group->addButton(selLine);
-	group->addButton(selRect);
 
-	toolBar->addWidget(selLine);
-	toolBar->addWidget(selRect);
+	QToolBar* toolBarRatio = new QToolBar("Ratios");
+	addToolBar(Qt::TopToolBarArea, toolBarRatio);
+	initToolBar(toolBarRatio);
+	
+	QButtonGroup* groupRatio = new QButtonGroup(this);
+	for (const std::tuple<QString, int, QString, QString>& elem : RATIOS)
+	{
+		QRadioButton* radioBtn = new QRadioButton;
+		radioBtn->setToolTip(std::get<0>(elem));
+		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)));
+		groupRatio->addButton(radioBtn, std::get<1>(elem));
+		toolBarRatio->addWidget(radioBtn);
+	}
+	groupRatio->buttons().first()->setChecked(true);
+	connect(groupRatio, SIGNAL(buttonClicked(int)), this, SLOT(onSetRation(int)));
+}
 
+void MainWidget::onSetOrientation(int id)
+{
+	m_clipper->setProRotate((id == Qt::Vertical) ? 90 : 0);
+}
+
+void MainWidget::onSetRation(int id)
+{
+	if (id == eMove)
+	{
+		m_clipper->setProRatio(QSize());
+	}
+	else if (id == eSelfDef)
+	{
+		WidgetRatio wr(this);
+		QSize ratio = m_clipper->projectorRatio();
+		wr.ui.spinBoxx->setValue(ratio.width());
+		wr.ui.spinBoxy->setValue(ratio.height());
+		if (QDialog::Accepted == wr.exec())
+		{
+			m_clipper->setProRatio(QSize(wr.ui.spinBoxx->value(), wr.ui.spinBoxy->value()));
+		}
+		else
+		{
+			if (QButtonGroup* p = qobject_cast<QButtonGroup*>(sender()))
+			{
+				p->buttons().first()->setChecked(true);
+			}
+			m_clipper->setProRatio(QSize());
+		}
+	}
+	else
+	{
+		for (const std::tuple<QString, int, QString, QString>& elem : RATIOS)
+		{
+			if (id == std::get<1>(elem))
+			{
+				const QString& qsratio = std::get<0>(elem);
+				QStringList ratio = qsratio.split('x');
+				m_clipper->setProRatio(QSize(ratio[0].toInt(), ratio[1].toInt()));
+			}
+		}
+	}
+}
+
+void MainWidget::initMenu()
+{
 	menuBar()->setStyleSheet(R"(
 QMenuBar {
     background-color: rgb(83,83,83);
@@ -203,31 +358,7 @@ QMenuBar::item:pressed {
 	menuBar()->addAction(pAZoomOut);
 	pAZoomOut->setShortcut(QKeySequence::ZoomOut);
 	connect(pAZoomOut, &QAction::triggered, this, &MainWidget::zoomOut);
-
-	QGroupBox* groupBox = new QGroupBox;
-	QHBoxLayout* layout = new QHBoxLayout;
-	groupBox->setLayout(layout);
-
-	QSplitter* splitter = new QSplitter(Qt::Vertical);
-	splitter->setStyleSheet("QSplitter{background-color: rgb(83, 83, 83);}");
-	splitter->addWidget(m_clipper);
-	splitter->addWidget(groupBox);
-	splitter->handle(1)->setStyleSheet("background-color: rgb(22, 22, 22);");
-	setCentralWidget(splitter);
-
-	setStyleSheet(R"(background-color: rgb(83, 83, 83);color:rgb(255,255,255);)");
-
-	QString fileOpen = file;
-	if (!file.isEmpty())
-	{
-		openFile(file);
-	}
-	else
-	{
-		onNew();
-	}
 }
-
 
 MainWidget::~MainWidget()
 {
@@ -235,7 +366,7 @@ MainWidget::~MainWidget()
 
 void MainWidget::addToRecentFiles(const QString& file)
 {
-	QSettings setting("LightMagic", "TransCoder");
+	QSettings setting("LightMagic", "Projector");
 	QString recent = setting.value("recent").toString();
 	QStringList recents = recent.split(';');
 	recents.removeAll("");
@@ -255,10 +386,9 @@ bool MainWidget::dispatchData()
 {
 	QDomElement root = m_doc.firstChildElement("root");
 
-	QDomElement settings = root.firstChildElement("settings");
-	QDomElement areas = root.firstChildElement("areas");
+	QDomElement areas = root.firstChildElement("projectors");
 	
-	if (areas.isNull() || settings.isNull())
+	if (areas.isNull())
 	{
 		return false;
 	}
@@ -326,16 +456,6 @@ void MainWidget::onSetPixmap()
 	}
 }
 
-class WidgetRatio : public QDialog
-{
-public:
-	WidgetRatio(QWidget* parent = nullptr):QDialog(parent)
-	{
-		ui.setupUi(this);
-	}
-	Ui::Dialog ui;
-};
-
 void MainWidget::onSetRatio()
 {
 	WidgetRatio wr(this);
@@ -362,7 +482,7 @@ void MainWidget::onOpen()
 		return;
 	}
 
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), "Lmcoder(*.Lmcoder)");
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), "Lmpro(*.Lmpro)");
 	openFile(fileName);
 }
 
@@ -375,7 +495,7 @@ void MainWidget::onSave()
 {
 	if (!QFile(m_filename).exists())
 	{
-		QString savefile = QFileDialog::getSaveFileName(this, tr("Save file name"), m_filename, "Lmcoder(*.Lmcoder)");
+		QString savefile = QFileDialog::getSaveFileName(this, tr("Save file name"), m_filename, "Lmpro(*.Lmpro)");
 		if (savefile.isEmpty())
 		{
 			return;
@@ -410,30 +530,8 @@ void MainWidget::onNew()
 
 	QDomElement root = m_doc.createElement("root");
 	m_doc.appendChild(root);
-	QDomElement areas = m_doc.createElement("areas");
+	QDomElement areas = m_doc.createElement("projectors");
 	root.appendChild(areas);
-	QDomElement settings = m_doc.createElement("settings");
-	root.appendChild(settings);
-	QDomElement input = m_doc.createElement("input");
-	settings.appendChild(input);
-	QDomElement framerate = m_doc.createElement("framerate");
-	settings.appendChild(framerate);
-	QDomElement audio = m_doc.createElement("audio");
-	settings.appendChild(audio);
-	QDomElement timeRange = m_doc.createElement("timeRange");
-	settings.appendChild(timeRange);
-	QDomElement threads = m_doc.createElement("threads");
-	threads.setAttribute("value", std::thread::hardware_concurrency() * 3 >> 2);
-	settings.appendChild(threads);
-	QDomElement vcodec = m_doc.createElement("vcodec");
-	settings.appendChild(vcodec);
-	QDomElement pixfmt = m_doc.createElement("pixfmt");
-	settings.appendChild(pixfmt);
-	QDomElement preset = m_doc.createElement("preset");
-	settings.appendChild(preset);
-	QDomElement gop = m_doc.createElement("gop");
-	gop.setAttribute("value", 25);
-	settings.appendChild(gop);
 
 	dispatchData();
 
@@ -453,11 +551,9 @@ void MainWidget::onViewHelp()
 	QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Help/LightMagic TrancoderV1.0 Manual.pdf"));
 }
 
-QDomElement MainWidget::createElement(const QString& name)
+QDomDocument MainWidget::domDocument()
 {
-	QDomElement ret = m_doc.createElement(name);
-	Q_ASSERT(!ret.isNull());
-	return ret;
+	return m_doc;
 }
 
 void MainWidget::onOpenRecent()
@@ -471,7 +567,7 @@ void MainWidget::onOpenRecent()
 void MainWidget::addRecent()
 {
 	m_recentMenu->clear();
-	QSettings settings("LightMagic", "TransCoder");
+	QSettings settings("LightMagic", "Projector");
 	QString recent = settings.value("recent").toString();
 	QStringList recentFiles = recent.split(';');
 	for (QString file : recentFiles)
@@ -536,7 +632,7 @@ bool MainWidget::close()
 //if file is error, remove the recent file 
 void MainWidget::errorFile(const QString& file)
 {
-	QSettings setting("LightMagic", "TransCoder");
+	QSettings setting("LightMagic", "Projector");
 	QString recent = setting.value("recent").toString();
 	QStringList recents = recent.split(';');
 	recents.removeAll("");
@@ -554,7 +650,7 @@ QString MainWidget::getAvailableFileName() const
 	QString file;
 	while (true)
 	{
-		file = QString("new %1.Lmcoder").arg(index);
+		file = QString("new %1.Lmpro").arg(index);
 		if (!QFile(file).exists())
 		{
 			break;
@@ -564,11 +660,12 @@ QString MainWidget::getAvailableFileName() const
 	return file;
 }
 
+
 void MainWidget::closeEvent(QCloseEvent *event)
 {
 	if (close())
 	{
-		QSettings settings("LightMagic", "TransCoder");
+		QSettings settings("LightMagic", "Projector");
 		settings.setValue("geo/size", normalGeometry().size());
 		settings.setValue("geo/maxed", isMaximized());
 		return Base::closeEvent(event);
@@ -591,7 +688,7 @@ void MainWidget::dragEnterEvent(QDragEnterEvent *event)
 		QString file = urlList.at(i).toLocalFile();
 		if (!file.isEmpty())
 		{
-			if (0 == QString("Lmcoder").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
+			if (0 == QString("Lmpro").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
 			{
 				valid = true;
 				break;
@@ -629,7 +726,7 @@ void MainWidget::dropEvent(QDropEvent *event)
 		QString file = urlList.at(i).toLocalFile();
 		if (!file.isEmpty())
 		{
-			if (0 == QString("Lmcoder").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
+			if (0 == QString("Lmpro").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
 			{
 				openFile(file);
 				break;

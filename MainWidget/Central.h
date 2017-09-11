@@ -7,7 +7,7 @@
 
 class QGraphicsTextItem;
 class MapItem;
-class SelectionArea;
+class Projector;
 class Central : public QGraphicsWidget
 {
 	Q_OBJECT
@@ -17,29 +17,32 @@ public:
 	~Central();
 	
 	void setPixmap(const QPixmap& pixmap);
-	bool rectEnabled();
-	void setRectEnabled(bool b);
 	void setData(const QDomElement& data);
-	void setLineEnabled(bool b);
+	void setRatio(unsigned int x, unsigned int y);
+
+	void setProRatio(const QSize& ratio) { m_projectorRatio = ratio; }
+	QSize projectorRatio() { return m_projectorRatio; }
+	void setProRotate(unsigned int rotate) { m_projectorRotate = rotate; }
+
+	void updatePosition();
 signals:
 	qreal valueToPosition(Qt::Orientation o, qreal value);
 	qreal positionToValue(Qt::Orientation o, qreal value);
 	void mouseTracking(const QPointF& location);
-	void setBarValue(Qt::Orientation, qreal&);
-	void setSelectArea(QString &index, QRectF& rect);
-	int ratioValue(Qt::Orientation, qreal);
 
-	void selectionAreaCreated(SelectionArea*);
-	QDomElement createElement(const QString& name);
+	int ratioValue(Qt::Orientation, qreal);
+	QDomDocument domDocument();
+	void dataChanged()const;
 public slots:
 	void createBar(Qt::Orientation o, const QPointF& scenePos);
-	qreal attached(Qt::Orientation o, qreal pos);
+	QLineF attached(Qt::Orientation o, const QLineF& line);
 	void showBarValue(Qt::Orientation, qreal);
-	void showSelectAreaValue(const QRectF& value);
 	void hideValue();
-	qreal limitPos(const Qt::Edge e);
 	void removeData(const QDomElement& data);
 	bool isIndexValid(const QString& index);
+	QDomElement currentItemData() const;
+	void currentItemDataEdited() const;
+	bool isMoveMode();
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
@@ -48,10 +51,14 @@ protected:
 	virtual void resizeEvent(QGraphicsSceneResizeEvent *event)override;
 	virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event)override;
 private:
-	SelectionArea* m_currentSelection = nullptr;
-	bool m_bPressed = false;
+	Projector* createProjector(const QPointF& pos);
+	QDomElement createProjectorNode();
+private:
 	QGraphicsTextItem* m_valueShow = nullptr;
 	MapItem* m_centralMapItem = nullptr;
 	QDomElement m_data;
+	QSize m_ratio;
+	QSize m_projectorRatio;
+	unsigned int m_projectorRotate = 0;
 };
 

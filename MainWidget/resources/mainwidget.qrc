@@ -7,5 +7,8 @@
         <file>arror_normal.png</file>
         <file>arror_pressed.png</file>
         <file>logo.png</file>
+        <file>rotate.png</file>
+        <file>projectordesign.xml</file>
+        <file>projectorpattern.xml</file>
     </qresource>
 </RCC>

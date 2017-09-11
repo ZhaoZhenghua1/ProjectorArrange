@@ -3,7 +3,8 @@
 #include <QDomElement>
 
 class Bar;
-class SizeGripItem;
+//class SizeGripItem;
+class RotateItem;
 class SelectionArea :public QObject, public QGraphicsRectItem
 {
 	Q_OBJECT
@@ -34,13 +35,14 @@ signals:
 	qreal limitPos(const Qt::Edge);
 
 	//value changed, update the tab sections
-	void dataChanged();
+	void dataChanged()const;
 	
 	void removeData(const QDomElement& data);
 public slots:
 	QDomElement data();
 private slots:
 	void onResizeRect(const QRectF& rect);
+	void onRotate(qreal angle);
 protected:
 	virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value)override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
@@ -56,7 +58,8 @@ private:
 	bool m_bPressed = false;
 	static bool m_sbRectEnabled;
 	QString m_index;
-	SizeGripItem* m_sizeGrip = nullptr;
+//	SizeGripItem* m_sizeGrip = nullptr;
+	RotateItem* m_rotateItem = nullptr;
 	QDomElement m_data;
 };
 

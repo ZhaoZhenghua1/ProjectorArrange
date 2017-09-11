@@ -92,7 +92,7 @@ QVariant Bar::itemChange(GraphicsItemChange change, const QVariant &value)
 		qreal value = ((m_o == Qt::Horizontal) ? newPos.y() : newPos.x()) + width;
 		if (m_bDragging)
 		{
-			value = attached(m_o, value);
+//			value = attached(m_o, value);
 		}
 
  		return m_o == Qt::Horizontal ? QPointF(limitRect.left(), value - width) : QPointF(value - width, limitRect.top());

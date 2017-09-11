@@ -3,6 +3,9 @@
 #include <QDomDocument>
 
 class Clipper;
+class TreeView;
+class ItemModel;
+class AllItemModel;
 class MainWidget : public QMainWindow
 {
 	typedef QMainWindow Base;
@@ -23,7 +26,7 @@ public slots:
 	void onNew();
 	void onAbout();
 	void onViewHelp();
-	QDomElement createElement(const QString& name);
+	QDomDocument domDocument();
 	void onOpenRecent();
 signals:
 	void zoomIn();
@@ -35,6 +38,11 @@ private:
 	QString getAvailableFileName()const;
 	void addToRecentFiles(const QString& file);
 	bool dispatchData();
+	void initToolBarItem();
+	void initMenu();
+private slots:
+void onSetOrientation(int id);
+void onSetRation(int id);
 protected:
 	virtual void closeEvent(QCloseEvent *event)override;
 	virtual void dragEnterEvent(QDragEnterEvent *event);
@@ -43,6 +51,11 @@ protected:
 	virtual void dropEvent(QDropEvent *event);
 private:
 	Clipper* m_clipper = nullptr;
+	TreeView* m_itemView = nullptr;
+	ItemModel* m_itemModel = nullptr;
+	TreeView* m_globalView = nullptr;
+	AllItemModel* m_globalModel = nullptr;
+
 	QString m_filename;
 	QDomDocument m_doc;
 	QDomDocument m_emptyDoc;

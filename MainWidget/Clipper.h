@@ -7,7 +7,7 @@
 
 class Ruler;
 class Central;
-class SelectionArea;
+class Projector;
 class RootWidget : public QGraphicsWidget
 {
 	Q_OBJECT
@@ -22,9 +22,9 @@ signals:
 	void setBarValue(Qt::Orientation, qreal&);
 	void setSelectArea(QString &index, QRectF& rect);
 
-	void selectionAreaCreated(SelectionArea*);
+	void selectionAreaCreated(Projector*);
 
-	QDomElement createElement(const QString& name);
+	QDomDocument domDocument();
 public slots:
 	qreal valueToPosition(Qt::Orientation o, qreal value);
 	qreal positionToValue(Qt::Orientation o, qreal postion);
@@ -48,19 +48,24 @@ public:
 	void setRatio(unsigned int x, unsigned int y);
 	void setPixmap(const QString& map);
 	void setData(const QDomElement& data);
+
+	void setProRatio(const QSize& ratio);
+	QSize projectorRatio();
+	void setProRotate(unsigned int rotate);
 signals:
 	void mouseTracking(const QPoint& location);
-	void selectionAreaCreated(SelectionArea*);
+	void selectionAreaCreated(Projector*);
 
 	bool isIndexValid(const QString& index);
 
-	QDomElement createElement(const QString& name);
+	QDomDocument domDocument();
+
+	QDomElement currentItemData() const;
+	void currentItemDataEdited() const;
+	void dataChanged()const;
 public slots:
 	QSize ratio();
-	//horizontal reference line can be dragged and created
-	void setLineEnabled(bool b);
-	//select rect can be dragged and created
-	void setRectEnabled(bool b);
+
 	//show a dialog, setting the double clicked line bar, valueRet is the input and output
 	void setBar(Qt::Orientation o, qreal& valueRet);
 	//so as the setBar
@@ -69,6 +74,7 @@ public slots:
 	void zoomIn();
 	//ctrl+minus zoomout
 	void zoomOut();
+
 private slots:
 private:
 	void updateSceneRatio();

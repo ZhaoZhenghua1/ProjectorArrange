@@ -46,18 +46,21 @@ Clipper::Clipper(QWidget *parent)
 	setScene(scene);
 	m_rootWidget = new RootWidget;
 	connect(m_rootWidget, &RootWidget::mouseTracking, this, &Clipper::mouseTracking);
-	connect(m_rootWidget, &RootWidget::createElement, this, &Clipper::createElement);
+	connect(m_rootWidget, &RootWidget::domDocument, this, &Clipper::domDocument);
 	connect(m_rootWidget, &RootWidget::setBarValue, this, &Clipper::setBar);
 	connect(m_rootWidget, &RootWidget::setSelectArea, this, &Clipper::setSelectArea);
-	connect(m_rootWidget, SIGNAL(selectionAreaCreated(SelectionArea*)), this, SIGNAL(selectionAreaCreated(SelectionArea*)));
+	connect(m_rootWidget, SIGNAL(selectionAreaCreated(Projector*)), this, SIGNAL(selectionAreaCreated(Projector*)));
 	connect(this, &Clipper::isIndexValid, m_rootWidget->central(), &Central::isIndexValid);
+	connect(m_rootWidget->central(), &Central::dataChanged, this, &Clipper::dataChanged);
+	connect(this, &Clipper::currentItemData, m_rootWidget->central(), &Central::currentItemData);
+	connect(this, &Clipper::currentItemDataEdited, m_rootWidget->central(), &Central::currentItemDataEdited);
 
 	scene->addItem(m_rootWidget);
 // 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 // 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 // 	setFrameShape(QFrame::NoFrame);
 
-	setRatio(2460, 1448);
+	setRatio(12000, 7500);
 
 	setAutoFillBackground(false);
 
@@ -71,19 +74,23 @@ Clipper::~Clipper()
 
 void Clipper::setRatio(unsigned int x, unsigned int y)
 {
+	m_rootWidget->central()->setRatio(x, y);
+	m_data.setAttribute("width", x);
+	m_data.setAttribute("height", y);
+
+	x /= 0.6;
+	y /= 0.6;
 	const unsigned int min = 10;
 	x = qMax(x, min);
 	y = qMax(y, min);
 	m_rootWidget->ruler(Qt::Horizontal)->setRange(x);
 	m_rootWidget->ruler(Qt::Vertical)->setRange(y);
 	updateSceneRatio();
-	m_data.setAttribute("width", x);
-	m_data.setAttribute("height", y);
 }
 
 QSize Clipper::ratio()
 {
-	return QSize(m_rootWidget->ruler(Qt::Horizontal)->range(), m_rootWidget->ruler(Qt::Vertical)->range());
+	return QSize(m_rootWidget->ruler(Qt::Horizontal)->range()*0.6 + 0.5, m_rootWidget->ruler(Qt::Vertical)->range()*0.6 + 0.5);
 }
 
 void Clipper::setPixmap(const QString& map)
@@ -94,22 +101,11 @@ void Clipper::setPixmap(const QString& map)
 void Clipper::setData(const QDomElement& data)
 {
 	m_data = data;
-	setRatio(data.attribute("width", "2460").toInt(), data.attribute("height", "1448").toInt());
+	scene()->setSceneRect(QRectF(QPointF(0, 0), viewport()->size()));
 
-	scene()->setSceneRect(QRectF(QPointF(0,0), viewport()->size()));
-	updateSceneRatio();
+	setRatio(data.attribute("width", "12000").toInt(), data.attribute("height", "7500").toInt());
 
 	m_rootWidget->setData(data);
-}
-
-void Clipper::setLineEnabled(bool b)
-{
-	m_rootWidget->central()->setLineEnabled(b);
-}
-
-void Clipper::setRectEnabled(bool b)
-{
-	m_rootWidget->central()->setRectEnabled(b);
 }
 
 void Clipper::setBar(Qt::Orientation o, qreal& valueRet)
@@ -194,60 +190,37 @@ void Clipper::setSelectArea(QString& indexRet, QRectF& rectRet)
 
 void Clipper::updateSceneRatio()
 {
-	qreal borderWidth = this->borderWidth();
 	QSize size = this->ratio();
 	double ratio = size.width()*1.0 / size.height();
-	QSizeF viewSize = QSizeF(sceneRect().size()) - QSizeF(borderWidth, borderWidth);
+	QSizeF viewSize = m_rootWidget->central()->size();
 	double viewRatio = viewSize.width()*1.0 / viewSize.height();
 	if (ratio < viewRatio)
 	{
 		//use height
-		qreal height = viewSize.height();
-		qreal width = height * ratio;
-		qreal x = (viewSize.width() - width) / 2;
-		m_rootWidget->ruler(Qt::Horizontal)->setMinimumWidth(width);
-		m_rootWidget->ruler(Qt::Vertical)->setMinimumHeight(height);
-		m_rootWidget->setGeometry(QRectF(QPointF(x, 0), QSizeF(width + borderWidth, height + borderWidth)));
+		m_rootWidget->ruler(Qt::Horizontal)->setRefer(m_rootWidget->ruler(Qt::Vertical));
 	}
 	else
 	{
 		//use width
-		qreal width = viewSize.width();
-		qreal height = width / ratio;
-		qreal y = (viewSize.height() - height) / 2;
-		m_rootWidget->ruler(Qt::Horizontal)->setMinimumWidth(width);
-		m_rootWidget->ruler(Qt::Vertical)->setMinimumHeight(height);
-		m_rootWidget->setGeometry(QRectF(QPointF(0, y), QSizeF(width + borderWidth, height + borderWidth)));
+		m_rootWidget->ruler(Qt::Vertical)->setRefer(m_rootWidget->ruler(Qt::Horizontal));
 	}
+
+	m_rootWidget->central()->updatePosition();
 }
 
 qreal Clipper::borderWidth()
 {
-	return m_rootWidget->rect().width() - m_rootWidget->central()->rect().width() + 14;//35 + 7*2
+	return m_rootWidget->rect().width() - m_rootWidget->central()->rect().width();//35 + 7*2
 }
 
 void Clipper::resizeEvent(QResizeEvent *event)
 {
 	QRectF rec(QPointF(0, 0), event->size());
-	QRectF sceneRect = this->sceneRect();
-	if (event->oldSize().isEmpty() || sceneRect.width() <= event->oldSize().width() || sceneRect.height() <= event->oldSize().height())
-	{
-		if (!event->oldSize().isEmpty())
-		{
-			if (sceneRect.width() > event->oldSize().width())
-			{
-				rec.setWidth(sceneRect.width());
-			}
-			if (sceneRect.height() > event->oldSize().height())
-			{
-				rec.setHeight(sceneRect.height());
-			}
-		}
-		
-		scene()->setSceneRect(rec);
-		updateSceneRatio();
-	}
-	//m_rootWidget->setGeometry(rec);
+
+	scene()->setSceneRect(rec);
+	m_rootWidget->setGeometry(rec);
+	updateSceneRatio();
+
 	return Base::resizeEvent(event);
 }
 
@@ -262,6 +235,8 @@ private:
 
 void Clipper::wheelEvent(QWheelEvent *event)
 {
+	return Base::wheelEvent(event);
+
 	//control + wheel , zoom_in and zoom_out
 	if (event->modifiers()&Qt::ControlModifier)
 	{
@@ -310,6 +285,7 @@ void Clipper::wheelEvent(QWheelEvent *event)
 
 void Clipper::zoomIn()
 {
+	return;
 	QRectF sceneRect = this->sceneRect();
 	sceneRect.setWidth(sceneRect.width() * ZOOM_MULT);
 	sceneRect.setHeight(sceneRect.height()* ZOOM_MULT);
@@ -339,6 +315,7 @@ void Clipper::zoomIn()
 
 void Clipper::zoomOut()
 {
+	return;
 	QRectF sceneRect = this->sceneRect();
 	QSizeF minSize(viewport()->size());
 	sceneRect.setWidth(sceneRect.width() / ZOOM_MULT);
@@ -355,6 +332,21 @@ void Clipper::zoomOut()
 	updateSceneRatio();
 }
 
+void Clipper::setProRatio(const QSize& ratio)
+{
+	m_rootWidget->central()->setProRatio(ratio);
+}
+
+QSize Clipper::projectorRatio()
+{
+	return m_rootWidget->central()->projectorRatio();
+}
+
+void Clipper::setProRotate(unsigned int rotate)
+{
+	m_rootWidget->central()->setProRotate(rotate);
+}
+
 RootWidget::RootWidget()
 {
 	QGraphicsAnchorLayout* layout = new QGraphicsAnchorLayout;
@@ -365,29 +357,23 @@ RootWidget::RootWidget()
 	Ruler* rulerLeft = new Ruler(Qt::Vertical);
 	Central* central = new Central;
 	connect(central, &Central::mouseTracking, this, &RootWidget::onMouseTracking);
-	connect(central, &Central::createElement, this, &RootWidget::createElement);
+	connect(central, &Central::domDocument, this, &RootWidget::domDocument);
 	connect(central, &Central::positionToValue, this, &RootWidget::positionToValue);
 	connect(central, &Central::valueToPosition, this, &RootWidget::valueToPosition);
-	connect(central, &Central::setBarValue, this, &RootWidget::setBarValue);
-	connect(central, &Central::setSelectArea, this, &RootWidget::setSelectArea);
 	connect(central, &Central::ratioValue, this, &RootWidget::ratioValue);
-	connect(central, SIGNAL(selectionAreaCreated(SelectionArea*)), this, SIGNAL(selectionAreaCreated(SelectionArea*)));
+	connect(central, SIGNAL(selectionAreaCreated(Projector*)), this, SIGNAL(selectionAreaCreated(Projector*)));
 
 	connect(rulerTop, &Ruler::createBar, central, &Central::createBar);
 	connect(rulerLeft, &Ruler::createBar, central, &Central::createBar);
 	layout->addAnchor(rulerTop, Qt::AnchorTop, layout, Qt::AnchorTop);
 	layout->addAnchor(rulerTop, Qt::AnchorBottom, layout, Qt::AnchorTop)->setSpacing(35);
-	layout->addAnchor(rulerTop, Qt::AnchorHorizontalCenter, layout, Qt::AnchorHorizontalCenter)->setSpacing(18);
-	rulerTop->setMinimumSize(QSizeF(300, 10));
-//	layout->addAnchor(rulerTop, Qt::AnchorLeft, layout, Qt::AnchorLeft)->setSpacing(45);
-//	layout->addAnchor(rulerTop, Qt::AnchorRight, layout, Qt::AnchorRight);
+	layout->addAnchor(rulerTop, Qt::AnchorLeft, layout, Qt::AnchorLeft)->setSpacing(37);
+	layout->addAnchor(rulerTop, Qt::AnchorRight, layout, Qt::AnchorRight);
 
 	layout->addAnchor(rulerLeft, Qt::AnchorLeft, layout, Qt::AnchorLeft);
 	layout->addAnchor(rulerLeft, Qt::AnchorRight, layout, Qt::AnchorLeft)->setSpacing(37);
-	layout->addAnchor(rulerLeft, Qt::AnchorVerticalCenter, layout, Qt::AnchorVerticalCenter)->setSpacing(18);
-	rulerLeft->setMinimumHeight(300);
-//	layout->addAnchor(rulerLeft, Qt::AnchorTop, layout, Qt::AnchorTop)->setSpacing(45);
-//	layout->addAnchor(rulerLeft, Qt::AnchorBottom, layout, Qt::AnchorBottom);
+	layout->addAnchor(rulerLeft, Qt::AnchorTop, layout, Qt::AnchorTop)->setSpacing(35);
+	layout->addAnchor(rulerLeft, Qt::AnchorBottom, layout, Qt::AnchorBottom);
 
 	layout->addAnchor(central, Qt::AnchorTop, rulerTop, Qt::AnchorBottom);
 	layout->addAnchor(central, Qt::AnchorLeft, rulerLeft, Qt::AnchorRight);
@@ -425,11 +411,11 @@ qreal RootWidget::valueToPosition(Qt::Orientation o, qreal value)
 {
 	if (o == Qt::Horizontal)
 	{
-		return m_rulers[1]->pixToRuler(value);
+		return m_rulers[1]->rulerToPix(value);
 	}
 	else
 	{
-		return m_rulers[0]->pixToRuler(value);
+		return m_rulers[0]->rulerToPix(value);
 	}
 }
 
@@ -437,17 +423,17 @@ qreal RootWidget::positionToValue(Qt::Orientation o, qreal postion)
 {
 	if (o == Qt::Horizontal)
 	{
-		return m_rulers[1]->rulerToPix(postion);
+		return m_rulers[1]->pixToRuler(postion);
 	}
 	else
 	{
-		return m_rulers[0]->rulerToPix(postion);
+		return m_rulers[0]->pixToRuler(postion);
 	}
 }
 
 void RootWidget::onMouseTracking(const QPointF& location)
 {
-	emit mouseTracking(QPoint(location.x() * m_rulers[0]->range() + 0.5, location.y() * m_rulers[1]->range() + 0.5 ));
+	emit mouseTracking(QPoint(location.x() + 0.5, location.y() + 0.5 ));
 }
 
 int RootWidget::ratioValue(Qt::Orientation o, qreal value)
@@ -457,5 +443,5 @@ int RootWidget::ratioValue(Qt::Orientation o, qreal value)
 
 void RootWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * /* = Q_NULLPTR */)
 {
-	painter->fillRect(rect(), QColor(35, 35, 35));//Qt::red);
+	painter->fillRect(rect(),Qt::red); //QColor(35, 35, 35));
 }

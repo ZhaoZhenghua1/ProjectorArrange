@@ -3,7 +3,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
-#include "SizeGripItem.h"
+#include "RotateItem.h"
+//#include "SizeGripItem.h"
 
 bool SelectionArea::m_sbRectEnabled = false;
 SelectionArea::SelectionArea(QGraphicsItem* parent):Base(parent)
@@ -27,6 +28,7 @@ void SelectionArea::updateData()
 	m_data.setAttribute("right", m_points[1].x());
 	m_data.setAttribute("top", m_points[0].y());
 	m_data.setAttribute("bottom", m_points[1].y());
+	m_data.setAttribute("rotate", rotation());
 }
 
 void SelectionArea::updateValue()
@@ -59,6 +61,10 @@ void SelectionArea::updatePosition()
 	rect = QRectF(rect.topLeft() + limitRect.topLeft(), rect.size());
 	setPos(QPointF());
 	setRect(rect);
+
+	QPointF center = this->rect().center();
+	setTransformOriginPoint(center);
+	setRotation(m_data.attribute("rotate").toDouble());
 
 	//clearfocus so that SizeGrip hide
 	clearFocus();
@@ -135,6 +141,16 @@ void SelectionArea::onResizeRect(const QRectF& rect)
 	updateValue();
 }
 
+void SelectionArea::onRotate(qreal angle)
+{
+	QPointF center = rect().center();
+	setTransformOriginPoint(center);
+	setRotation(rotation() + angle);
+	m_data.setAttribute("rotate", rotation());
+
+	emit dataChanged();
+}
+
 QVariant SelectionArea::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemPositionChange && scene() && m_bPressed)
@@ -196,7 +212,6 @@ void SelectionArea::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		Base::mousePressEvent(event);
 		setFocus();
 		event->setAccepted(true);
-//		emit showValue(QRectF(m_points[0], m_points[1]));
 	}
 }
 
@@ -205,6 +220,7 @@ void SelectionArea::keyPressEvent(QKeyEvent *event)
 	if (event->key() == Qt::Key_Delete && event->modifiers() == Qt::NoModifier)
 	{
 		emit removeData(m_data);
+		dataChanged();
 		delete this;
 	}
 }
@@ -223,18 +239,18 @@ void SelectionArea::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void SelectionArea::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-	if (m_sbRectEnabled)
-	{
-		QString oldIndex = m_index;
-		QRectF rect(m_points[0], m_points[1]);
-		emit setSelectArea(m_index, rect);
-		m_points[0] = rect.topLeft();
-		m_points[1] = rect.bottomRight();
-		updatePosition();
-		updateData();
-
-		emit dataChanged();
-	}
+// 	if (m_sbRectEnabled)
+// 	{
+// 		QString oldIndex = m_index;
+// 		QRectF rect(m_points[0], m_points[1]);
+// 		emit setSelectArea(m_index, rect);
+// 		m_points[0] = rect.topLeft();
+// 		m_points[1] = rect.bottomRight();
+// 		updatePosition();
+// 		updateData();
+// 
+// 		emit dataChanged();
+// 	}
 	return Base::mouseDoubleClickEvent(event);
 }
 
@@ -272,11 +288,15 @@ void SelectionArea::focusInEvent(QFocusEvent *event)
 {
 	if (m_sbRectEnabled)
 	{
-		delete m_sizeGrip;
-		m_sizeGrip = new SizeGripItem(this);
-		connect(m_sizeGrip, &SizeGripItem::resizeItem, this, &SelectionArea::onResizeRect);
-		connect(m_sizeGrip, &SizeGripItem::attached, this, &SelectionArea::attached);
-		connect(m_sizeGrip, &SizeGripItem::limitPos, this, &SelectionArea::limitPos);
+// 		delete m_sizeGrip;
+// 		m_sizeGrip = new SizeGripItem(this);
+// 		connect(m_sizeGrip, &SizeGripItem::resizeItem, this, &SelectionArea::onResizeRect);
+// 		connect(m_sizeGrip, &SizeGripItem::attached, this, &SelectionArea::attached);
+// 		connect(m_sizeGrip, &SizeGripItem::limitPos, this, &SelectionArea::limitPos);
+
+		delete m_rotateItem;
+		m_rotateItem = new RotateItem(this);
+		connect(m_rotateItem, &RotateItem::rotate, this, &SelectionArea::onRotate);
 		setZValue(7);
 	}
 	return Base::focusInEvent(event);
@@ -284,10 +304,14 @@ void SelectionArea::focusInEvent(QFocusEvent *event)
 
 void SelectionArea::focusOutEvent(QFocusEvent *event)
 {
-	delete m_sizeGrip;
-	m_sizeGrip = nullptr;
+// 	delete m_sizeGrip;
+// 	m_sizeGrip = nullptr;
+	Base::focusOutEvent(event);
+	dataChanged();
+	delete m_rotateItem;
+	m_rotateItem = nullptr;
 	setZValue(6);
-	return Base::focusOutEvent(event);
+	return;
 }
 
 void SelectionArea::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

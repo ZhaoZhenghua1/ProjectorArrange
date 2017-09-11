@@ -31,7 +31,7 @@ public:
 signals:
 	qreal positionToValue(Qt::Orientation, qreal);
 	qreal valueToPosition(Qt::Orientation, qreal);
-	qreal attached(Qt::Orientation o, qreal pos);
+	QLineF attached(Qt::Orientation o, const QLineF& pos);
 	void mouseTracking(const QPointF& location);
 	void setBarValue(Qt::Orientation, qreal&);
 	void showValue(Qt::Orientation,qreal );

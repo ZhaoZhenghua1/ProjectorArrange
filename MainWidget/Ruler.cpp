@@ -14,26 +14,6 @@ Ruler::~Ruler()
 {
 }
 
-qreal Ruler::timeToRound(qreal t)const
-{
-	return t;
-	qreal precision =  m_pixSpace/ m_dRulerSpace;
-	if (t < precision && t > -precision)
-	{
-		return 0;
-	}
-	qreal tmin = t - precision;
-	qreal tmax = t + precision;
-	int e = 1;
-	while (std::ceil(tmin / 10) < (tmax / 10) && tmin > 10)
-	{
-		tmin = std::ceil(tmin / 10);
-		tmax /= 10;
-		e *= 10;
-	}
-	return tmin * e;
-}
-
 //根据时间长度和时间轴长度计算时间间距和像素间距
 //时间间距为 1/2/5 * 10的幂次方
 std::tuple<int, qreal> timeBarRuleStrategy(const unsigned int mappixLength, qreal distance)
@@ -66,21 +46,27 @@ void Ruler::setRange(unsigned int range)
 	updateRuler();
 }
 
-qreal Ruler::pixToRuler(qreal timeMS) const
+void Ruler::setRefer(Ruler* referTo)
 {
-	return timeMS * 1.0 * m_iRulerLength/ m_pixSpace * m_dRulerSpace;
+	m_referTo = referTo;
+	referTo->m_referTo = nullptr;
+	updateRuler();
 }
 
-qreal Ruler::rulerToPix(qreal pos) const
+qreal Ruler::rulerToPix(qreal ruler) const
 {
-	return timeToRound(pos / m_dRulerSpace * m_pixSpace) / m_iRulerLength;
+	qreal width = (m_orient == Qt::Horizontal) ? rect().width() : rect().height();
+	return ruler / m_pixSpace * m_dRulerSpace + width * m_dZeroPoint;
+}
+
+qreal Ruler::pixToRuler(qreal pix) const
+{
+	qreal width = (m_orient == Qt::Horizontal) ? rect().width() : rect().height();
+	return (pix - width * m_dZeroPoint) / m_dRulerSpace * m_pixSpace;
 }
 
 void Ruler::resizeEvent(QGraphicsSceneResizeEvent *event)
 {
-// 	std::tuple<int, qreal> ret = timeBarRuleStrategy(m_iRulerLength, m_orient == Qt::Horizontal ? event->newSize().width() : event->newSize().height());
-// 	m_pixSpace = std::get<0>(ret);
-// 	m_dRulerSpace = std::get<1>(ret);
 	Base::resizeEvent(event);
 	updateRuler();
 }
@@ -89,13 +75,14 @@ void Ruler::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
 {
 
 	painter->fillRect(rect(), QColor(35, 35, 35));
-//	painter->drawRect(rect());
 	qreal w = m_orient == Qt::Horizontal ?  rect().width() : rect().height();
-	for (qreal x = 0; x <= w; x += m_dRulerSpace)
+	qreal begin = -((int(m_dZeroPoint*w / m_dRulerSpace) + 1)*m_dRulerSpace - m_dZeroPoint*w);
+	for (qreal x = begin; x <= w; x += m_dRulerSpace)
 	{
 		QPoint pos = ((m_orient == Qt::Horizontal) ? QPoint(x, rect().height() - 18) : QPoint(rect().width() - 18,x));
 
-		QString drawStr = QString("%1").arg((int)(rulerToPix(x)*m_iRulerLength + 0.5));
+		qreal ruler = pixToRuler(x);
+		QString drawStr = QString("%1").arg((int)(ruler + ((ruler > 0) ? 0.5 : -0.5)));
 
 		int fontW = painter->fontMetrics().width(drawStr);
 		int fontH = painter->fontMetrics().height();
@@ -163,8 +150,17 @@ void Ruler::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Ruler::updateRuler()
 {
-	std::tuple<int, qreal> ret = timeBarRuleStrategy(m_iRulerLength, m_orient == Qt::Horizontal ? rect().width() : rect().height());
-	m_pixSpace = std::get<0>(ret);
-	m_dRulerSpace = std::get<1>(ret);
+	if (m_referTo)
+	{
+		m_pixSpace = m_referTo->m_pixSpace;
+		m_dRulerSpace = m_referTo->m_dRulerSpace;
+	}
+	else
+	{
+		std::tuple<int, qreal> ret = timeBarRuleStrategy(m_iRulerLength, m_orient == Qt::Horizontal ? rect().width() : rect().height());
+		m_pixSpace = std::get<0>(ret);
+		m_dRulerSpace = std::get<1>(ret);
+	}
+
 	update();
 }
