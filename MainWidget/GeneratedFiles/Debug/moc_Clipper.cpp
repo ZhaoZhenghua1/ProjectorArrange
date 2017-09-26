@@ -241,8 +241,8 @@ QDomDocument RootWidget::domDocument()
     return _t0;
 }
 struct qt_meta_stringdata_Clipper_t {
-    QByteArrayData data[27];
-    char stringdata0[280];
+    QByteArrayData data[28];
+    char stringdata0[301];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -261,31 +261,33 @@ QT_MOC_LITERAL(6, 64, 12), // "isIndexValid"
 QT_MOC_LITERAL(7, 77, 5), // "index"
 QT_MOC_LITERAL(8, 83, 11), // "domDocument"
 QT_MOC_LITERAL(9, 95, 12), // "QDomDocument"
-QT_MOC_LITERAL(10, 108, 15), // "currentItemData"
-QT_MOC_LITERAL(11, 124, 11), // "QDomElement"
-QT_MOC_LITERAL(12, 136, 21), // "currentItemDataEdited"
-QT_MOC_LITERAL(13, 158, 11), // "dataChanged"
-QT_MOC_LITERAL(14, 170, 5), // "ratio"
-QT_MOC_LITERAL(15, 176, 6), // "setBar"
-QT_MOC_LITERAL(16, 183, 15), // "Qt::Orientation"
-QT_MOC_LITERAL(17, 199, 1), // "o"
-QT_MOC_LITERAL(18, 201, 6), // "qreal&"
-QT_MOC_LITERAL(19, 208, 8), // "valueRet"
-QT_MOC_LITERAL(20, 217, 13), // "setSelectArea"
-QT_MOC_LITERAL(21, 231, 8), // "QString&"
-QT_MOC_LITERAL(22, 240, 8), // "indexRet"
-QT_MOC_LITERAL(23, 249, 7), // "QRectF&"
-QT_MOC_LITERAL(24, 257, 7), // "rectRet"
-QT_MOC_LITERAL(25, 265, 6), // "zoomIn"
-QT_MOC_LITERAL(26, 272, 7) // "zoomOut"
+QT_MOC_LITERAL(10, 108, 18), // "setCurrentItemData"
+QT_MOC_LITERAL(11, 127, 11), // "QDomElement"
+QT_MOC_LITERAL(12, 139, 21), // "currentItemDataEdited"
+QT_MOC_LITERAL(13, 161, 17), // "allItemDataEdited"
+QT_MOC_LITERAL(14, 179, 11), // "dataChanged"
+QT_MOC_LITERAL(15, 191, 5), // "ratio"
+QT_MOC_LITERAL(16, 197, 6), // "setBar"
+QT_MOC_LITERAL(17, 204, 15), // "Qt::Orientation"
+QT_MOC_LITERAL(18, 220, 1), // "o"
+QT_MOC_LITERAL(19, 222, 6), // "qreal&"
+QT_MOC_LITERAL(20, 229, 8), // "valueRet"
+QT_MOC_LITERAL(21, 238, 13), // "setSelectArea"
+QT_MOC_LITERAL(22, 252, 8), // "QString&"
+QT_MOC_LITERAL(23, 261, 8), // "indexRet"
+QT_MOC_LITERAL(24, 270, 7), // "QRectF&"
+QT_MOC_LITERAL(25, 278, 7), // "rectRet"
+QT_MOC_LITERAL(26, 286, 6), // "zoomIn"
+QT_MOC_LITERAL(27, 293, 7) // "zoomOut"
 
     },
     "Clipper\0mouseTracking\0\0location\0"
     "selectionAreaCreated\0Projector*\0"
     "isIndexValid\0index\0domDocument\0"
-    "QDomDocument\0currentItemData\0QDomElement\0"
-    "currentItemDataEdited\0dataChanged\0"
-    "ratio\0setBar\0Qt::Orientation\0o\0qreal&\0"
+    "QDomDocument\0setCurrentItemData\0"
+    "QDomElement\0currentItemDataEdited\0"
+    "allItemDataEdited\0dataChanged\0ratio\0"
+    "setBar\0Qt::Orientation\0o\0qreal&\0"
     "valueRet\0setSelectArea\0QString&\0"
     "indexRet\0QRectF&\0rectRet\0zoomIn\0zoomOut"
 };
@@ -297,42 +299,44 @@ static const uint qt_meta_data_Clipper[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       7,       // signalCount
+       8,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   74,    2, 0x06 /* Public */,
-       4,    1,   77,    2, 0x06 /* Public */,
-       6,    1,   80,    2, 0x06 /* Public */,
-       8,    0,   83,    2, 0x06 /* Public */,
-      10,    0,   84,    2, 0x06 /* Public */,
-      12,    0,   85,    2, 0x06 /* Public */,
-      13,    0,   86,    2, 0x06 /* Public */,
+       1,    1,   79,    2, 0x06 /* Public */,
+       4,    1,   82,    2, 0x06 /* Public */,
+       6,    1,   85,    2, 0x06 /* Public */,
+       8,    0,   88,    2, 0x06 /* Public */,
+      10,    1,   89,    2, 0x06 /* Public */,
+      12,    0,   92,    2, 0x06 /* Public */,
+      13,    0,   93,    2, 0x06 /* Public */,
+      14,    0,   94,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      14,    0,   87,    2, 0x0a /* Public */,
-      15,    2,   88,    2, 0x0a /* Public */,
-      20,    2,   93,    2, 0x0a /* Public */,
-      25,    0,   98,    2, 0x0a /* Public */,
-      26,    0,   99,    2, 0x0a /* Public */,
+      15,    0,   95,    2, 0x0a /* Public */,
+      16,    2,   96,    2, 0x0a /* Public */,
+      21,    2,  101,    2, 0x0a /* Public */,
+      26,    0,  106,    2, 0x0a /* Public */,
+      27,    0,  107,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QPoint,    3,
     QMetaType::Void, 0x80000000 | 5,    2,
     QMetaType::Bool, QMetaType::QString,    7,
     0x80000000 | 9,
-    0x80000000 | 11,
+    QMetaType::Void, 0x80000000 | 11,    2,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
  // slots: parameters
     QMetaType::QSize,
-    QMetaType::Void, 0x80000000 | 16, 0x80000000 | 18,   17,   19,
-    QMetaType::Void, 0x80000000 | 21, 0x80000000 | 23,   22,   24,
+    QMetaType::Void, 0x80000000 | 17, 0x80000000 | 19,   18,   20,
+    QMetaType::Void, 0x80000000 | 22, 0x80000000 | 24,   23,   25,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -351,16 +355,16 @@ void Clipper::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 3: { QDomDocument _r = _t->domDocument();
             if (_a[0]) *reinterpret_cast< QDomDocument*>(_a[0]) = _r; }  break;
-        case 4: { QDomElement _r = _t->currentItemData();
-            if (_a[0]) *reinterpret_cast< QDomElement*>(_a[0]) = _r; }  break;
+        case 4: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
         case 5: _t->currentItemDataEdited(); break;
-        case 6: _t->dataChanged(); break;
-        case 7: { QSize _r = _t->ratio();
+        case 6: _t->allItemDataEdited(); break;
+        case 7: _t->dataChanged(); break;
+        case 8: { QSize _r = _t->ratio();
             if (_a[0]) *reinterpret_cast< QSize*>(_a[0]) = _r; }  break;
-        case 8: _t->setBar((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
-        case 9: _t->setSelectArea((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2]))); break;
-        case 10: _t->zoomIn(); break;
-        case 11: _t->zoomOut(); break;
+        case 9: _t->setBar((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
+        case 10: _t->setSelectArea((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2]))); break;
+        case 11: _t->zoomIn(); break;
+        case 12: _t->zoomOut(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -395,8 +399,8 @@ void Clipper::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
             }
         }
         {
-            typedef QDomElement (Clipper::*_t)() const;
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Clipper::currentItemData)) {
+            typedef void (Clipper::*_t)(const QDomElement & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Clipper::setCurrentItemData)) {
                 *result = 4;
                 return;
             }
@@ -410,8 +414,15 @@ void Clipper::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         }
         {
             typedef void (Clipper::*_t)() const;
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Clipper::dataChanged)) {
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Clipper::allItemDataEdited)) {
                 *result = 6;
+                return;
+            }
+        }
+        {
+            typedef void (Clipper::*_t)() const;
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Clipper::dataChanged)) {
+                *result = 7;
                 return;
             }
         }
@@ -443,13 +454,13 @@ int Clipper::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
+        if (_id < 13)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        _id -= 13;
     }
     return _id;
 }
@@ -487,12 +498,10 @@ QDomDocument Clipper::domDocument()
 }
 
 // SIGNAL 4
-QDomElement Clipper::currentItemData()const
+void Clipper::setCurrentItemData(const QDomElement & _t1)
 {
-    QDomElement _t0 = QDomElement();
-    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)) };
-    QMetaObject::activate(const_cast< Clipper *>(this), &staticMetaObject, 4, _a);
-    return _t0;
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 
 // SIGNAL 5
@@ -502,8 +511,14 @@ void Clipper::currentItemDataEdited()const
 }
 
 // SIGNAL 6
-void Clipper::dataChanged()const
+void Clipper::allItemDataEdited()const
 {
     QMetaObject::activate(const_cast< Clipper *>(this), &staticMetaObject, 6, Q_NULLPTR);
+}
+
+// SIGNAL 7
+void Clipper::dataChanged()const
+{
+    QMetaObject::activate(const_cast< Clipper *>(this), &staticMetaObject, 7, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

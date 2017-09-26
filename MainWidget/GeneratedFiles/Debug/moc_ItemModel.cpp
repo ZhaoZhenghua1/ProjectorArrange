@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_ItemModel_t {
-    QByteArrayData data[11];
-    char stringdata0[121];
+    QByteArrayData data[12];
+    char stringdata0[129];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,22 +30,23 @@ struct qt_meta_stringdata_ItemModel_t {
 static const qt_meta_stringdata_ItemModel_t qt_meta_stringdata_ItemModel = {
     {
 QT_MOC_LITERAL(0, 0, 9), // "ItemModel"
-QT_MOC_LITERAL(1, 10, 15), // "currentItemData"
-QT_MOC_LITERAL(2, 26, 11), // "QDomElement"
-QT_MOC_LITERAL(3, 38, 0), // ""
-QT_MOC_LITERAL(4, 39, 21), // "currentItemDataEdited"
-QT_MOC_LITERAL(5, 61, 11), // "dataChanged"
-QT_MOC_LITERAL(6, 73, 8), // "getValue"
-QT_MOC_LITERAL(7, 82, 12), // "QScriptValue"
-QT_MOC_LITERAL(8, 95, 10), // "expression"
-QT_MOC_LITERAL(9, 106, 8), // "setValue"
-QT_MOC_LITERAL(10, 115, 5) // "value"
+QT_MOC_LITERAL(1, 10, 21), // "currentItemDataEdited"
+QT_MOC_LITERAL(2, 32, 0), // ""
+QT_MOC_LITERAL(3, 33, 11), // "dataChanged"
+QT_MOC_LITERAL(4, 45, 18), // "setCurrentItemData"
+QT_MOC_LITERAL(5, 64, 11), // "QDomElement"
+QT_MOC_LITERAL(6, 76, 4), // "data"
+QT_MOC_LITERAL(7, 81, 8), // "getValue"
+QT_MOC_LITERAL(8, 90, 12), // "QScriptValue"
+QT_MOC_LITERAL(9, 103, 10), // "expression"
+QT_MOC_LITERAL(10, 114, 8), // "setValue"
+QT_MOC_LITERAL(11, 123, 5) // "value"
 
     },
-    "ItemModel\0currentItemData\0QDomElement\0"
-    "\0currentItemDataEdited\0dataChanged\0"
-    "getValue\0QScriptValue\0expression\0"
-    "setValue\0value"
+    "ItemModel\0currentItemDataEdited\0\0"
+    "dataChanged\0setCurrentItemData\0"
+    "QDomElement\0data\0getValue\0QScriptValue\0"
+    "expression\0setValue\0value"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,25 +61,25 @@ static const uint qt_meta_data_ItemModel[] = {
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   39,    3, 0x06 /* Public */,
-       4,    0,   40,    3, 0x06 /* Public */,
+       1,    0,   39,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   41,    3, 0x0a /* Public */,
-       6,    1,   42,    3, 0x0a /* Public */,
-       9,    2,   45,    3, 0x0a /* Public */,
+       3,    0,   40,    2, 0x0a /* Public */,
+       4,    1,   41,    2, 0x0a /* Public */,
+       7,    1,   44,    2, 0x0a /* Public */,
+      10,    2,   47,    2, 0x0a /* Public */,
 
  // signals: parameters
-    0x80000000 | 2,
     QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::QString, 0x80000000 | 7,    8,
-    QMetaType::Void, 0x80000000 | 7, QMetaType::QString,    8,   10,
+    QMetaType::Void, 0x80000000 | 5,    6,
+    QMetaType::QString, 0x80000000 | 8,    9,
+    QMetaType::Void, 0x80000000 | 8, QMetaType::QString,    9,   11,
 
        0        // eod
 };
@@ -89,10 +90,9 @@ void ItemModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         ItemModel *_t = static_cast<ItemModel *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: { QDomElement _r = _t->currentItemData();
-            if (_a[0]) *reinterpret_cast< QDomElement*>(_a[0]) = _r; }  break;
-        case 1: _t->currentItemDataEdited(); break;
-        case 2: _t->dataChanged(); break;
+        case 0: _t->currentItemDataEdited(); break;
+        case 1: _t->dataChanged(); break;
+        case 2: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
         case 3: { QString _r = _t->getValue((*reinterpret_cast< const QScriptValue(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
         case 4: _t->setValue((*reinterpret_cast< const QScriptValue(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
@@ -102,16 +102,9 @@ void ItemModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef QDomElement (ItemModel::*_t)() const;
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ItemModel::currentItemData)) {
-                *result = 0;
-                return;
-            }
-        }
-        {
             typedef void (ItemModel::*_t)() const;
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ItemModel::currentItemDataEdited)) {
-                *result = 1;
+                *result = 0;
                 return;
             }
         }
@@ -155,17 +148,8 @@ int ItemModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-QDomElement ItemModel::currentItemData()const
-{
-    QDomElement _t0 = QDomElement();
-    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)) };
-    QMetaObject::activate(const_cast< ItemModel *>(this), &staticMetaObject, 0, _a);
-    return _t0;
-}
-
-// SIGNAL 1
 void ItemModel::currentItemDataEdited()const
 {
-    QMetaObject::activate(const_cast< ItemModel *>(this), &staticMetaObject, 1, Q_NULLPTR);
+    QMetaObject::activate(const_cast< ItemModel *>(this), &staticMetaObject, 0, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

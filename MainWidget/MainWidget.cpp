@@ -22,6 +22,7 @@
 #include "TableView/TreeView.h"
 #include "TableView/ItemModel.h"
 #include "TableView/AllItemModel.h"
+#include "TableView/ProjectorDelegate.h"
 
 const QString RADIO_STYLE = R"(
 QRadioButton{spacing:0px;}
@@ -74,7 +75,7 @@ public:
 	Ui::Dialog ui;
 };
 
-const QString TITLE_HEADER = "LightMagic TransCoder V1.0";
+const QString TITLE_HEADER = "LightMagic Projector V1.0";
 const QString StatusBarStyle = R"(
 QStatusBar {
     background-color: rgb(83,83,83);
@@ -115,9 +116,12 @@ MainWidget::MainWidget(const QString& file)
 	m_itemView = new TreeView;
 	m_itemModel = new ItemModel;
 	connect(m_clipper, &Clipper::dataChanged, m_itemModel, &ItemModel::dataChanged);
-	connect(m_itemModel, &ItemModel::currentItemData, m_clipper, &Clipper::currentItemData);
+	connect(m_clipper, &Clipper::setCurrentItemData, m_itemModel, &ItemModel::setCurrentItemData);
+	
+	connect(m_clipper, &Clipper::setCurrentItemData, m_itemView, &TreeView::onSetData);
 	connect(m_itemModel, &ItemModel::currentItemDataEdited, m_clipper, &Clipper::currentItemDataEdited);
 	m_itemView->setModel(m_itemModel);
+	m_itemView->setItemDelegate(new TreeviewDelegate);
 	layout1->addWidget(m_itemView);
 
 	QGroupBox* groupBox2 = new QGroupBox;
@@ -125,7 +129,10 @@ MainWidget::MainWidget(const QString& file)
 	groupBox2->setLayout(layout2);
 	m_globalView = new TreeView;
 	m_globalModel = new AllItemModel;
+	connect(m_clipper, &Clipper::dataChanged, m_globalModel, &AllItemModel::dataChanged);
+	connect(m_globalModel, &AllItemModel::allItemDataEdited, m_clipper, &Clipper::allItemDataEdited);
 	m_globalView->setModel(m_globalModel);
+	m_globalView->setItemDelegate(new AllItemDelegate);
 	layout2->addWidget(m_globalView);
 
 	QSplitter* splitter = new QSplitter(Qt::Horizontal);
@@ -169,21 +176,21 @@ enum ECREATE_FLAG
 };
 const QList<std::tuple<QString, int, QString, QString> > RATIOS = {
 	{"Guides Tool: Image positioning aid", eMove, ":/arror_normal.png" , ":/arror_pressed.png" },
-	{"800x600",e800x600, ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"1024x768",e1024x768, ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"1280x720",e1280x720 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"1280x800",e1280x800 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"1920x1080",e1920x1080 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"1920x1200",e1920x1200 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"2048x1080",e2048x1080 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"3840x2160",e3840x2160 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"3840x2400",e3840x2400 , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{"4096x2160",e4096x2160 , ":/rect_normal.png" , ":/rect_pressed.png" },
+	{"800x600",e800x600, ":/1_normal.png" , ":/1_pressed.png" },
+	{"1024x768",e1024x768, ":/2_normal.png" , ":/2_pressed.png" },
+	{"1280x720",e1280x720 , ":/3_normal.png" , ":/3_pressed.png" },
+	{"1280x800",e1280x800 , ":/4_normal.png" , ":/4_pressed.png" },
+	{"1920x1080",e1920x1080 , ":/5_normal.png" , ":/5_pressed.png" },
+	{"1920x1200",e1920x1200 , ":/6_normal.png" , ":/6_pressed.png" },
+	{"2048x1080",e2048x1080 , ":/7_normal.png" , ":/7_pressed.png" },
+	{"3840x2160",e3840x2160 , ":/8_normal.png" , ":/8_pressed.png" },
+	{"3840x2400",e3840x2400 , ":/9_normal.png" , ":/9_pressed.png" },
+	{"4096x2160",e4096x2160 , ":/10_normal.png" , ":/10_pressed.png" },
 	{"Self Defining", eSelfDef , ":/rect_normal.png" , ":/rect_pressed.png" }};
 
 QList<std::tuple<QString, int, QString, QString> > PUT_STYLES = {
-	{ "Horizontal", Qt::Horizontal , ":/rect_normal.png" , ":/rect_pressed.png" },
-	{ "Vertical" , Qt::Vertical , ":/rect_normal.png" , ":/rect_pressed.png" } };
+	{ "Horizontal", Qt::Horizontal , ":/normal_hor.png" , ":/pressed_hor.png" },
+	{ "Vertical" , Qt::Vertical , ":/normal_ver.png" , ":/pressed_ver.png" } };
 
 const QString TOOLBAR_STYLE = R"(QToolBar{background-color: rgb(83,83,83);}
 QToolTip {
@@ -394,6 +401,7 @@ bool MainWidget::dispatchData()
 	}
 
 	m_clipper->setData(areas);
+	m_globalModel->setDomData(areas);
 
 	return true;
 }

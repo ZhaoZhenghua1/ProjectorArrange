@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Bar_t {
-    QByteArrayData data[19];
-    char stringdata0[176];
+    QByteArrayData data[18];
+    char stringdata0[174];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,26 +35,25 @@ QT_MOC_LITERAL(2, 20, 0), // ""
 QT_MOC_LITERAL(3, 21, 15), // "Qt::Orientation"
 QT_MOC_LITERAL(4, 37, 15), // "valueToPosition"
 QT_MOC_LITERAL(5, 53, 8), // "attached"
-QT_MOC_LITERAL(6, 62, 1), // "o"
-QT_MOC_LITERAL(7, 64, 3), // "pos"
-QT_MOC_LITERAL(8, 68, 13), // "mouseTracking"
-QT_MOC_LITERAL(9, 82, 8), // "location"
-QT_MOC_LITERAL(10, 91, 11), // "setBarValue"
-QT_MOC_LITERAL(11, 103, 6), // "qreal&"
-QT_MOC_LITERAL(12, 110, 9), // "showValue"
-QT_MOC_LITERAL(13, 120, 9), // "hideValue"
-QT_MOC_LITERAL(14, 130, 8), // "limitPos"
-QT_MOC_LITERAL(15, 139, 8), // "Qt::Edge"
-QT_MOC_LITERAL(16, 148, 10), // "removeData"
-QT_MOC_LITERAL(17, 159, 11), // "QDomElement"
-QT_MOC_LITERAL(18, 171, 4) // "data"
+QT_MOC_LITERAL(6, 62, 3), // "pos"
+QT_MOC_LITERAL(7, 66, 13), // "mouseTracking"
+QT_MOC_LITERAL(8, 80, 8), // "location"
+QT_MOC_LITERAL(9, 89, 11), // "setBarValue"
+QT_MOC_LITERAL(10, 101, 6), // "qreal&"
+QT_MOC_LITERAL(11, 108, 9), // "showValue"
+QT_MOC_LITERAL(12, 118, 9), // "hideValue"
+QT_MOC_LITERAL(13, 128, 8), // "limitPos"
+QT_MOC_LITERAL(14, 137, 8), // "Qt::Edge"
+QT_MOC_LITERAL(15, 146, 10), // "removeData"
+QT_MOC_LITERAL(16, 157, 11), // "QDomElement"
+QT_MOC_LITERAL(17, 169, 4) // "data"
 
     },
     "Bar\0positionToValue\0\0Qt::Orientation\0"
-    "valueToPosition\0attached\0o\0pos\0"
-    "mouseTracking\0location\0setBarValue\0"
-    "qreal&\0showValue\0hideValue\0limitPos\0"
-    "Qt::Edge\0removeData\0QDomElement\0data"
+    "valueToPosition\0attached\0pos\0mouseTracking\0"
+    "location\0setBarValue\0qreal&\0showValue\0"
+    "hideValue\0limitPos\0Qt::Edge\0removeData\0"
+    "QDomElement\0data"
 };
 #undef QT_MOC_LITERAL
 
@@ -74,24 +73,24 @@ static const uint qt_meta_data_Bar[] = {
  // signals: name, argc, parameters, tag, flags
        1,    2,   59,    2, 0x06 /* Public */,
        4,    2,   64,    2, 0x06 /* Public */,
-       5,    2,   69,    2, 0x06 /* Public */,
-       8,    1,   74,    2, 0x06 /* Public */,
-      10,    2,   77,    2, 0x06 /* Public */,
-      12,    2,   82,    2, 0x06 /* Public */,
-      13,    0,   87,    2, 0x06 /* Public */,
-      14,    1,   88,    2, 0x06 /* Public */,
-      16,    1,   91,    2, 0x06 /* Public */,
+       5,    1,   69,    2, 0x06 /* Public */,
+       7,    1,   72,    2, 0x06 /* Public */,
+       9,    2,   75,    2, 0x06 /* Public */,
+      11,    2,   80,    2, 0x06 /* Public */,
+      12,    0,   85,    2, 0x06 /* Public */,
+      13,    1,   86,    2, 0x06 /* Public */,
+      15,    1,   89,    2, 0x06 /* Public */,
 
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
-    QMetaType::QLineF, 0x80000000 | 3, QMetaType::QLineF,    6,    7,
-    QMetaType::Void, QMetaType::QPointF,    9,
-    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 11,    2,    2,
+    QMetaType::QLineF, QMetaType::QLineF,    6,
+    QMetaType::Void, QMetaType::QPointF,    8,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 10,    2,    2,
     QMetaType::Void, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::Void,
-    QMetaType::QReal, 0x80000000 | 15,    2,
-    QMetaType::Void, 0x80000000 | 17,   18,
+    QMetaType::QReal, 0x80000000 | 14,    2,
+    QMetaType::Void, 0x80000000 | 16,   17,
 
        0        // eod
 };
@@ -106,7 +105,7 @@ void Bar::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
         case 1: { qreal _r = _t->valueToPosition((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
-        case 2: { QLineF _r = _t->attached((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QLineF(*)>(_a[2])));
+        case 2: { QLineF _r = _t->attached((*reinterpret_cast< const QLineF(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QLineF*>(_a[0]) = _r; }  break;
         case 3: _t->mouseTracking((*reinterpret_cast< const QPointF(*)>(_a[1]))); break;
         case 4: _t->setBarValue((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
@@ -135,7 +134,7 @@ void Bar::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **
             }
         }
         {
-            typedef QLineF (Bar::*_t)(Qt::Orientation , const QLineF & );
+            typedef QLineF (Bar::*_t)(const QLineF & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Bar::attached)) {
                 *result = 2;
                 return;
@@ -241,10 +240,10 @@ qreal Bar::valueToPosition(Qt::Orientation _t1, qreal _t2)
 }
 
 // SIGNAL 2
-QLineF Bar::attached(Qt::Orientation _t1, const QLineF & _t2)
+QLineF Bar::attached(const QLineF & _t1)
 {
     QLineF _t0 = QLineF();
-    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
     return _t0;
 }

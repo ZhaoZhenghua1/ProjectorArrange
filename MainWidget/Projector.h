@@ -22,7 +22,7 @@ public:
 signals:
 	qreal positionToValue(Qt::Orientation, qreal);
 	qreal valueToPosition(Qt::Orientation, qreal);
-	QLineF attached(Qt::Orientation o, const QLineF& pos);
+	QLineF attached(const QLineF& pos);
 	void mouseTracking(const QPointF& location);
 	void setSelectArea(QString &index, QRectF& rect);
 	void showValue(const QRectF& value);
@@ -35,6 +35,7 @@ signals:
 	void dataChanged()const;
 
 	void removeData(const QDomElement& data);
+	void setCurrentItemData(const QDomElement& data);
 	public slots:
 	QDomElement data();
 	private slots:

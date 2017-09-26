@@ -18,6 +18,7 @@ ItemModel::ItemModel()
 
 	m_data = m_engine->newQObject(this, QScriptEngine::QtOwnership, QScriptEngine::ExcludeSuperClassContents);
 	m_engine->globalObject().setProperty("data", m_data);
+
 }
 
 
@@ -31,18 +32,23 @@ void ItemModel::dataChanged()
 	layoutChanged();
 }
 
+void ItemModel::setCurrentItemData(const QDomElement& data)
+{
+	m_domData = data;
+}
+
 QString ItemModel::getValue(const QScriptValue& expression)
 {
 	QStringList path = expression.toString().split('.');
 	path.removeAll("");
-	return ::value(path, currentItemData());
+	return ::value(path, m_domData);
 }
 
 void ItemModel::setValue(const QScriptValue& expression, const QString& value)
 {
 	QStringList path = expression.toString().split('.');
 	path.removeAll("");
-	::setValue(path, value, currentItemData());
+	::setValue(path, value, m_domData);
 }
 
 QVariant ItemModel::data(const QModelIndex &index, int role) const
@@ -73,7 +79,7 @@ QVariant ItemModel::data(const QModelIndex &index, int role) const
 			}
 			else
 			{
-				return value(toPath(node), currentItemData());
+				return value(toPath(node), m_domData);
 			}
 		default:
 			return QVariant();
@@ -126,11 +132,11 @@ bool ItemModel::setData(const QModelIndex &index, const QVariant &val, int role)
 	{
 		DomItem *item = static_cast<DomItem*>(index.internalPointer());
 		QStringList path = toPath(item->node());
-		if (value(path, currentItemData()) == val.toString())
+		if (value(path, m_domData) == val.toString())
 		{
 			return true;
 		}
-		bool ret = ::setValue(path, val.toString(), currentItemData());
+		bool ret = ::setValue(path, val.toString(), m_domData);
 		if (item->node().toElement().attribute("edittype").contains("write;"))
 		{
 			m_engine->evaluate(item->node().toElement().firstChild().nodeValue());

@@ -51,8 +51,10 @@
 #include <QComboBox>
 #include <QPainter>
 #include <QLineEdit>
+#include <QTreeView>
 #include "RotatePropertyWidget.h"
 #include "PositionWidget.h"
+#include "DomItem.h"
 
 const QString EDIT_TYPE_INT = "INT";
 const QString EDIT_TYPE_FLOAT = "FLOAT";
@@ -62,6 +64,7 @@ TreeviewDelegate::TreeviewDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
 }
+
 //! [0]
 
 //! [1]
@@ -147,6 +150,17 @@ QWidget *TreeviewDelegate::createEditor(QWidget *parent,
 		return nullptr;
 	}
 }
+
+void TreeviewDelegate::closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint /* = NoHint */)
+{
+	QStyledItemDelegate::closeEditor(editor, hint);
+}
+
+void TreeviewDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) const
+{
+	QStyledItemDelegate::destroyEditor(editor, index);
+}
+
 //! [1]
 
 //! [2]
@@ -226,11 +240,18 @@ void TreeviewDelegate::updateEditorGeometry(QWidget *editor,
 
 void TreeviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const 
 {
-// 	QRectF rect(option.rect);
-// 	rect.adjust(-rect.left() + 1, 1, 0, -1);
-// 	painter->fillRect(rect, Qt::gray);
 	QStyledItemDelegate::paint(painter, option, index);
-
+	QWidget* parent = const_cast<QWidget*>(option.widget);
+	QTreeView* treeView = qobject_cast<QTreeView*>(parent);
+	if (QWidget* widget = createEditor(treeView->viewport(), option, index))
+	{
+		setEditorData(widget, index);
+		updateEditorGeometry(widget, option, index);
+		QPixmap map = widget->grab();
+		QRect rectMap = option.rect;
+		painter->drawPixmap(rectMap, map, map.rect());
+		widget->deleteLater();
+	}
 }
 
 //实时刷新
@@ -240,3 +261,37 @@ void TreeviewDelegate::onValueChanged()
 }
 
 //! [4]
+
+QWidget * AllItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const 
+{
+	if (!index.isValid())
+		return nullptr;
+
+	//名称和位置 不能编辑
+	if (index.row() == 0 || index.row() == 1)
+	{
+		return nullptr;
+	}
+	
+	return TreeviewDelegate::createEditor(parent, option, index);
+}
+
+void AllItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const 
+{
+	QStyledItemDelegate::paint(painter, option, index);
+	QWidget* parent = const_cast<QWidget*>(option.widget);
+	QTreeView* treeView = qobject_cast<QTreeView*>(parent);
+	if (index.model()->data(index, Qt::EditRole).toString() == "...")
+	{
+		return;
+	}
+	if (QWidget* widget = createEditor(treeView->viewport(), option, index))
+	{
+		setEditorData(widget, index);
+		updateEditorGeometry(widget, option, index);
+		QPixmap map = widget->grab();
+		QRect rectMap = option.rect;
+		painter->drawPixmap(rectMap, map, map.rect());
+		widget->deleteLater();
+	}
+}

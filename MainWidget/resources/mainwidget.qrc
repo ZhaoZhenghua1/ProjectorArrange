@@ -10,5 +10,29 @@
         <file>rotate.png</file>
         <file>projectordesign.xml</file>
         <file>projectorpattern.xml</file>
+        <file>normal_hor.png</file>
+        <file>normal_ver.png</file>
+        <file>pressed_hor.png</file>
+        <file>pressed_ver.png</file>
+        <file>1_normal.png</file>
+        <file>1_pressed.png</file>
+        <file>2_normal.png</file>
+        <file>2_pressed.png</file>
+        <file>3_normal.png</file>
+        <file>3_pressed.png</file>
+        <file>4_normal.png</file>
+        <file>4_pressed.png</file>
+        <file>5_normal.png</file>
+        <file>5_pressed.png</file>
+        <file>6_normal.png</file>
+        <file>6_pressed.png</file>
+        <file>7_normal.png</file>
+        <file>7_pressed.png</file>
+        <file>8_normal.png</file>
+        <file>8_pressed.png</file>
+        <file>9_normal.png</file>
+        <file>9_pressed.png</file>
+        <file>10_normal.png</file>
+        <file>10_pressed.png</file>
     </qresource>
 </RCC>

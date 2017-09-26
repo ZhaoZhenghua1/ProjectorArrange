@@ -19,14 +19,14 @@ public:
 	ItemModel();
 	~ItemModel();
 signals:
-	QDomElement currentItemData() const;
 	void currentItemDataEdited() const;
 public slots:
 	void dataChanged();
+	void setCurrentItemData(const QDomElement& data);
 public slots:
 	QString getValue(const QScriptValue& expression);
 	void setValue(const QScriptValue& expression, const QString& value);
-protected:
+public:
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 	virtual bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
 	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -38,10 +38,13 @@ protected:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 private:
-	DomItem *rootItem = nullptr;
+	DomItem *rootItem = nullptr ;
 	QDomDocument m_domDocConfig;
+	QDomElement m_domData;
 	QScriptValue m_data;
 	QScriptEngine* m_engine = nullptr;
+
+	friend class AllItemModel;
 };
 
 QStringList toPath(const QDomNode& node);

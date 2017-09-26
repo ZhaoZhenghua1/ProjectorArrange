@@ -33,15 +33,17 @@ signals:
 	int ratioValue(Qt::Orientation, qreal);
 	QDomDocument domDocument();
 	void dataChanged()const;
+
+	void setCurrentItemData(const QDomElement& data);
 public slots:
 	void createBar(Qt::Orientation o, const QPointF& scenePos);
-	QLineF attached(Qt::Orientation o, const QLineF& line);
+	QLineF attached(const QLineF& line);
 	void showBarValue(Qt::Orientation, qreal);
 	void hideValue();
 	void removeData(const QDomElement& data);
 	bool isIndexValid(const QString& index);
-	QDomElement currentItemData() const;
 	void currentItemDataEdited() const;
+	void allItemDataEdited()const;
 	bool isMoveMode();
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;

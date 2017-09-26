@@ -38,6 +38,9 @@ void RotatePropertyWidget::setData(const QString& data)
 {
 	QStringList values = data.split(';');
 	m_checkBox->setChecked(values.size() >= 2 ? values[1].toInt() : false);
+	m_spinbox->setValue(values[0].toInt());
+	m_combox->clear();
+	m_combox->addItems({values[0],  "Horizontal", "Vertical" });
 	onStateChanged(m_checkBox->checkState());
 }
 

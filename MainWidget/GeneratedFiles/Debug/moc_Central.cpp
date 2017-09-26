@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Central_t {
-    QByteArrayData data[27];
-    char stringdata0[288];
+    QByteArrayData data[28];
+    char stringdata0[309];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -42,30 +42,32 @@ QT_MOC_LITERAL(9, 88, 10), // "ratioValue"
 QT_MOC_LITERAL(10, 99, 11), // "domDocument"
 QT_MOC_LITERAL(11, 111, 12), // "QDomDocument"
 QT_MOC_LITERAL(12, 124, 11), // "dataChanged"
-QT_MOC_LITERAL(13, 136, 9), // "createBar"
-QT_MOC_LITERAL(14, 146, 8), // "scenePos"
-QT_MOC_LITERAL(15, 155, 8), // "attached"
-QT_MOC_LITERAL(16, 164, 4), // "line"
-QT_MOC_LITERAL(17, 169, 12), // "showBarValue"
-QT_MOC_LITERAL(18, 182, 9), // "hideValue"
-QT_MOC_LITERAL(19, 192, 10), // "removeData"
-QT_MOC_LITERAL(20, 203, 11), // "QDomElement"
-QT_MOC_LITERAL(21, 215, 4), // "data"
-QT_MOC_LITERAL(22, 220, 12), // "isIndexValid"
-QT_MOC_LITERAL(23, 233, 5), // "index"
-QT_MOC_LITERAL(24, 239, 15), // "currentItemData"
-QT_MOC_LITERAL(25, 255, 21), // "currentItemDataEdited"
-QT_MOC_LITERAL(26, 277, 10) // "isMoveMode"
+QT_MOC_LITERAL(13, 136, 18), // "setCurrentItemData"
+QT_MOC_LITERAL(14, 155, 11), // "QDomElement"
+QT_MOC_LITERAL(15, 167, 4), // "data"
+QT_MOC_LITERAL(16, 172, 9), // "createBar"
+QT_MOC_LITERAL(17, 182, 8), // "scenePos"
+QT_MOC_LITERAL(18, 191, 8), // "attached"
+QT_MOC_LITERAL(19, 200, 4), // "line"
+QT_MOC_LITERAL(20, 205, 12), // "showBarValue"
+QT_MOC_LITERAL(21, 218, 9), // "hideValue"
+QT_MOC_LITERAL(22, 228, 10), // "removeData"
+QT_MOC_LITERAL(23, 239, 12), // "isIndexValid"
+QT_MOC_LITERAL(24, 252, 5), // "index"
+QT_MOC_LITERAL(25, 258, 21), // "currentItemDataEdited"
+QT_MOC_LITERAL(26, 280, 17), // "allItemDataEdited"
+QT_MOC_LITERAL(27, 298, 10) // "isMoveMode"
 
     },
     "Central\0valueToPosition\0\0Qt::Orientation\0"
     "o\0value\0positionToValue\0mouseTracking\0"
     "location\0ratioValue\0domDocument\0"
-    "QDomDocument\0dataChanged\0createBar\0"
-    "scenePos\0attached\0line\0showBarValue\0"
-    "hideValue\0removeData\0QDomElement\0data\0"
-    "isIndexValid\0index\0currentItemData\0"
-    "currentItemDataEdited\0isMoveMode"
+    "QDomDocument\0dataChanged\0setCurrentItemData\0"
+    "QDomElement\0data\0createBar\0scenePos\0"
+    "attached\0line\0showBarValue\0hideValue\0"
+    "removeData\0isIndexValid\0index\0"
+    "currentItemDataEdited\0allItemDataEdited\0"
+    "isMoveMode"
 };
 #undef QT_MOC_LITERAL
 
@@ -75,31 +77,32 @@ static const uint qt_meta_data_Central[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      15,   14, // methods
+      16,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       6,       // signalCount
+       7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   89,    2, 0x06 /* Public */,
-       6,    2,   94,    2, 0x06 /* Public */,
-       7,    1,   99,    2, 0x06 /* Public */,
-       9,    2,  102,    2, 0x06 /* Public */,
-      10,    0,  107,    2, 0x06 /* Public */,
-      12,    0,  108,    2, 0x06 /* Public */,
+       1,    2,   94,    2, 0x06 /* Public */,
+       6,    2,   99,    2, 0x06 /* Public */,
+       7,    1,  104,    2, 0x06 /* Public */,
+       9,    2,  107,    2, 0x06 /* Public */,
+      10,    0,  112,    2, 0x06 /* Public */,
+      12,    0,  113,    2, 0x06 /* Public */,
+      13,    1,  114,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      13,    2,  109,    2, 0x0a /* Public */,
-      15,    2,  114,    2, 0x0a /* Public */,
-      17,    2,  119,    2, 0x0a /* Public */,
-      18,    0,  124,    2, 0x0a /* Public */,
-      19,    1,  125,    2, 0x0a /* Public */,
-      22,    1,  128,    2, 0x0a /* Public */,
-      24,    0,  131,    2, 0x0a /* Public */,
-      25,    0,  132,    2, 0x0a /* Public */,
-      26,    0,  133,    2, 0x0a /* Public */,
+      16,    2,  117,    2, 0x0a /* Public */,
+      18,    1,  122,    2, 0x0a /* Public */,
+      20,    2,  125,    2, 0x0a /* Public */,
+      21,    0,  130,    2, 0x0a /* Public */,
+      22,    1,  131,    2, 0x0a /* Public */,
+      23,    1,  134,    2, 0x0a /* Public */,
+      25,    0,  137,    2, 0x0a /* Public */,
+      26,    0,  138,    2, 0x0a /* Public */,
+      27,    0,  139,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    4,    5,
@@ -108,15 +111,16 @@ static const uint qt_meta_data_Central[] = {
     QMetaType::Int, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     0x80000000 | 11,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 14,   15,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 3, QMetaType::QPointF,    4,   14,
-    QMetaType::QLineF, 0x80000000 | 3, QMetaType::QLineF,    4,   16,
+    QMetaType::Void, 0x80000000 | 3, QMetaType::QPointF,    4,   17,
+    QMetaType::QLineF, QMetaType::QLineF,   19,
     QMetaType::Void, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 20,   21,
-    QMetaType::Bool, QMetaType::QString,   23,
-    0x80000000 | 20,
+    QMetaType::Void, 0x80000000 | 14,   15,
+    QMetaType::Bool, QMetaType::QString,   24,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Bool,
 
@@ -139,18 +143,18 @@ void Central::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 4: { QDomDocument _r = _t->domDocument();
             if (_a[0]) *reinterpret_cast< QDomDocument*>(_a[0]) = _r; }  break;
         case 5: _t->dataChanged(); break;
-        case 6: _t->createBar((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QPointF(*)>(_a[2]))); break;
-        case 7: { QLineF _r = _t->attached((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QLineF(*)>(_a[2])));
+        case 6: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
+        case 7: _t->createBar((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QPointF(*)>(_a[2]))); break;
+        case 8: { QLineF _r = _t->attached((*reinterpret_cast< const QLineF(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QLineF*>(_a[0]) = _r; }  break;
-        case 8: _t->showBarValue((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
-        case 9: _t->hideValue(); break;
-        case 10: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
-        case 11: { bool _r = _t->isIndexValid((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 9: _t->showBarValue((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
+        case 10: _t->hideValue(); break;
+        case 11: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
+        case 12: { bool _r = _t->isIndexValid((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 12: { QDomElement _r = _t->currentItemData();
-            if (_a[0]) *reinterpret_cast< QDomElement*>(_a[0]) = _r; }  break;
         case 13: _t->currentItemDataEdited(); break;
-        case 14: { bool _r = _t->isMoveMode();
+        case 14: _t->allItemDataEdited(); break;
+        case 15: { bool _r = _t->isMoveMode();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         default: ;
         }
@@ -199,6 +203,13 @@ void Central::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
                 return;
             }
         }
+        {
+            typedef void (Central::*_t)(const QDomElement & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Central::setCurrentItemData)) {
+                *result = 6;
+                return;
+            }
+        }
     }
 }
 
@@ -227,13 +238,13 @@ int Central::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 16;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 16)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 15;
+        _id -= 16;
     }
     return _id;
 }
@@ -285,5 +296,12 @@ QDomDocument Central::domDocument()
 void Central::dataChanged()const
 {
     QMetaObject::activate(const_cast< Central *>(this), &staticMetaObject, 5, Q_NULLPTR);
+}
+
+// SIGNAL 6
+void Central::setCurrentItemData(const QDomElement & _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 QT_END_MOC_NAMESPACE

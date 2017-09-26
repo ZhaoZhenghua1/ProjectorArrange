@@ -9,7 +9,8 @@
 RotateItem::RotateItem(QGraphicsItem* parent):Base(parent)
 {
 	setPen(Qt::NoPen);
-	setRect(parent->boundingRect());
+	QRectF parRect(parent->boundingRect());
+	setRect(parRect.adjusted(parRect.width() / 4, parRect.height() / 4, -parRect.width() / 4, -parRect.height() / 4));
 }
 
 
@@ -33,7 +34,7 @@ void RotateItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	QPointF center = boundingRect().center();
 	qreal angleOld = pointAngle(event->lastPos() - center);
 	qreal angleNew = pointAngle(event->pos() - center);
-	qreal angle = (angleNew - angleOld) * 180 / 3.141593;
+	qreal angle = (angleNew - angleOld) * 180 / M_PI;
 	emit rotate(angle);
 	return Base::mouseMoveEvent(event);
 }

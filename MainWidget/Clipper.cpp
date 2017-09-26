@@ -52,8 +52,9 @@ Clipper::Clipper(QWidget *parent)
 	connect(m_rootWidget, SIGNAL(selectionAreaCreated(Projector*)), this, SIGNAL(selectionAreaCreated(Projector*)));
 	connect(this, &Clipper::isIndexValid, m_rootWidget->central(), &Central::isIndexValid);
 	connect(m_rootWidget->central(), &Central::dataChanged, this, &Clipper::dataChanged);
-	connect(this, &Clipper::currentItemData, m_rootWidget->central(), &Central::currentItemData);
+	connect(m_rootWidget->central(), &Central::setCurrentItemData, this, &Clipper::setCurrentItemData);
 	connect(this, &Clipper::currentItemDataEdited, m_rootWidget->central(), &Central::currentItemDataEdited);
+	connect(this, &Clipper::allItemDataEdited, m_rootWidget->central(), &Central::allItemDataEdited);
 
 	scene->addItem(m_rootWidget);
 // 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -65,6 +66,8 @@ Clipper::Clipper(QWidget *parent)
 	setAutoFillBackground(false);
 
 	setStyleSheet("color:rgb(255,255,255)");
+
+	//setRenderHint(QPainter::Antialiasing, true);
 }
 
 Clipper::~Clipper()
@@ -443,5 +446,5 @@ int RootWidget::ratioValue(Qt::Orientation o, qreal value)
 
 void RootWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * /* = Q_NULLPTR */)
 {
-	painter->fillRect(rect(),Qt::red); //QColor(35, 35, 35));
+	painter->fillRect(rect(),QColor(35, 35, 35));
 }

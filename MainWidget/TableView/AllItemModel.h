@@ -1,12 +1,23 @@
 #pragma once
 #include <QAbstractItemModel>
 #include <QDomElement>
+#include "ItemModel.h"
 
 class AllItemModel : public QAbstractItemModel
 {
+	Q_OBJECT
 public:
 	AllItemModel();
 	~AllItemModel();
+
+	void setDomData(const QDomElement& data);
+signals:
+	void allItemDataEdited() const;
+public slots:
+	void dataChanged();
+	public slots:
+	QString getValue(const QScriptValue& expression);
+	void setValue(const QScriptValue& expression, const QString& value);
 protected:
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 	virtual bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
@@ -19,6 +30,11 @@ protected:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 private:
-	QDomElement m_data;
+	DomItem *rootItem = nullptr;
+	QDomDocument m_domDocConfig;
+	QDomElement m_domData;
+	QDomElement m_currentData;
+	QScriptValue m_data;
+	QScriptEngine* m_engine = nullptr;
 };
 

@@ -8,6 +8,7 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsLinearLayout>
 #include <QTimer>
+#include <QtMath>
 #include "Projector.h"
 
 const int LINEWIDTH = 1;
@@ -76,22 +77,29 @@ void Central::setPixmap(const QPixmap& pixmap)
 void Central::setData(const QDomElement& data)
 {
 	m_data = data;
-	for (QGraphicsItem* item : childItems()){
-		//delete item;
+	for (QGraphicsItem* item : childItems()) {
+		if (Bar* bar = dynamic_cast<Bar*>(item))
+			delete bar;
+		else if (Projector* area = dynamic_cast<Projector*>(item))
+			delete area;
 	}
 
-	for (QDomElement elem = data.firstChildElement("bar"); !elem.isNull(); elem = elem.nextSiblingElement("bar"))
+	for (QDomElement elem = data.firstChildElement("projector"); !elem.isNull(); elem = elem.nextSiblingElement("projector"))
 	{
-		Bar* bar = new Bar(Qt::Horizontal, this);
-		bar->setData(elem);
-		connect(bar, &Bar::removeData, this, &Central::removeData);
-		connect(bar, &Bar::valueToPosition, this, &Central::valueToPosition);
-		connect(bar, &Bar::positionToValue, this, &Central::positionToValue);
-		connect(bar, &Bar::attached, this, &Central::attached);
-		connect(bar, &Bar::mouseTracking, this, &Central::mouseTracking);
-		connect(bar, &Bar::showValue, this, &Central::showBarValue);
-		connect(bar, &Bar::hideValue, this, &Central::hideValue);
-		bar->updatePosition();
+		Projector* proj = new Projector(this);
+		connect(proj, &Projector::removeData, this, &Central::removeData);
+		connect(proj, &Projector::isMoveMode, this, &Central::isMoveMode);
+		connect(proj, &Projector::valueToPosition, this, &Central::valueToPosition);
+		connect(proj, &Projector::positionToValue, this, &Central::positionToValue);
+		connect(proj, &Projector::attached, this, &Central::attached);
+		connect(proj, &Projector::mouseTracking, this, &Central::mouseTracking);
+		connect(proj, &Projector::hideValue, this, &Central::hideValue);
+		connect(proj, &Projector::dataChanged, this, &Central::dataChanged);
+		connect(proj, &Projector::setCurrentItemData, this, &Central::setCurrentItemData);
+
+		proj->setData(elem);
+		
+		proj->updatePosition();
 	}
 }
 
@@ -187,6 +195,7 @@ Projector* Central::createProjector(const QPointF& pos)
 	connect(proj, &Projector::mouseTracking, this, &Central::mouseTracking);
 	connect(proj, &Projector::hideValue, this, &Central::hideValue);
 	connect(proj, &Projector::dataChanged, this, &Central::dataChanged);
+	connect(proj, &Projector::setCurrentItemData, this, &Central::setCurrentItemData);
 
 	return proj;
 }
@@ -210,10 +219,54 @@ QDomElement Central::createProjectorNode()
 	return proElement;
 }
 
-QLineF Central::attached(Qt::Orientation o, const QLineF& line)
+// 计算两平行直线间的距离
+// qreal distance(const QLineF& l, const QLineF& r)
+// {
+// 	if (qAbs(l.angleTo(r)) < 0.00001)
+// 	{
+// 		if (qAbs(l.angle() - 90) < 0.00001)
+// 		{
+// 			return qAbs(r.x1() - l.x1());
+// 		}
+// 		qreal k = qTan(qDegreesToRadians(l.angle()));
+// 		qreal b1 = l.y1() - k*l.x1();
+// 		qreal b2 = r.y1() - k*r.x1();
+// 		return qAbs(b2 - b1) / qSqrt(1 + k*k);
+// 	}
+// 	return INT_MAX;
+// }
+// 
+// from直线投影到to上，得到投影直线
+// QLineF projectorTo(const QLineF& from, const QLineF& to)
+// {
+// 	if (qAbs(from.angleTo(to)) < 0.00001)
+// 	{
+// 		if (qAbs(from.angle() - 90) < 0.00001)
+// 		{
+// 			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
+// 		}
+// 		else if (qAbs(from.angle()) < 0.00001)
+// 		{
+// 			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
+// 		}
+// 		else
+// 		{
+// 			qreal k = qTan(qDegreesToRadians(from.angle()));
+// 			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
+// 			qreal y1 = k*(x1 - to.x1()) + to.y1();
+// 
+// 			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
+// 			qreal y2 = k*(x1 - to.x2()) + to.y2();
+// 			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
+// 		}
+// 	}
+// 	return from;
+// }
+
+QLineF Central::attached(const QLineF& line)
 {
 	//attach to border
-// 	if ((o == Qt::Horizontal))
+// 	if (qAbs(line.dx()) < 0.00001)
 // 	{
 // 		qreal topValue = m_centralMapItem->geometry().top();
 // 		qreal bottomValue = m_centralMapItem->geometry().bottom();
@@ -326,17 +379,17 @@ bool Central::isIndexValid(const QString& index)
 	return true;
 }
 
-QDomElement Central::currentItemData() const
-{
-	if (QGraphicsItem* focusItem = this->focusItem())
-	{
-		if (Projector* sa = qgraphicsitem_cast<Projector*>(focusItem))
-		{
-			return sa->data();
-		}
-	}
-	return QDomElement();
-}
+// QDomElement Central::setCurrentItemData() const
+// {
+// 	if (QGraphicsItem* focusItem = this->focusItem())
+// 	{
+// 		if (Projector* sa = qgraphicsitem_cast<Projector*>(focusItem))
+// 		{
+// 			return sa->data();
+// 		}
+// 	}
+// 	return QDomElement();
+// }
 
 void Central::currentItemDataEdited() const
 {
@@ -345,6 +398,18 @@ void Central::currentItemDataEdited() const
 		if (Projector* sa = qgraphicsitem_cast<Projector*>(focusItem))
 		{
 			return sa->updatePosition();
+		}
+	}
+}
+
+void Central::allItemDataEdited()const
+{
+	QList<QGraphicsItem*> items = childItems();
+	for (QGraphicsItem* item : items)
+	{
+		if (Projector* sa = qgraphicsitem_cast<Projector*>(item))
+		{
+			sa->updatePosition();
 		}
 	}
 }
@@ -361,6 +426,7 @@ void Central::removeData(const QDomElement& data)
 
 void Central::createBar(Qt::Orientation o, const QPointF& scenePos)
 {
+	return;
 	Bar* bar = new Bar(o, this);
 	connect(bar, &Bar::removeData, this, &Central::removeData);
 	QDomElement barElement = domDocument().createElement("bar");
@@ -385,7 +451,7 @@ void Central::createBar(Qt::Orientation o, const QPointF& scenePos)
 
 void Central::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * /* = Q_NULLPTR */)
 {
-	painter->fillRect(rect(), Qt::black);//QColor(35, 35, 35)
+	painter->fillRect(rect(), QColor(48, 48, 48));
 }
 
 void Central::mousePressEvent(QGraphicsSceneMouseEvent *event)

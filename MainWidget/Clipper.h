@@ -60,8 +60,9 @@ signals:
 
 	QDomDocument domDocument();
 
-	QDomElement currentItemData() const;
+	void setCurrentItemData(const QDomElement&);
 	void currentItemDataEdited() const;
+	void allItemDataEdited()const;
 	void dataChanged()const;
 public slots:
 	QSize ratio();

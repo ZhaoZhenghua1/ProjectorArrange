@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Projector_t {
     QByteArrayData data[27];
-    char stringdata0[249];
+    char stringdata0[266];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,36 +35,36 @@ QT_MOC_LITERAL(2, 26, 0), // ""
 QT_MOC_LITERAL(3, 27, 15), // "Qt::Orientation"
 QT_MOC_LITERAL(4, 43, 15), // "valueToPosition"
 QT_MOC_LITERAL(5, 59, 8), // "attached"
-QT_MOC_LITERAL(6, 68, 1), // "o"
-QT_MOC_LITERAL(7, 70, 3), // "pos"
-QT_MOC_LITERAL(8, 74, 13), // "mouseTracking"
-QT_MOC_LITERAL(9, 88, 8), // "location"
-QT_MOC_LITERAL(10, 97, 13), // "setSelectArea"
-QT_MOC_LITERAL(11, 111, 8), // "QString&"
-QT_MOC_LITERAL(12, 120, 5), // "index"
-QT_MOC_LITERAL(13, 126, 7), // "QRectF&"
-QT_MOC_LITERAL(14, 134, 4), // "rect"
-QT_MOC_LITERAL(15, 139, 9), // "showValue"
-QT_MOC_LITERAL(16, 149, 5), // "value"
-QT_MOC_LITERAL(17, 155, 9), // "hideValue"
-QT_MOC_LITERAL(18, 165, 8), // "limitPos"
-QT_MOC_LITERAL(19, 174, 8), // "Qt::Edge"
-QT_MOC_LITERAL(20, 183, 10), // "isMoveMode"
-QT_MOC_LITERAL(21, 194, 11), // "dataChanged"
-QT_MOC_LITERAL(22, 206, 10), // "removeData"
-QT_MOC_LITERAL(23, 217, 11), // "QDomElement"
-QT_MOC_LITERAL(24, 229, 4), // "data"
-QT_MOC_LITERAL(25, 234, 8), // "onRotate"
-QT_MOC_LITERAL(26, 243, 5) // "angle"
+QT_MOC_LITERAL(6, 68, 3), // "pos"
+QT_MOC_LITERAL(7, 72, 13), // "mouseTracking"
+QT_MOC_LITERAL(8, 86, 8), // "location"
+QT_MOC_LITERAL(9, 95, 13), // "setSelectArea"
+QT_MOC_LITERAL(10, 109, 8), // "QString&"
+QT_MOC_LITERAL(11, 118, 5), // "index"
+QT_MOC_LITERAL(12, 124, 7), // "QRectF&"
+QT_MOC_LITERAL(13, 132, 4), // "rect"
+QT_MOC_LITERAL(14, 137, 9), // "showValue"
+QT_MOC_LITERAL(15, 147, 5), // "value"
+QT_MOC_LITERAL(16, 153, 9), // "hideValue"
+QT_MOC_LITERAL(17, 163, 8), // "limitPos"
+QT_MOC_LITERAL(18, 172, 8), // "Qt::Edge"
+QT_MOC_LITERAL(19, 181, 10), // "isMoveMode"
+QT_MOC_LITERAL(20, 192, 11), // "dataChanged"
+QT_MOC_LITERAL(21, 204, 10), // "removeData"
+QT_MOC_LITERAL(22, 215, 11), // "QDomElement"
+QT_MOC_LITERAL(23, 227, 4), // "data"
+QT_MOC_LITERAL(24, 232, 18), // "setCurrentItemData"
+QT_MOC_LITERAL(25, 251, 8), // "onRotate"
+QT_MOC_LITERAL(26, 260, 5) // "angle"
 
     },
     "Projector\0positionToValue\0\0Qt::Orientation\0"
-    "valueToPosition\0attached\0o\0pos\0"
-    "mouseTracking\0location\0setSelectArea\0"
-    "QString&\0index\0QRectF&\0rect\0showValue\0"
-    "value\0hideValue\0limitPos\0Qt::Edge\0"
-    "isMoveMode\0dataChanged\0removeData\0"
-    "QDomElement\0data\0onRotate\0angle"
+    "valueToPosition\0attached\0pos\0mouseTracking\0"
+    "location\0setSelectArea\0QString&\0index\0"
+    "QRectF&\0rect\0showValue\0value\0hideValue\0"
+    "limitPos\0Qt::Edge\0isMoveMode\0dataChanged\0"
+    "removeData\0QDomElement\0data\0"
+    "setCurrentItemData\0onRotate\0angle"
 };
 #undef QT_MOC_LITERAL
 
@@ -74,45 +74,47 @@ static const uint qt_meta_data_Projector[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      14,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-      11,       // signalCount
+      12,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   79,    2, 0x06 /* Public */,
-       4,    2,   84,    2, 0x06 /* Public */,
-       5,    2,   89,    2, 0x06 /* Public */,
-       8,    1,   94,    2, 0x06 /* Public */,
-      10,    2,   97,    2, 0x06 /* Public */,
-      15,    1,  102,    2, 0x06 /* Public */,
-      17,    0,  105,    2, 0x06 /* Public */,
-      18,    1,  106,    2, 0x06 /* Public */,
-      20,    0,  109,    2, 0x06 /* Public */,
-      21,    0,  110,    2, 0x06 /* Public */,
-      22,    1,  111,    2, 0x06 /* Public */,
+       1,    2,   84,    2, 0x06 /* Public */,
+       4,    2,   89,    2, 0x06 /* Public */,
+       5,    1,   94,    2, 0x06 /* Public */,
+       7,    1,   97,    2, 0x06 /* Public */,
+       9,    2,  100,    2, 0x06 /* Public */,
+      14,    1,  105,    2, 0x06 /* Public */,
+      16,    0,  108,    2, 0x06 /* Public */,
+      17,    1,  109,    2, 0x06 /* Public */,
+      19,    0,  112,    2, 0x06 /* Public */,
+      20,    0,  113,    2, 0x06 /* Public */,
+      21,    1,  114,    2, 0x06 /* Public */,
+      24,    1,  117,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      24,    0,  114,    2, 0x0a /* Public */,
-      25,    1,  115,    2, 0x08 /* Private */,
+      23,    0,  120,    2, 0x0a /* Public */,
+      25,    1,  121,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
-    QMetaType::QLineF, 0x80000000 | 3, QMetaType::QLineF,    6,    7,
-    QMetaType::Void, QMetaType::QPointF,    9,
-    QMetaType::Void, 0x80000000 | 11, 0x80000000 | 13,   12,   14,
-    QMetaType::Void, QMetaType::QRectF,   16,
+    QMetaType::QLineF, QMetaType::QLineF,    6,
+    QMetaType::Void, QMetaType::QPointF,    8,
+    QMetaType::Void, 0x80000000 | 10, 0x80000000 | 12,   11,   13,
+    QMetaType::Void, QMetaType::QRectF,   15,
     QMetaType::Void,
-    QMetaType::QReal, 0x80000000 | 19,    2,
+    QMetaType::QReal, 0x80000000 | 18,    2,
     QMetaType::Bool,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 23,   24,
+    QMetaType::Void, 0x80000000 | 22,   23,
+    QMetaType::Void, 0x80000000 | 22,   23,
 
  // slots: parameters
-    0x80000000 | 23,
+    0x80000000 | 22,
     QMetaType::Void, QMetaType::QReal,   26,
 
        0        // eod
@@ -128,7 +130,7 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
         case 1: { qreal _r = _t->valueToPosition((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
-        case 2: { QLineF _r = _t->attached((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QLineF(*)>(_a[2])));
+        case 2: { QLineF _r = _t->attached((*reinterpret_cast< const QLineF(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QLineF*>(_a[0]) = _r; }  break;
         case 3: _t->mouseTracking((*reinterpret_cast< const QPointF(*)>(_a[1]))); break;
         case 4: _t->setSelectArea((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2]))); break;
@@ -140,9 +142,10 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
         case 9: _t->dataChanged(); break;
         case 10: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
-        case 11: { QDomElement _r = _t->data();
+        case 11: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
+        case 12: { QDomElement _r = _t->data();
             if (_a[0]) *reinterpret_cast< QDomElement*>(_a[0]) = _r; }  break;
-        case 12: _t->onRotate((*reinterpret_cast< qreal(*)>(_a[1]))); break;
+        case 13: _t->onRotate((*reinterpret_cast< qreal(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -163,7 +166,7 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             }
         }
         {
-            typedef QLineF (Projector::*_t)(Qt::Orientation , const QLineF & );
+            typedef QLineF (Projector::*_t)(const QLineF & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::attached)) {
                 *result = 2;
                 return;
@@ -225,6 +228,13 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
                 return;
             }
         }
+        {
+            typedef void (Projector::*_t)(const QDomElement & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::setCurrentItemData)) {
+                *result = 11;
+                return;
+            }
+        }
     }
 }
 
@@ -255,13 +265,13 @@ int Projector::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 14)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 14;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 14)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 13;
+        _id -= 14;
     }
     return _id;
 }
@@ -285,10 +295,10 @@ qreal Projector::valueToPosition(Qt::Orientation _t1, qreal _t2)
 }
 
 // SIGNAL 2
-QLineF Projector::attached(Qt::Orientation _t1, const QLineF & _t2)
+QLineF Projector::attached(const QLineF & _t1)
 {
     QLineF _t0 = QLineF();
-    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
     return _t0;
 }
@@ -349,5 +359,12 @@ void Projector::removeData(const QDomElement & _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 10, _a);
+}
+
+// SIGNAL 11
+void Projector::setCurrentItemData(const QDomElement & _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 11, _a);
 }
 QT_END_MOC_NAMESPACE
