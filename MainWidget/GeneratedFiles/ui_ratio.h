@@ -98,8 +98,8 @@ public:
 
     void retranslateUi(QDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Resolution Setting", 0));
-        label->setText(QApplication::translate("Dialog", "Resolution:", 0));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", "Screen Size Setting", 0));
+        label->setText(QApplication::translate("Dialog", "Screen Size:", 0));
         label_2->setText(QApplication::translate("Dialog", "x", 0));
     } // retranslateUi
 

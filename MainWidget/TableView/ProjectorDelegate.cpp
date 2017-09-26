@@ -106,8 +106,8 @@ QWidget *TreeviewDelegate::createEditor(QWidget *parent,
 		QStringList range = editRange.split('~');
 		if (!range.empty())
 		{
-			editor->setMinimum(range.first().toInt());
-			editor->setMaximum(range.last().toInt());
+			editor->setMinimum(range.first().toDouble());
+			editor->setMaximum(range.last().toDouble());
 		}
 		editor->setFont(index.model()->data(index, Qt::FontRole).value<QFont>());
 		return editor;

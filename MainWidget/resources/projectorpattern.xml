@@ -21,7 +21,7 @@
     height = strs[1];
     data.setValue('projector.projectionwidth', Math.round(projectionheight/height*width));
   </projectionheight>
-  <projectorratio name="镜头投射比 "  des="投影机镜头投射比参数，可在投影机参数中查阅。正常情况下，镜头参数有5%的误差，所以输入此参数前请在标称值上加0.05，例如标称1.2，则您可以输入1.25" range="0~100" edittype="float;"/>
+  <projectorratio name="镜头投射比 "  des="投影机镜头投射比参数，可在投影机参数中查阅。正常情况下，镜头参数有5%的误差，所以输入此参数前请在标称值上加0.05，例如标称1.2，则您可以输入1.25" range="0.1~30" edittype="float;"/>
   <prodis name="安装距离" des="投影机到幕的最佳距离" edittype="read;">
     data.getValue('projector.projectionwidth')*data.getValue('projector.projectorratio');
   </prodis>

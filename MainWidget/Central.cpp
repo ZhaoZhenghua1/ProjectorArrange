@@ -210,6 +210,9 @@ QDomElement Central::createProjectorNode()
 		proElement.appendChild(nodeElement);
 		nodeElement.appendChild(domDocument().createTextNode(""));
 	}
+
+	proElement.firstChildElement("projectorratio").firstChild().setNodeValue("1.5");
+	proElement.firstChildElement("liangdu").firstChild().setNodeValue("5000");
 	proElement.firstChildElement("rotate").firstChild().setNodeValue(QString("%1").arg(m_projectorRotate));
 	proElement.firstChildElement("fenbianlv").firstChild().setNodeValue(QString("%1x%2").arg(m_projectorRatio.width()).arg(m_projectorRatio.height()));
 	double onePixWidth = 4000 / 1920.0;

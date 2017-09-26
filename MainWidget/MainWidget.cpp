@@ -124,26 +124,26 @@ MainWidget::MainWidget(const QString& file)
 	m_itemView->setItemDelegate(new TreeviewDelegate);
 	layout1->addWidget(m_itemView);
 
-	QGroupBox* groupBox2 = new QGroupBox;
-	QHBoxLayout* layout2 = new QHBoxLayout;
-	groupBox2->setLayout(layout2);
-	m_globalView = new TreeView;
-	m_globalModel = new AllItemModel;
-	connect(m_clipper, &Clipper::dataChanged, m_globalModel, &AllItemModel::dataChanged);
-	connect(m_globalModel, &AllItemModel::allItemDataEdited, m_clipper, &Clipper::allItemDataEdited);
-	m_globalView->setModel(m_globalModel);
-	m_globalView->setItemDelegate(new AllItemDelegate);
-	layout2->addWidget(m_globalView);
+// 	QGroupBox* groupBox2 = new QGroupBox;
+// 	QHBoxLayout* layout2 = new QHBoxLayout;
+// 	groupBox2->setLayout(layout2);
+// 	m_globalView = new TreeView;
+// 	m_globalModel = new AllItemModel;
+// 	connect(m_clipper, &Clipper::dataChanged, m_globalModel, &AllItemModel::dataChanged);
+// 	connect(m_globalModel, &AllItemModel::allItemDataEdited, m_clipper, &Clipper::allItemDataEdited);
+// 	m_globalView->setModel(m_globalModel);
+// 	m_globalView->setItemDelegate(new AllItemDelegate);
+// 	layout2->addWidget(m_globalView);
 
 	QSplitter* splitter = new QSplitter(Qt::Horizontal);
 	splitter->setStyleSheet("QSplitter{background-color: rgb(83, 83, 83);}");
 	
 	splitter->addWidget(groupBox1);
 	splitter->addWidget(m_clipper);
-	splitter->addWidget(groupBox2);
+//	splitter->addWidget(groupBox2);
 	
 	splitter->handle(1)->setStyleSheet("background-color: rgb(22, 22, 22);");
-	splitter->handle(2)->setStyleSheet("background-color: rgb(22, 22, 22);");
+//	splitter->handle(2)->setStyleSheet("background-color: rgb(22, 22, 22);");
 	setCentralWidget(splitter);
 
 	setStyleSheet(R"(background-color: rgb(83, 83, 83);color:rgb(255,255,255);)");
@@ -342,7 +342,7 @@ QMenuBar::item:pressed {
 	QMenu* settingMenu = new QMenu(tr("Settings"));
 	settingMenu->setStyleSheet(MENU_STYLE);
 	menuBar()->addMenu(settingMenu);
-	QAction* pARatio = settingMenu->addAction(tr("Resolution"));
+	QAction* pARatio = settingMenu->addAction(tr("Screen Size"));
 	connect(pARatio, &QAction::triggered, this, &MainWidget::onSetRatio);
 	QAction* pAPixmap = settingMenu->addAction(tr("Image"));
 	connect(pAPixmap, &QAction::triggered, this, &MainWidget::onSetPixmap);
@@ -401,7 +401,7 @@ bool MainWidget::dispatchData()
 	}
 
 	m_clipper->setData(areas);
-	m_globalModel->setDomData(areas);
+//	m_globalModel->setDomData(areas);
 
 	return true;
 }
