@@ -26,9 +26,10 @@
 
 const QString RADIO_STYLE = R"(
 QRadioButton{spacing:0px;}
-QRadioButton::indicator{width:31px;height:24px;}
+QRadioButton::indicator{width:50px;height:40px;}
 QRadioButton::indicator::unchecked{image:url(%1);}
-QRadioButton::indicator::checked{image:url(%2);}
+QRadioButton::indicator::unchecked:hover{image:url(%2);}
+QRadioButton::indicator::checked{image:url(%3);}
 )";
 
 const QString MENU_STYLE = R"(
@@ -57,9 +58,6 @@ public:
 	AboutDialog(QWidget* parent = nullptr) :QDialog(parent)
 	{
 		ui.setupUi(this);
-		connect(ui.labelUrl, &QLabel::linkActivated, [](const QString& url) {
-			QDesktopServices::openUrl(QUrl(url));
-		});
 	}
 	Ui::AboutDialog ui;
 
@@ -109,6 +107,7 @@ MainWidget::MainWidget(const QString& file)
 
 	connect(this, &MainWidget::zoomIn, m_clipper, &Clipper::zoomIn);
 	connect(this, &MainWidget::zoomOut, m_clipper, &Clipper::zoomOut);
+	connect(this, &MainWidget::setSnap, m_clipper, &Clipper::setSnap);
 
 	QGroupBox* groupBox1 = new QGroupBox;
 	QHBoxLayout* layout1 = new QHBoxLayout;
@@ -171,26 +170,28 @@ enum ECREATE_FLAG
 	e3840x2160,
 	e3840x2400,
 	e4096x2160,
-	eSelfDef
-
+	eSelfDef,
+	eTape,
 };
-const QList<std::tuple<QString, int, QString, QString> > RATIOS = {
-	{"Guides Tool: Image positioning aid", eMove, ":/arror_normal.png" , ":/arror_pressed.png" },
-	{"800x600",e800x600, ":/1_normal.png" , ":/1_pressed.png" },
-	{"1024x768",e1024x768, ":/2_normal.png" , ":/2_pressed.png" },
-	{"1280x720",e1280x720 , ":/3_normal.png" , ":/3_pressed.png" },
-	{"1280x800",e1280x800 , ":/4_normal.png" , ":/4_pressed.png" },
-	{"1920x1080",e1920x1080 , ":/5_normal.png" , ":/5_pressed.png" },
-	{"1920x1200",e1920x1200 , ":/6_normal.png" , ":/6_pressed.png" },
-	{"2048x1080",e2048x1080 , ":/7_normal.png" , ":/7_pressed.png" },
-	{"3840x2160",e3840x2160 , ":/8_normal.png" , ":/8_pressed.png" },
-	{"3840x2400",e3840x2400 , ":/9_normal.png" , ":/9_pressed.png" },
-	{"4096x2160",e4096x2160 , ":/10_normal.png" , ":/10_pressed.png" },
-	{"Self Defining", eSelfDef , ":/rect_normal.png" , ":/rect_pressed.png" }};
 
-QList<std::tuple<QString, int, QString, QString> > PUT_STYLES = {
-	{ "Horizontal", Qt::Horizontal , ":/normal_hor.png" , ":/pressed_hor.png" },
-	{ "Vertical" , Qt::Vertical , ":/normal_ver.png" , ":/pressed_ver.png" } };
+const QList<std::tuple<QString, int, QString, QString, QString> > RATIOS = {
+	{"Guides Tool: Image positioning aid", eMove, ":/arror_normal.png", ":/arror_hover.png" , ":/arror_pressed.png" },
+	{"800x600",e800x600, ":/800x600_normal.png" , ":/800x600_hover.png" , ":/800x600_pressed.png" },
+	{"1024x768",e1024x768, ":/1024x768_normal.png" , ":/1024x768_hover.png" , ":/1024x768_pressed.png" },
+	{"1280x720",e1280x720 , ":/1280x720_normal.png" , ":/1280x720_hover.png" , ":/1280x720_pressed.png" },
+	{"1280x800",e1280x800 , ":/1280x800_normal.png" , ":/1280x800_hover.png" , ":/1280x800_pressed.png" },
+	{"1920x1080",e1920x1080 , ":/1920x1080_normal.png" , ":/1920x1080_hover.png" , ":/1920x1080_pressed.png" },
+	{"1920x1200",e1920x1200 , ":/1920x1200_normal.png" , ":/1920x1200_hover.png" , ":/1920x1200_pressed.png" },
+	{"2048x1080",e2048x1080 , ":/2048x1080_normal.png" , ":/2048x1080_hover.png" , ":/2048x1080_pressed.png" },
+	{"3840x2160",e3840x2160 , ":/3840x2160_normal.png" , ":/3840x2160_hover.png" , ":/3840x2160_pressed.png" },
+	{"3840x2400",e3840x2400 , ":/3840x2400_normal.png" , ":/3840x2400_hover.png" , ":/3840x2400_pressed.png" },
+	{"4096x2160",e4096x2160 , ":/4096x2160_normal.png" , ":/4096x2160_hover.png" , ":/4096x2160_pressed.png" },
+	{"Self Defining", eSelfDef , ":/selfdef_normal.png" , ":/selfdef_hover.png" , ":/selfdef_pressed.png" },
+	{"Tape measure", eTape , ":/tape_normal.png" , ":/tape_hover.png" , ":/tape_pressed.png" } };
+
+QList<std::tuple<QString, int, QString, QString, QString> > PUT_STYLES = {
+	{ "Horizontal", Qt::Horizontal , ":/horizontal_normal.png" , ":/horizontal_hover.png" , ":/horizontal_pressed.png"},
+	{ "Vertical" , Qt::Vertical , ":/vertical_normal.png" , ":/vertical_hover.png" , ":/vertical_pressed.png" } };
 
 const QString TOOLBAR_STYLE = R"(QToolBar{background-color: rgb(83,83,83);}
 QToolTip {
@@ -209,7 +210,7 @@ void initToolBar(QToolBar* toolBar)
 	palette.setColor(QPalette::Shadow, QColor(83, 83, 83));
 	toolBar->setPalette(palette);
 	toolBar->setStyleSheet(TOOLBAR_STYLE);
-	toolBar->setIconSize(QSize(36, 36));
+	//toolBar->setIconSize(QSize(50, 40));
 }
 void MainWidget::initToolBarItem()
 {
@@ -217,28 +218,34 @@ void MainWidget::initToolBarItem()
 	addToolBar(Qt::TopToolBarArea, toolBarPutStyle);
 	initToolBar(toolBarPutStyle);
 	QButtonGroup* groupPut = new QButtonGroup(this);
-	for (const std::tuple<QString, int, QString, QString>& elem : PUT_STYLES)
+	for (const std::tuple<QString, int, QString, QString, QString>& elem : PUT_STYLES)
 	{
 		QRadioButton* radioBtn = new QRadioButton;
 		radioBtn->setToolTip(std::get<0>(elem));
-		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)));
+		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)).arg(std::get<4>(elem)));
 		groupPut->addButton(radioBtn, std::get<1>(elem));
 		toolBarPutStyle->addWidget(radioBtn);
 	}
 	groupPut->buttons().first()->setChecked(true);
 	connect(groupPut, SIGNAL(buttonClicked(int)), this, SLOT(onSetOrientation(int)));
 
+	QRadioButton* attachBtn = new QRadioButton;
+	attachBtn->setToolTip(tr("Snap"));
+	attachBtn->setStyleSheet(RADIO_STYLE.arg(":/snap_normal.png").arg(":/snap_hover.png").arg(":/snap_pressed.png"));
+	toolBarPutStyle->addWidget(attachBtn);
+	connect(attachBtn, &QRadioButton::toggled, this, &MainWidget::setSnap);
+	attachBtn->setChecked(true);
 
 	QToolBar* toolBarRatio = new QToolBar("Ratios");
 	addToolBar(Qt::TopToolBarArea, toolBarRatio);
 	initToolBar(toolBarRatio);
 	
 	QButtonGroup* groupRatio = new QButtonGroup(this);
-	for (const std::tuple<QString, int, QString, QString>& elem : RATIOS)
+	for (const std::tuple<QString, int, QString, QString, QString>& elem : RATIOS)
 	{
 		QRadioButton* radioBtn = new QRadioButton;
 		radioBtn->setToolTip(std::get<0>(elem));
-		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)));
+		radioBtn->setStyleSheet(RADIO_STYLE.arg(std::get<2>(elem)).arg(std::get<3>(elem)).arg(std::get<4>(elem)));
 		groupRatio->addButton(radioBtn, std::get<1>(elem));
 		toolBarRatio->addWidget(radioBtn);
 	}
@@ -261,6 +268,8 @@ void MainWidget::onSetRation(int id)
 	{
 		WidgetRatio wr(this);
 		QSize ratio = m_clipper->projectorRatio();
+		wr.setWindowTitle(tr("Custom Projector Resolution Setting"));
+		wr.ui.label->setText(tr("Projector Resolution:"));
 		wr.ui.spinBoxx->setValue(ratio.width());
 		wr.ui.spinBoxy->setValue(ratio.height());
 		if (QDialog::Accepted == wr.exec())
@@ -276,9 +285,13 @@ void MainWidget::onSetRation(int id)
 			m_clipper->setProRatio(QSize());
 		}
 	}
+	else if (id == eTape)
+	{
+		m_clipper->setProRatio(QSize(1,0));
+	}
 	else
 	{
-		for (const std::tuple<QString, int, QString, QString>& elem : RATIOS)
+		for (const std::tuple<QString, int, QString, QString, QString>& elem : RATIOS)
 		{
 			if (id == std::get<1>(elem))
 			{

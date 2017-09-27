@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Central_t {
-    QByteArrayData data[28];
-    char stringdata0[309];
+    QByteArrayData data[30];
+    char stringdata0[334];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -49,14 +49,16 @@ QT_MOC_LITERAL(16, 172, 9), // "createBar"
 QT_MOC_LITERAL(17, 182, 8), // "scenePos"
 QT_MOC_LITERAL(18, 191, 8), // "attached"
 QT_MOC_LITERAL(19, 200, 4), // "line"
-QT_MOC_LITERAL(20, 205, 12), // "showBarValue"
-QT_MOC_LITERAL(21, 218, 9), // "hideValue"
-QT_MOC_LITERAL(22, 228, 10), // "removeData"
-QT_MOC_LITERAL(23, 239, 12), // "isIndexValid"
-QT_MOC_LITERAL(24, 252, 5), // "index"
-QT_MOC_LITERAL(25, 258, 21), // "currentItemDataEdited"
-QT_MOC_LITERAL(26, 280, 17), // "allItemDataEdited"
-QT_MOC_LITERAL(27, 298, 10) // "isMoveMode"
+QT_MOC_LITERAL(20, 205, 11), // "attachedPos"
+QT_MOC_LITERAL(21, 217, 17), // "showTapeLineValue"
+QT_MOC_LITERAL(22, 235, 9), // "hideValue"
+QT_MOC_LITERAL(23, 245, 10), // "removeData"
+QT_MOC_LITERAL(24, 256, 12), // "isIndexValid"
+QT_MOC_LITERAL(25, 269, 5), // "index"
+QT_MOC_LITERAL(26, 275, 21), // "currentItemDataEdited"
+QT_MOC_LITERAL(27, 297, 17), // "allItemDataEdited"
+QT_MOC_LITERAL(28, 315, 10), // "isMoveMode"
+QT_MOC_LITERAL(29, 326, 7) // "setSnap"
 
     },
     "Central\0valueToPosition\0\0Qt::Orientation\0"
@@ -64,10 +66,10 @@ QT_MOC_LITERAL(27, 298, 10) // "isMoveMode"
     "location\0ratioValue\0domDocument\0"
     "QDomDocument\0dataChanged\0setCurrentItemData\0"
     "QDomElement\0data\0createBar\0scenePos\0"
-    "attached\0line\0showBarValue\0hideValue\0"
-    "removeData\0isIndexValid\0index\0"
-    "currentItemDataEdited\0allItemDataEdited\0"
-    "isMoveMode"
+    "attached\0line\0attachedPos\0showTapeLineValue\0"
+    "hideValue\0removeData\0isIndexValid\0"
+    "index\0currentItemDataEdited\0"
+    "allItemDataEdited\0isMoveMode\0setSnap"
 };
 #undef QT_MOC_LITERAL
 
@@ -77,7 +79,7 @@ static const uint qt_meta_data_Central[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -85,24 +87,26 @@ static const uint qt_meta_data_Central[] = {
        7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   94,    2, 0x06 /* Public */,
-       6,    2,   99,    2, 0x06 /* Public */,
-       7,    1,  104,    2, 0x06 /* Public */,
-       9,    2,  107,    2, 0x06 /* Public */,
-      10,    0,  112,    2, 0x06 /* Public */,
-      12,    0,  113,    2, 0x06 /* Public */,
-      13,    1,  114,    2, 0x06 /* Public */,
+       1,    2,  104,    2, 0x06 /* Public */,
+       6,    2,  109,    2, 0x06 /* Public */,
+       7,    1,  114,    2, 0x06 /* Public */,
+       9,    2,  117,    2, 0x06 /* Public */,
+      10,    0,  122,    2, 0x06 /* Public */,
+      12,    0,  123,    2, 0x06 /* Public */,
+      13,    1,  124,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      16,    2,  117,    2, 0x0a /* Public */,
-      18,    1,  122,    2, 0x0a /* Public */,
-      20,    2,  125,    2, 0x0a /* Public */,
-      21,    0,  130,    2, 0x0a /* Public */,
-      22,    1,  131,    2, 0x0a /* Public */,
-      23,    1,  134,    2, 0x0a /* Public */,
-      25,    0,  137,    2, 0x0a /* Public */,
-      26,    0,  138,    2, 0x0a /* Public */,
-      27,    0,  139,    2, 0x0a /* Public */,
+      16,    2,  127,    2, 0x0a /* Public */,
+      18,    1,  132,    2, 0x0a /* Public */,
+      20,    1,  135,    2, 0x0a /* Public */,
+      21,    2,  138,    2, 0x0a /* Public */,
+      22,    0,  143,    2, 0x0a /* Public */,
+      23,    1,  144,    2, 0x0a /* Public */,
+      24,    1,  147,    2, 0x0a /* Public */,
+      26,    0,  150,    2, 0x0a /* Public */,
+      27,    0,  151,    2, 0x0a /* Public */,
+      28,    0,  152,    2, 0x0a /* Public */,
+      29,    1,  153,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    4,    5,
@@ -115,14 +119,16 @@ static const uint qt_meta_data_Central[] = {
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3, QMetaType::QPointF,    4,   17,
-    QMetaType::QLineF, QMetaType::QLineF,   19,
+    QMetaType::QPointF, QMetaType::QPointF,   19,
+    QMetaType::QPointF, QMetaType::QPointF,   19,
     QMetaType::Void, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 14,   15,
-    QMetaType::Bool, QMetaType::QString,   24,
+    QMetaType::Bool, QMetaType::QString,   25,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Bool,
+    QMetaType::Void, QMetaType::Bool,    2,
 
        0        // eod
 };
@@ -145,17 +151,20 @@ void Central::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 5: _t->dataChanged(); break;
         case 6: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
         case 7: _t->createBar((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< const QPointF(*)>(_a[2]))); break;
-        case 8: { QLineF _r = _t->attached((*reinterpret_cast< const QLineF(*)>(_a[1])));
-            if (_a[0]) *reinterpret_cast< QLineF*>(_a[0]) = _r; }  break;
-        case 9: _t->showBarValue((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
-        case 10: _t->hideValue(); break;
-        case 11: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
-        case 12: { bool _r = _t->isIndexValid((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 8: { QPointF _r = _t->attached((*reinterpret_cast< const QPointF(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QPointF*>(_a[0]) = _r; }  break;
+        case 9: { QPointF _r = _t->attachedPos((*reinterpret_cast< const QPointF(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QPointF*>(_a[0]) = _r; }  break;
+        case 10: _t->showTapeLineValue((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2]))); break;
+        case 11: _t->hideValue(); break;
+        case 12: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
+        case 13: { bool _r = _t->isIndexValid((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 13: _t->currentItemDataEdited(); break;
-        case 14: _t->allItemDataEdited(); break;
-        case 15: { bool _r = _t->isMoveMode();
+        case 14: _t->currentItemDataEdited(); break;
+        case 15: _t->allItemDataEdited(); break;
+        case 16: { bool _r = _t->isMoveMode();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 17: _t->setSnap((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -238,13 +247,13 @@ int Central::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 16;
+        _id -= 18;
     }
     return _id;
 }

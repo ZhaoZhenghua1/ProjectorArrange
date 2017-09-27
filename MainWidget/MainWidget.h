@@ -31,6 +31,7 @@ public slots:
 signals:
 	void zoomIn();
 	void zoomOut();
+	void setSnap(bool);
 private:
 	void addRecent();
 	bool close();

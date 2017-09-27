@@ -260,29 +260,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\rect_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\rect_pressed.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\background.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\TransCoder.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\arror_normal.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\arror_pressed.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\logo.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="MainWidget.rc" />
   </ItemGroup>
 </Project>

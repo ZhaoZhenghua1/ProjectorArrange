@@ -25,7 +25,7 @@
         <widget class="QLabel" name="label">
          <property name="maximumSize">
           <size>
-           <width>65</width>
+           <width>100000</width>
            <height>16777215</height>
           </size>
          </property>
@@ -36,6 +36,18 @@
        </item>
        <item>
         <widget class="QSpinBox" name="spinBoxx">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="sizeIncrement">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="minimum">
           <number>10</number>
          </property>
@@ -62,6 +74,18 @@
        </item>
        <item>
         <widget class="QSpinBox" name="spinBoxy">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="sizeIncrement">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="minimum">
           <number>10</number>
          </property>

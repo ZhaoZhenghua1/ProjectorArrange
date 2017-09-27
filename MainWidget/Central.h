@@ -8,6 +8,7 @@
 class QGraphicsTextItem;
 class MapItem;
 class Projector;
+class QGraphicsLineItem;
 class Central : public QGraphicsWidget
 {
 	Q_OBJECT
@@ -35,16 +36,19 @@ signals:
 	void dataChanged()const;
 
 	void setCurrentItemData(const QDomElement& data);
+
 public slots:
 	void createBar(Qt::Orientation o, const QPointF& scenePos);
-	QLineF attached(const QLineF& line);
-	void showBarValue(Qt::Orientation, qreal);
+	QPointF attached(const QPointF& line);
+	QPointF attachedPos(const QPointF& line);
+	void showTapeLineValue(Qt::Orientation, qreal);
 	void hideValue();
 	void removeData(const QDomElement& data);
 	bool isIndexValid(const QString& index);
 	void currentItemDataEdited() const;
 	void allItemDataEdited()const;
 	bool isMoveMode();
+	void setSnap(bool);
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
@@ -57,10 +61,12 @@ private:
 	QDomElement createProjectorNode();
 private:
 	QGraphicsTextItem* m_valueShow = nullptr;
+	QGraphicsLineItem* m_line = nullptr;
 	MapItem* m_centralMapItem = nullptr;
 	QDomElement m_data;
 	QSize m_ratio;
 	QSize m_projectorRatio;
 	unsigned int m_projectorRotate = 0;
+	bool m_bSnap = true;
 };
 

@@ -4,9 +4,6 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include "RotateItem.h"
-#include <QtMath>
-#include <QGraphicsWidget>
-//#include "SizeGripItem.h"
 
 Projector::Projector(QGraphicsItem* parent) :Base(parent)
 {
@@ -139,265 +136,85 @@ QLineF Projector::bottomLine(const QRectF& rect)
 {
 	return QLineF();
 }
-//计算两平行直线间的距离
-qreal distance(const QLineF& l, const QLineF& r)
-{
-	if (qAbs(l.angleTo(r)) < 0.1 || qAbs(l.angleTo(r) - 360) < 0.1 || qAbs(l.angleTo(r) - 180) < 0.1)
-	{
-		if (qAbs(l.angle() - 90) < 0.1 || qAbs(l.angle() - 270) < 0.1)
-		{
-			return qAbs(r.x1() - l.x1());
-		}
-		qreal k = (r.p2().y() - r.p1().y()) / (r.p2().x() - r.p1().x());//k=(y2-y1)/(x2-x1)
-		qreal b1 = l.y1() - k*l.x1();
-		qreal b2 = r.y1() - k*r.x1();
-		return qAbs(b2 - b1) / qSqrt(1 + k*k);
-	}
-	return INT_MAX;
-}
-
-//from直线投影到to上，得到投影直线
-QLineF projectorTo(const QLineF& from, const QLineF& to)
-{
-	if (qAbs(from.angleTo(to)) < 0.1 || qAbs(from.angleTo(to) - 180) < 0.1 || qAbs(from.angleTo(to) - 360) < 0.1)
-	{
-		if (qAbs(from.angle() - 90) < 0.1 || qAbs(from.angle() - 270) < 0.1)
-		{
-			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
-		}
-		else if (qAbs(from.angle()) < 0.1 || qAbs(from.angle() - 180) < 0.1)
-		{
-			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
-		}
-		else
-		{
-			qreal k = (from.p2().y() - from.p1().y()) / (from.p2().x() - from.p1().x());
-			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
-			qreal y1 = k*(x1 - to.x1()) + to.y1();
-
-			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
-			qreal y2 = k*(x1 - to.x2()) + to.y2();
-			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
-		}
-	}
-	return from;
-}
-
-QPointF minPoint(const QLineF& line)
-{
-	QPointF p1 = line.p1();
-	QPointF p2 = line.p2();
-	if (qAbs(p1.x() - p2.x()) < 0.01)
-	{
-		return p1.x() < p2.x() ? p1 : p2;
-	}
-	else
-	{
-		return p1.y() < p2.y() ? p1 : p2;
-	}
-}
-
-//make line x1 < x2, y1 < y2
-QLineF normalLine(const QLineF& line)
-{
-	QPointF p1 = line.p1();
-	QPointF p2 = line.p2();
-	if (qAbs(p1.x() - p2.x()) < 0.01)
-	{
-		return p1.x() < p2.x() ? QLineF(p1,p2) : QLineF(p2,p1);
-	}
-	else
-	{
-		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
-	}
-}
+// 计算两平行直线间的距离
+// qreal distance(const QLineF& l, const QLineF& r)
+// {
+// 	if (qAbs(l.angleTo(r)) < 0.1 || qAbs(l.angleTo(r) - 360) < 0.1 || qAbs(l.angleTo(r) - 180) < 0.1)
+// 	{
+// 		if (qAbs(l.angle() - 90) < 0.1 || qAbs(l.angle() - 270) < 0.1)
+// 		{
+// 			return qAbs(r.x1() - l.x1());
+// 		}
+// 		qreal k = (r.p2().y() - r.p1().y()) / (r.p2().x() - r.p1().x());//k=(y2-y1)/(x2-x1)
+// 		qreal b1 = l.y1() - k*l.x1();
+// 		qreal b2 = r.y1() - k*r.x1();
+// 		return qAbs(b2 - b1) / qSqrt(1 + k*k);
+// 	}
+// 	return INT_MAX;
+// }
+// 
+// from直线投影到to上，得到投影直线
+// QLineF projectorTo(const QLineF& from, const QLineF& to)
+// {
+// 	if (qAbs(from.angleTo(to)) < 0.1 || qAbs(from.angleTo(to) - 180) < 0.1 || qAbs(from.angleTo(to) - 360) < 0.1)
+// 	{
+// 		if (qAbs(from.angle() - 90) < 0.1 || qAbs(from.angle() - 270) < 0.1)
+// 		{
+// 			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
+// 		}
+// 		else if (qAbs(from.angle()) < 0.1 || qAbs(from.angle() - 180) < 0.1)
+// 		{
+// 			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
+// 		}
+// 		else
+// 		{
+// 			qreal k = (from.p2().y() - from.p1().y()) / (from.p2().x() - from.p1().x());
+// 			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
+// 			qreal y1 = k*(x1 - to.x1()) + to.y1();
+// 
+// 			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
+// 			qreal y2 = k*(x1 - to.x2()) + to.y2();
+// 			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
+// 		}
+// 	}
+// 	return from;
+// }
+// 
+// QPointF minPoint(const QLineF& line)
+// {
+// 	QPointF p1 = line.p1();
+// 	QPointF p2 = line.p2();
+// 	if (qAbs(p1.x() - p2.x()) < 0.01)
+// 	{
+// 		return p1.x() < p2.x() ? p1 : p2;
+// 	}
+// 	else
+// 	{
+// 		return p1.y() < p2.y() ? p1 : p2;
+// 	}
+// }
+// 
+// make line x1 < x2, y1 < y2
+// QLineF normalLine(const QLineF& line)
+// {
+// 	QPointF p1 = line.p1();
+// 	QPointF p2 = line.p2();
+// 	if (qAbs(p1.x() - p2.x()) < 0.01)
+// 	{
+// 		return p1.x() < p2.x() ? QLineF(p1,p2) : QLineF(p2,p1);
+// 	}
+// 	else
+// 	{
+// 		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
+// 	}
+// }
 
 QVariant Projector::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemPositionChange && scene() && m_bPressed)
 	{
 		QPointF newPos = value.toPointF();
-		QPointF offset = newPos - pos();
-
-
-		QPointF origPoints[4] = { mapToParent(rect().topLeft()) + offset , mapToParent(rect().topRight()) + offset , mapToParent(rect().bottomLeft()) + offset , mapToParent(rect().bottomRight()) + offset };
-		QLineF lineFromHor[2] = { QLineF(origPoints[0], origPoints[1]), QLineF(origPoints[2], origPoints[3]) };
-		QLineF lineFromVer[2] = { QLineF(origPoints[0], origPoints[2]), QLineF(origPoints[1], origPoints[3]) };
-
-		bool horSetted = false, verSetted = false;
-		QList<QGraphicsItem*> sibitems = parentItem()->childItems();
-		for (QGraphicsItem* item : sibitems)
-		{
-			if (Projector* pro = dynamic_cast<Projector*>(item))
-			{
-				if (pro != this)
-				{
-					QPointF points[4] = { pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,pro->mapToParent(pro->rect().bottomLeft()), pro->mapToParent(pro->rect().bottomRight())};
-					QLineF lineToHor[2];
-					QLineF lineToVer[2];
-					int rotationDif = qAbs(pro->rotation() - rotation()) + 0.5;
-					if (rotationDif % 180 == 0)
-					{
-						lineToHor[0] = QLineF(points[0], points[1]);
-						lineToHor[1] = QLineF(points[2], points[3]);
-
-						lineToVer[0] = QLineF(points[0], points[2]);
-						lineToVer[1] = QLineF(points[1], points[3]);
-					}
-					else if (rotationDif % 90 == 0)
-					{
-						lineToHor[0] = QLineF(points[0], points[2]);
-						lineToHor[1] = QLineF(points[1], points[3]);
-
-						lineToVer[0] = QLineF(points[0], points[1]);
-						lineToVer[1] = QLineF(points[2], points[3]);
-					}
-					else
-					{
-						continue;
-					}
-
-					QPointF offset;
-					if (!horSetted)
-					{
-						for (QLineF lineF : lineFromHor)
-						{
-							lineF = normalLine(lineF);
-							bool finished = false;
-							for (QLineF lineT : lineToHor)
-							{
-								lineT = normalLine(lineT);
-								if (distance(lineF, lineT) <= 7)
-								{
-									QLineF proLine = projectorTo(lineF, lineT);
-									QPointF pointF = minPoint(lineF);
-									QPointF pointP = minPoint(proLine);
-									offset += (pointP - pointF);
-									finished = true;
-									horSetted = true;
-									break;
-								}
-							}
-							if (finished)
-							{
-								break;
-							}
-						}
-					}
-					
-					if (!verSetted)
-					{
-						for (QLineF lineF : lineFromVer)
-						{
-							lineF = normalLine(lineF);
-							bool finished = false;
-							for (QLineF lineT : lineToVer)
-							{
-								lineT = normalLine(lineT);
-								if (distance(lineF, lineT) <= 7)
-								{
-									QLineF proLine = projectorTo(lineF, lineT);
-									QPointF pointF = minPoint(lineF);
-									QPointF pointP = minPoint(proLine);
-									offset += (pointP - pointF);
-									finished = true;
-									verSetted = true;
-									break;
-								}
-							}
-							if (finished)
-							{
-								break;
-							}
-						}
-					}
-					
-					newPos += offset;
-				}
-			}
-			else if (QGraphicsWidget* pro = dynamic_cast<QGraphicsWidget*>(item))
-			{
-				QPointF points[4] = { pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,pro->mapToParent(pro->rect().bottomLeft()), pro->mapToParent(pro->rect().bottomRight()) };
-				QLineF lineToHor[2];
-				QLineF lineToVer[2];
-				int rotationDif = qAbs(pro->rotation() - rotation()) + 0.5;
-				if (rotationDif % 180 == 0)
-				{
-					lineToHor[0] = QLineF(points[0], points[1]);
-					lineToHor[1] = QLineF(points[2], points[3]);
-
-					lineToVer[0] = QLineF(points[0], points[2]);
-					lineToVer[1] = QLineF(points[1], points[3]);
-				}
-				else if (rotationDif % 90 == 0)
-				{
-					lineToHor[0] = QLineF(points[0], points[2]);
-					lineToHor[1] = QLineF(points[1], points[3]);
-
-					lineToVer[0] = QLineF(points[0], points[1]);
-					lineToVer[1] = QLineF(points[2], points[3]);
-				}
-				else
-				{
-					continue;
-				}
-
-				QPointF offset;
-				for (QLineF lineF : lineFromHor)
-				{
-					lineF = normalLine(lineF);
-					bool finished = false;
-					for (QLineF lineT : lineToHor)
-					{
-						lineT = normalLine(lineT);
-						if (distance(lineF, lineT) <= 7)
-						{
-							QLineF proLine = projectorTo(lineF, lineT);
-							QPointF pointF = minPoint(lineF);
-							QPointF pointP = minPoint(proLine);
-							offset += (pointP - pointF);
-							finished = true;
-							break;
-						}
-					}
-					if (finished)
-					{
-						break;
-					}
-				}
-
-				for (QLineF lineF : lineFromVer)
-				{
-					lineF = normalLine(lineF);
-					bool finished = false;
-					for (QLineF lineT : lineToVer)
-					{
-						lineT = normalLine(lineT);
-						if (distance(lineF, lineT) <= 7)
-						{
-							QLineF proLine = projectorTo(lineF, lineT);
-							QPointF pointF = minPoint(lineF);
-							QPointF pointP = minPoint(proLine);
-							offset += (pointP - pointF);
-							finished = true;
-							break;
-						}
-					}
-					if (finished)
-					{
-						break;
-					}
-				}
-
-				newPos += offset;
-				if (!offset.isNull())
-				{
-					break;
-				}
-			}
-		}
-
-
+		newPos = attached(newPos);
 		return newPos;
 	}
 	else if (change == ItemPositionHasChanged && scene())

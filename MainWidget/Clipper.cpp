@@ -55,6 +55,7 @@ Clipper::Clipper(QWidget *parent)
 	connect(m_rootWidget->central(), &Central::setCurrentItemData, this, &Clipper::setCurrentItemData);
 	connect(this, &Clipper::currentItemDataEdited, m_rootWidget->central(), &Central::currentItemDataEdited);
 	connect(this, &Clipper::allItemDataEdited, m_rootWidget->central(), &Central::allItemDataEdited);
+	connect(this, &Clipper::setSnap, m_rootWidget->central(), &Central::setSnap);
 
 	scene->addItem(m_rootWidget);
 // 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -364,7 +365,6 @@ RootWidget::RootWidget()
 	connect(central, &Central::positionToValue, this, &RootWidget::positionToValue);
 	connect(central, &Central::valueToPosition, this, &RootWidget::valueToPosition);
 	connect(central, &Central::ratioValue, this, &RootWidget::ratioValue);
-	connect(central, SIGNAL(selectionAreaCreated(Projector*)), this, SIGNAL(selectionAreaCreated(Projector*)));
 
 	connect(rulerTop, &Ruler::createBar, central, &Central::createBar);
 	connect(rulerLeft, &Ruler::createBar, central, &Central::createBar);

@@ -21,7 +21,6 @@ signals:
 	void mouseTracking(const QPoint& location);
 	void setBarValue(Qt::Orientation, qreal&);
 	void setSelectArea(QString &index, QRectF& rect);
-
 	void selectionAreaCreated(Projector*);
 
 	QDomDocument domDocument();
@@ -64,6 +63,7 @@ signals:
 	void currentItemDataEdited() const;
 	void allItemDataEdited()const;
 	void dataChanged()const;
+	void setSnap(bool);
 public slots:
 	QSize ratio();
 
@@ -75,7 +75,6 @@ public slots:
 	void zoomIn();
 	//ctrl+minus zoomout
 	void zoomOut();
-
 private slots:
 private:
 	void updateSceneRatio();

@@ -102,7 +102,7 @@ static const uint qt_meta_data_Projector[] = {
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
-    QMetaType::QLineF, QMetaType::QLineF,    6,
+    QMetaType::QPointF, QMetaType::QPointF,    6,
     QMetaType::Void, QMetaType::QPointF,    8,
     QMetaType::Void, 0x80000000 | 10, 0x80000000 | 12,   11,   13,
     QMetaType::Void, QMetaType::QRectF,   15,
@@ -130,8 +130,8 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
         case 1: { qreal _r = _t->valueToPosition((*reinterpret_cast< Qt::Orientation(*)>(_a[1])),(*reinterpret_cast< qreal(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< qreal*>(_a[0]) = _r; }  break;
-        case 2: { QLineF _r = _t->attached((*reinterpret_cast< const QLineF(*)>(_a[1])));
-            if (_a[0]) *reinterpret_cast< QLineF*>(_a[0]) = _r; }  break;
+        case 2: { QPointF _r = _t->attached((*reinterpret_cast< const QPointF(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QPointF*>(_a[0]) = _r; }  break;
         case 3: _t->mouseTracking((*reinterpret_cast< const QPointF(*)>(_a[1]))); break;
         case 4: _t->setSelectArea((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2]))); break;
         case 5: _t->showValue((*reinterpret_cast< const QRectF(*)>(_a[1]))); break;
@@ -166,7 +166,7 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             }
         }
         {
-            typedef QLineF (Projector::*_t)(const QLineF & );
+            typedef QPointF (Projector::*_t)(const QPointF & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::attached)) {
                 *result = 2;
                 return;
@@ -295,9 +295,9 @@ qreal Projector::valueToPosition(Qt::Orientation _t1, qreal _t2)
 }
 
 // SIGNAL 2
-QLineF Projector::attached(const QLineF & _t1)
+QPointF Projector::attached(const QPointF & _t1)
 {
-    QLineF _t0 = QLineF();
+    QPointF _t0 = QPointF();
     void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
     return _t0;

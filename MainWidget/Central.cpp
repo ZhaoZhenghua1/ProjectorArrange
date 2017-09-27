@@ -33,10 +33,10 @@ protected:
 	}
 };
 
-class MapItem : public QGraphicsWidget
+class MapItem : public QGraphicsRectItem
 {
 public:
-	using QGraphicsWidget::QGraphicsWidget;
+	using QGraphicsRectItem::QGraphicsRectItem;
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * /* = Q_NULLPTR */)override
 	{
  		painter->drawPixmap(rect(), m_map, m_map.rect());
@@ -52,10 +52,26 @@ private:
 	QPixmap m_map = QPixmap(":/background.jpg");
 };
 
+class LineItem : public QGraphicsLineItem
+{
+public:
+	LineItem(Central* central) :QGraphicsLineItem(central),m_central(central) 
+	{
+		//setPen(QPen(Qt::yellow));
+	}
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * widget/* = Q_NULLPTR */)override
+	{
+		QGraphicsLineItem::paint(painter, option, widget);
+	}
+private:
+	Central* m_central = nullptr;
+};
+
 Central::Central()
 {
 	setAcceptedMouseButtons(Qt::LeftButton);
 	setAcceptHoverEvents(true);
+	setFlags(QGraphicsItem::ItemIsSelectable);
 
 	m_valueShow = new TextItem(this);
 	m_valueShow->setZValue(10);
@@ -63,6 +79,9 @@ Central::Central()
 	m_valueShow->hide();
 
 	m_centralMapItem = new MapItem(this);
+
+	m_line = new LineItem(this);
+	m_line->setZValue(10);
 }
 
 Central::~Central()
@@ -114,7 +133,7 @@ void Central::updatePosition()
 	qreal y1 = valueToPosition(Qt::Horizontal, 0);
 	qreal x2 = valueToPosition(Qt::Vertical, m_ratio.width());
 	qreal y2 = valueToPosition(Qt::Horizontal, m_ratio.height());
-	m_centralMapItem->setGeometry(x1, y1, x2 - x1, y2 - y1);
+	m_centralMapItem->setRect(x1, y1, x2 - x1, y2 - y1);
 }
 
 void Central::resizeEvent(QGraphicsSceneResizeEvent *event)
@@ -143,7 +162,7 @@ void Central::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 
 Projector* Central::createProjector(const QPointF& pos)
 {
-	if (m_projectorRatio.isEmpty())
+	if (m_projectorRatio.isEmpty() || !m_projectorRatio.isValid())
 	{
 		return nullptr;
 	}
@@ -158,7 +177,7 @@ Projector* Central::createProjector(const QPointF& pos)
 	QList<QGraphicsItem*> items = childItems();
 	for (QGraphicsItem* item : items)
 	{
-		if (Projector* p = qgraphicsitem_cast<Projector*>(item))
+		if (Projector* p = dynamic_cast<Projector*>(item))
 		{
 			selections.push_back(p);
 		}
@@ -222,133 +241,304 @@ QDomElement Central::createProjectorNode()
 	return proElement;
 }
 
-// 计算两平行直线间的距离
-// qreal distance(const QLineF& l, const QLineF& r)
-// {
-// 	if (qAbs(l.angleTo(r)) < 0.00001)
-// 	{
-// 		if (qAbs(l.angle() - 90) < 0.00001)
-// 		{
-// 			return qAbs(r.x1() - l.x1());
-// 		}
-// 		qreal k = qTan(qDegreesToRadians(l.angle()));
-// 		qreal b1 = l.y1() - k*l.x1();
-// 		qreal b2 = r.y1() - k*r.x1();
-// 		return qAbs(b2 - b1) / qSqrt(1 + k*k);
-// 	}
-// 	return INT_MAX;
-// }
-// 
-// from直线投影到to上，得到投影直线
-// QLineF projectorTo(const QLineF& from, const QLineF& to)
-// {
-// 	if (qAbs(from.angleTo(to)) < 0.00001)
-// 	{
-// 		if (qAbs(from.angle() - 90) < 0.00001)
-// 		{
-// 			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
-// 		}
-// 		else if (qAbs(from.angle()) < 0.00001)
-// 		{
-// 			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
-// 		}
-// 		else
-// 		{
-// 			qreal k = qTan(qDegreesToRadians(from.angle()));
-// 			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
-// 			qreal y1 = k*(x1 - to.x1()) + to.y1();
-// 
-// 			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
-// 			qreal y2 = k*(x1 - to.x2()) + to.y2();
-// 			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
-// 		}
-// 	}
-// 	return from;
-// }
-
-QLineF Central::attached(const QLineF& line)
+//计算两平行直线间的距离
+qreal distance(const QLineF& l, const QLineF& r)
 {
-	//attach to border
-// 	if (qAbs(line.dx()) < 0.00001)
-// 	{
-// 		qreal topValue = m_centralMapItem->geometry().top();
-// 		qreal bottomValue = m_centralMapItem->geometry().bottom();
-// 		if (qAbs(topValue - pos) <= ATTACH_DIS)
-// 		{
-// 			return topValue;
-// 		}
-// 		else if (qAbs(bottomValue - pos) <= ATTACH_DIS)
-// 		{
-// 			return bottomValue;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		qreal leftValue = m_centralMapItem->geometry().left();
-// 		qreal rightValue = m_centralMapItem->geometry().right();
-// 		if (qAbs(leftValue - pos) <= ATTACH_DIS)
-// 		{
-// 			return leftValue;
-// 		}
-// 		else if (qAbs(rightValue - pos) <= ATTACH_DIS)
-// 		{
-// 			return rightValue;
-// 		}
-// 	}
-
-//	qreal edge = limitPos(Qt::LeftEdge);
-	//attach to other items
-//	for (QGraphicsItem* item : childItems())
+	if (qAbs(l.angleTo(r)) < 0.1 || qAbs(l.angleTo(r) - 360) < 0.1 || qAbs(l.angleTo(r) - 180) < 0.1)
 	{
-// 		if (Bar* bar = dynamic_cast<Bar*>(item))
-// 		{
-// 			//bar not attached to bars
-// 			if (bar != sender() && !qobject_cast<Bar*>(sender()))
-// 			{
-// 				qreal val = valueToPosition(bar->orient(), bar->value()) + edge;
-// 				if (qAbs(val - pos) <= ATTACH_DIS)
-// 				{
-// 					return val;
-// 				}
-// 			}
-// 		}
-// 		else if (SelectionArea* select = dynamic_cast<SelectionArea*>(item))
-// 		{
-// 			if (select != sender())
-// 			{
-// 				if ((o == Qt::Horizontal))
-// 				{
-// 					qreal topValue = valueToPosition(o, select->value(Qt::TopEdge)) + edge;
-// 					qreal bottomValue = valueToPosition(o, select->value(Qt::BottomEdge)) + edge;
-// 					if (qAbs(topValue - pos) <= ATTACH_DIS)
-// 					{
-// 						return topValue;
-// 					}
-// 					else if (qAbs(bottomValue - pos) <= ATTACH_DIS)
-// 					{
-// 						return bottomValue;
-// 					}
-// 				}
-// 				else
-// 				{
-// 					qreal leftValue = valueToPosition(o, select->value(Qt::LeftEdge)) + edge;
-// 					qreal rightValue = valueToPosition(o, select->value(Qt::RightEdge)) + edge;
-// 					if (qAbs(leftValue - pos) <= ATTACH_DIS)
-// 					{
-// 						return leftValue;
-// 					}
-// 					else if (qAbs(rightValue - pos) <= ATTACH_DIS)
-// 					{
-// 						return rightValue;
-// 					}
-// 				}
-// 			}
-// 		}
- 	}
-	return line;
+		if (qAbs(l.angle() - 90) < 0.1 || qAbs(l.angle() - 270) < 0.1)
+		{
+			return qAbs(r.x1() - l.x1());
+		}
+		qreal k = (r.p2().y() - r.p1().y()) / (r.p2().x() - r.p1().x());//k=(y2-y1)/(x2-x1)
+		qreal b1 = l.y1() - k*l.x1();
+		qreal b2 = r.y1() - k*r.x1();
+		return qAbs(b2 - b1) / qSqrt(1 + k*k);
+	}
+	return INT_MAX;
 }
 
-void Central::showBarValue(Qt::Orientation o, qreal value)
+//计算点到直线间的距离
+qreal distance(const QPointF& l, const QLineF& to)
+{
+	qreal toangle = to.angle();
+	if (qAbs(toangle) < 0.1 || qAbs(toangle - 180) < 0.1 || qAbs(toangle - 360) < 0.1)
+	{
+		return qAbs(l.y() - to.p1().y());
+	}
+	else if (qAbs(toangle - 90) < 0.1 || qAbs(toangle - 270) < 0.1)
+	{
+		return qAbs(l.x() - to.p1().x());
+	}
+	else
+	{
+		qreal k = (to.p2().y() - to.p1().y()) / (to.p2().x() - to.p1().x());//k=(y2-y1)/(x2-x1)
+		qreal b2 = -to.y1() + k*to.x1();
+		return qAbs(l.y() - k*l.x() + b2) / qSqrt(1 + k*k);
+	}
+}
+
+//from直线投影到to上，得到投影直线
+QLineF projectorTo(const QLineF& from, const QLineF& to)
+{
+	if (qAbs(from.angleTo(to)) < 0.1 || qAbs(from.angleTo(to) - 180) < 0.1 || qAbs(from.angleTo(to) - 360) < 0.1)
+	{
+		if (qAbs(from.angle() - 90) < 0.1 || qAbs(from.angle() - 270) < 0.1)
+		{
+			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
+		}
+		else if (qAbs(from.angle()) < 0.1 || qAbs(from.angle() - 180) < 0.1)
+		{
+			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
+		}
+		else
+		{
+			qreal k = (from.p2().y() - from.p1().y()) / (from.p2().x() - from.p1().x());
+			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
+			qreal y1 = k*(x1 - to.x1()) + to.y1();
+
+			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
+			qreal y2 = k*(x1 - to.x2()) + to.y2();
+
+			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
+		}
+	}
+	return from;
+}
+//点投影到直线上
+QPointF projectorTo(const QPointF& from, const QLineF& to)
+{
+	qreal toangle = to.angle();
+	if (qAbs(toangle) < 0.1 || qAbs(toangle - 180) < 0.1 || qAbs(toangle - 360) < 0.1)
+	{
+		return QPointF(from.x(), to.p1().y());
+	}
+	else if (qAbs(toangle - 90) < 0.1 || qAbs(toangle - 270) < 0.1)
+	{
+		return QPointF(to.p1().x(), from.y());
+	}
+	else
+	{
+		qreal k = (to.p2().y() - to.p1().y()) / (to.p2().x() - to.p1().x());
+		qreal x1 = (from.y() - to.y1() + k*to.x1() + 1 / k*from.x()) / (k + 1 / k);
+		qreal y1 = k*(x1 - to.x1()) + to.y1();
+
+		return{ x1,y1 };
+	}
+}
+
+QPointF minPoint(const QLineF& line)
+{
+	QPointF p1 = line.p1();
+	QPointF p2 = line.p2();
+	if (qAbs(p1.x() - p2.x()) < 0.01)
+	{
+		return p1.x() < p2.x() ? p1 : p2;
+	}
+	else
+	{
+		return p1.y() < p2.y() ? p1 : p2;
+	}
+}
+
+//make line x1 < x2, y1 < y2
+QLineF normalLine(const QLineF& line)
+{
+	QPointF p1 = line.p1();
+	QPointF p2 = line.p2();
+	if (qAbs(p1.x() - p2.x()) < 0.01)
+	{
+		return p1.x() < p2.x() ? QLineF(p1, p2) : QLineF(p2, p1);
+	}
+	else
+	{
+		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
+	}
+}
+
+QPointF Central::attached(const QPointF& newPos)
+{
+	if (!m_bSnap)
+	{
+		return newPos;
+	}
+	QPointF offset;
+
+	if (Projector* sender = qobject_cast<Projector*>(this->sender()))
+	{
+		QPointF posoffset = newPos - sender->pos();
+
+		QPointF origPoints[4] = { sender->mapToParent(sender->rect().topLeft()) + posoffset , sender->mapToParent(sender->rect().topRight()) + posoffset , sender->mapToParent(sender->rect().bottomLeft()) + posoffset , sender->mapToParent(sender->rect().bottomRight()) + posoffset };
+		QLineF lineFromHor[2] = { QLineF(origPoints[0], origPoints[1]), QLineF(origPoints[2], origPoints[3]) };
+		QLineF lineFromVer[2] = { QLineF(origPoints[0], origPoints[2]), QLineF(origPoints[1], origPoints[3]) };
+
+		bool horSetted = false, verSetted = false;
+
+		QList<QGraphicsRectItem*> attachItems;
+		attachItems.push_back(m_centralMapItem);
+
+		QList<QGraphicsItem*> childItems = this->childItems();
+		for (QGraphicsItem* item : childItems)
+		{
+			if (Projector* pro = dynamic_cast<Projector*>(item))
+				if (pro != sender)
+					attachItems.push_back(pro);
+		}
+
+		for (QGraphicsRectItem* pro : attachItems)
+		{
+			if (horSetted && verSetted)
+			{
+				break;
+			}
+
+			QPointF points[4] = { pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,pro->mapToParent(pro->rect().bottomLeft()), pro->mapToParent(pro->rect().bottomRight()) };
+			QLineF lineToHor[2];
+			QLineF lineToVer[2];
+			int rotationDif = qAbs(pro->rotation() - sender->rotation()) + 0.5;
+			if (rotationDif % 180 == 0)
+			{
+				lineToHor[0] = QLineF(points[0], points[1]);
+				lineToHor[1] = QLineF(points[2], points[3]);
+
+				lineToVer[0] = QLineF(points[0], points[2]);
+				lineToVer[1] = QLineF(points[1], points[3]);
+			}
+			else if (rotationDif % 90 == 0)
+			{
+				lineToHor[0] = QLineF(points[0], points[2]);
+				lineToHor[1] = QLineF(points[1], points[3]);
+
+				lineToVer[0] = QLineF(points[0], points[1]);
+				lineToVer[1] = QLineF(points[2], points[3]);
+			}
+			else
+			{
+				continue;
+			}
+
+			if (!horSetted)
+			{
+				for (QLineF lineF : lineFromHor)
+				{
+					lineF = normalLine(lineF);
+					bool finished = false;
+					for (QLineF lineT : lineToHor)
+					{
+						lineT = normalLine(lineT);
+						if (distance(lineF, lineT) <= 7)
+						{
+							QLineF proLine = projectorTo(lineF, lineT);
+							QPointF pointF = minPoint(lineF);
+							QPointF pointP = minPoint(proLine);
+							offset += (pointP - pointF);
+							finished = true;
+							horSetted = true;
+							break;
+						}
+					}
+					if (finished)
+					{
+						break;
+					}
+				}
+			}
+
+			if (!verSetted)
+			{
+				for (QLineF lineF : lineFromVer)
+				{
+					lineF = normalLine(lineF);
+					bool finished = false;
+					for (QLineF lineT : lineToVer)
+					{
+						lineT = normalLine(lineT);
+						if (distance(lineF, lineT) <= 7)
+						{
+							QLineF proLine = projectorTo(lineF, lineT);
+							QPointF pointF = minPoint(lineF);
+							QPointF pointP = minPoint(proLine);
+							offset += (pointP - pointF);
+							finished = true;
+							verSetted = true;
+							break;
+						}
+					}
+					if (finished)
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+	return newPos + offset;
+}
+
+QPointF Central::attachedPos(const QPointF& newPos)
+{
+	if (!m_bSnap)
+	{
+		return newPos;
+	}
+	QPointF offset;
+
+	QList<QGraphicsRectItem*> attachItems;
+	attachItems.push_back(m_centralMapItem);
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			attachItems.push_back(pro);
+	}
+
+	bool horSetted = false, verSetted = false;
+	for (QGraphicsRectItem* pro : attachItems)
+	{
+		if (horSetted && verSetted)
+		{
+			break;
+		}
+
+		QPointF points[4] = { pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,pro->mapToParent(pro->rect().bottomLeft()), pro->mapToParent(pro->rect().bottomRight()) };
+		QLineF lineToHor[2] = {QLineF(points[0], points[1]), QLineF(points[2], points[3])};
+		QLineF lineToVer[2] = {QLineF(points[0], points[2]), QLineF(points[1], points[3])};
+
+		if (!horSetted)
+		{
+			for (QLineF lineT : lineToHor)
+			{
+				lineT = normalLine(lineT);
+				if (distance(newPos, lineT) <= 7)
+				{
+					QPointF pointP = projectorTo(newPos, lineT);
+					offset += (pointP - newPos);
+					horSetted = true;
+					break;
+				}
+			}
+		}
+
+		if (!verSetted)
+		{
+			for (QLineF lineT : lineToVer)
+			{
+				lineT = normalLine(lineT);
+				if (distance(newPos, lineT) <= 7)
+				{
+					QPointF pointP = projectorTo(newPos, lineT);
+					offset += (pointP - newPos);
+					verSetted = true;
+					break;
+				}
+			}
+		}
+	}
+
+	return newPos + offset;
+}
+
+void Central::showTapeLineValue(Qt::Orientation o, qreal value)
 {
 	QPoint gloPos = QCursor::pos();
 	QGraphicsView* view = scene()->views().first();
@@ -356,7 +546,7 @@ void Central::showBarValue(Qt::Orientation o, qreal value)
 	QPointF scenePos = view->mapToScene(viewPos);
 	QPointF pos = mapFromScene(scenePos) + QPointF(10, -30);
 	m_valueShow->setPos(pos);
-	QString text = QString("%1:%2").arg(o == Qt::Horizontal ? 'Y' : 'X').arg(emit ratioValue(o == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal, value));
+	QString text = QString("Length:%1mm").arg(int(value + 0.5));
 	m_valueShow->setPlainText(text);
 	m_valueShow->update();
 	m_valueShow->show();
@@ -419,7 +609,12 @@ void Central::allItemDataEdited()const
 
 bool Central::isMoveMode()
 {
-	return m_projectorRatio.isEmpty();
+	return m_projectorRatio.isEmpty() && !m_projectorRatio.isValid();
+}
+
+void Central::setSnap(bool b)
+{
+	m_bSnap = b;
 }
 
 void Central::removeData(const QDomElement& data)
@@ -440,7 +635,7 @@ void Central::createBar(Qt::Orientation o, const QPointF& scenePos)
 	connect(bar, &Bar::positionToValue, this, &Central::positionToValue);
 	connect(bar, &Bar::attached, this, &Central::attached);
 	connect(bar, &Bar::mouseTracking, this, &Central::mouseTracking);
-	connect(bar, &Bar::showValue, this, &Central::showBarValue);
+	connect(bar, &Bar::showValue, this, &Central::showTapeLineValue);
 	connect(bar, &Bar::hideValue, this, &Central::hideValue);
 
 	bar->resize(bar->orient() == Qt::Horizontal ? QSizeF(rect().width(), LINEWIDTH) : QSizeF(LINEWIDTH, rect().height()));
@@ -466,17 +661,31 @@ void Central::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	{
 		pro->updatePosition();
 	}
+
+	if (m_projectorRatio == QSize(1,0))
+	{
+		QPointF pos = attachedPos(event->pos());
+		m_line->setLine(QLineF(pos, pos));
+		m_line->show();
+	}
 	Base::mousePressEvent(event);
 }
 
 void Central::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	hideValue();
+	m_line->hide();
 	return Base::mouseReleaseEvent(event);
 }
 
 void Central::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (m_projectorRatio == QSize(1, 0))
+	{
+		QPointF pos = attachedPos(event->pos());
+		m_line->setLine(QLineF(m_line->line().p1(), pos));
+		showTapeLineValue(Qt::Horizontal, positionToValue(Qt::Horizontal, valueToPosition(Qt::Horizontal,0) + m_line->line().length()));
+	}
 	emit mouseTracking(QPointF(positionToValue(Qt::Vertical, event->pos().x()), positionToValue(Qt::Horizontal, event->pos().y())));
 	return Base::mouseMoveEvent(event);
 }

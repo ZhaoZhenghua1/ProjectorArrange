@@ -49,12 +49,18 @@ public:
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         label = new QLabel(Dialog);
         label->setObjectName(QStringLiteral("label"));
-        label->setMaximumSize(QSize(65, 16777215));
+        label->setMaximumSize(QSize(100000, 16777215));
 
         horizontalLayout_2->addWidget(label);
 
         spinBoxx = new QSpinBox(Dialog);
         spinBoxx->setObjectName(QStringLiteral("spinBoxx"));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(1);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(spinBoxx->sizePolicy().hasHeightForWidth());
+        spinBoxx->setSizePolicy(sizePolicy);
+        spinBoxx->setSizeIncrement(QSize(0, 0));
         spinBoxx->setMinimum(10);
         spinBoxx->setMaximum(999999);
         spinBoxx->setValue(6000);
@@ -69,6 +75,9 @@ public:
 
         spinBoxy = new QSpinBox(Dialog);
         spinBoxy->setObjectName(QStringLiteral("spinBoxy"));
+        sizePolicy.setHeightForWidth(spinBoxy->sizePolicy().hasHeightForWidth());
+        spinBoxy->setSizePolicy(sizePolicy);
+        spinBoxy->setSizeIncrement(QSize(0, 0));
         spinBoxy->setMinimum(10);
         spinBoxy->setMaximum(999999);
         spinBoxy->setValue(2000);

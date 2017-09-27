@@ -2,10 +2,10 @@
 <projector>
   <index name="名称" des="投影机索引号" edittype="string;"/>
   <position name="位置" des="投影机位置" edittype="position;"/>
-	<fenbianlv name="分辨率 "  des="投影机的原生分辨率" edittype="readonly;"/>
-	<liangdu name="亮度(流明) " des="每台投影机亮度，单位:流明" range="0~999999999" edittype="int;"/>
+  <fenbianlv name="分辨率 "  des="投影机的原生分辨率" edittype="readonly;"/>
+  <liangdu name="亮度(流明) " des="每台投影机亮度，单位:流明" range="0~999999999" edittype="int;"/>
   <rotate name="安装方式" des="安装方式" range="水平安装;垂直安装" edittype="putstyle;"/>
-  <projectionwidth name="投影宽度" des="投影宽度" range="0~999999" edittype="int;write;">
+  <projectionwidth name="投影宽度" des="投影宽度" range="50~999999" edittype="int;write;">
     fenbianlv = data.getValue('projector.fenbianlv');
     projectionwidth = data.getValue('projector.projectionwidth');
     strs = fenbianlv.split("x");
@@ -13,7 +13,7 @@
     height = strs[1];
     data.setValue('projector.projectionheight', Math.round(projectionwidth/width*height));
   </projectionwidth>
-  <projectionheight name="投影高度" des="投影高度" range="0~999999" edittype="int;write;">
+  <projectionheight name="投影高度" des="投影高度" range="50~999999" edittype="int;write;">
     fenbianlv = data.getValue('projector.fenbianlv');
     projectionheight = data.getValue('projector.projectionheight');
     strs = fenbianlv.split("x");
@@ -25,4 +25,13 @@
   <prodis name="安装距离" des="投影机到幕的最佳距离" edittype="read;">
     data.getValue('projector.projectionwidth')*data.getValue('projector.projectorratio');
   </prodis>
+  <liumingm2 name="每平米亮度(流明/㎡)" des="幕上每平米流明数。250~400流明/㎡：全暗环境下较清晰；400~600流明/㎡:昏暗光线下较清晰；600~800流明/㎡:正常光线下较清晰；" edittype="read;">
+    (data.getValue('projector.liangdu')/(data.getValue('projector.projectionwidth')*data.getValue('projector.projectionheight')/1000000)).toFixed(1);
+  </liumingm2>
+  <xianshilidu name="显示粒度" des="投影机成像面板每像素所占幕的尺寸，单位毫米，数值越小，画面越精细。" edittype="read;">
+    fenbianlv = data.getValue('projector.fenbianlv');
+    strs = fenbianlv.split("x");
+    width = strs[0];
+    (data.getValue('projector.projectionwidth')/width).toFixed(1);
+  </xianshilidu>
 </projector> 
