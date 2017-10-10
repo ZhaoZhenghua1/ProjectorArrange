@@ -64,6 +64,7 @@ signals:
 	void allItemDataEdited()const;
 	void dataChanged()const;
 	void setSnap(bool);
+	void showEffect(int type);
 public slots:
 	QSize ratio();
 

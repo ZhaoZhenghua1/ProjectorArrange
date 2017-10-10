@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWidget_t {
-    QByteArrayData data[21];
-    char stringdata0[195];
+    QByteArrayData data[24];
+    char stringdata0[224];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,30 +34,34 @@ QT_MOC_LITERAL(1, 11, 6), // "zoomIn"
 QT_MOC_LITERAL(2, 18, 0), // ""
 QT_MOC_LITERAL(3, 19, 7), // "zoomOut"
 QT_MOC_LITERAL(4, 27, 7), // "setSnap"
-QT_MOC_LITERAL(5, 35, 11), // "onSetPixmap"
-QT_MOC_LITERAL(6, 47, 10), // "onSetRatio"
-QT_MOC_LITERAL(7, 58, 15), // "onMouseTracking"
-QT_MOC_LITERAL(8, 74, 3), // "pos"
-QT_MOC_LITERAL(9, 78, 6), // "onOpen"
-QT_MOC_LITERAL(10, 85, 7), // "onClose"
-QT_MOC_LITERAL(11, 93, 6), // "onSave"
-QT_MOC_LITERAL(12, 100, 5), // "onNew"
-QT_MOC_LITERAL(13, 106, 7), // "onAbout"
-QT_MOC_LITERAL(14, 114, 10), // "onViewHelp"
-QT_MOC_LITERAL(15, 125, 11), // "domDocument"
-QT_MOC_LITERAL(16, 137, 12), // "QDomDocument"
-QT_MOC_LITERAL(17, 150, 12), // "onOpenRecent"
-QT_MOC_LITERAL(18, 163, 16), // "onSetOrientation"
-QT_MOC_LITERAL(19, 180, 2), // "id"
-QT_MOC_LITERAL(20, 183, 11) // "onSetRation"
+QT_MOC_LITERAL(5, 35, 10), // "showEffect"
+QT_MOC_LITERAL(6, 46, 4), // "type"
+QT_MOC_LITERAL(7, 51, 11), // "onSetPixmap"
+QT_MOC_LITERAL(8, 63, 10), // "onSetRatio"
+QT_MOC_LITERAL(9, 74, 15), // "onMouseTracking"
+QT_MOC_LITERAL(10, 90, 3), // "pos"
+QT_MOC_LITERAL(11, 94, 6), // "onOpen"
+QT_MOC_LITERAL(12, 101, 7), // "onClose"
+QT_MOC_LITERAL(13, 109, 6), // "onSave"
+QT_MOC_LITERAL(14, 116, 5), // "onNew"
+QT_MOC_LITERAL(15, 122, 7), // "onAbout"
+QT_MOC_LITERAL(16, 130, 10), // "onViewHelp"
+QT_MOC_LITERAL(17, 141, 11), // "domDocument"
+QT_MOC_LITERAL(18, 153, 12), // "QDomDocument"
+QT_MOC_LITERAL(19, 166, 12), // "onOpenRecent"
+QT_MOC_LITERAL(20, 179, 16), // "onSetOrientation"
+QT_MOC_LITERAL(21, 196, 2), // "id"
+QT_MOC_LITERAL(22, 199, 11), // "onSetRation"
+QT_MOC_LITERAL(23, 211, 12) // "onShowEffect"
 
     },
     "MainWidget\0zoomIn\0\0zoomOut\0setSnap\0"
-    "onSetPixmap\0onSetRatio\0onMouseTracking\0"
-    "pos\0onOpen\0onClose\0onSave\0onNew\0onAbout\0"
-    "onViewHelp\0domDocument\0QDomDocument\0"
-    "onOpenRecent\0onSetOrientation\0id\0"
-    "onSetRation"
+    "showEffect\0type\0onSetPixmap\0onSetRatio\0"
+    "onMouseTracking\0pos\0onOpen\0onClose\0"
+    "onSave\0onNew\0onAbout\0onViewHelp\0"
+    "domDocument\0QDomDocument\0onOpenRecent\0"
+    "onSetOrientation\0id\0onSetRation\0"
+    "onShowEffect"
 };
 #undef QT_MOC_LITERAL
 
@@ -67,52 +71,56 @@ static const uint qt_meta_data_MainWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   94,    2, 0x06 /* Public */,
-       3,    0,   95,    2, 0x06 /* Public */,
-       4,    1,   96,    2, 0x06 /* Public */,
+       1,    0,  104,    2, 0x06 /* Public */,
+       3,    0,  105,    2, 0x06 /* Public */,
+       4,    1,  106,    2, 0x06 /* Public */,
+       5,    1,  109,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   99,    2, 0x0a /* Public */,
-       6,    0,  100,    2, 0x0a /* Public */,
-       7,    1,  101,    2, 0x0a /* Public */,
-       9,    0,  104,    2, 0x0a /* Public */,
-      10,    0,  105,    2, 0x0a /* Public */,
-      11,    0,  106,    2, 0x0a /* Public */,
-      12,    0,  107,    2, 0x0a /* Public */,
-      13,    0,  108,    2, 0x0a /* Public */,
-      14,    0,  109,    2, 0x0a /* Public */,
-      15,    0,  110,    2, 0x0a /* Public */,
-      17,    0,  111,    2, 0x0a /* Public */,
-      18,    1,  112,    2, 0x08 /* Private */,
-      20,    1,  115,    2, 0x08 /* Private */,
+       7,    0,  112,    2, 0x0a /* Public */,
+       8,    0,  113,    2, 0x0a /* Public */,
+       9,    1,  114,    2, 0x0a /* Public */,
+      11,    0,  117,    2, 0x0a /* Public */,
+      12,    0,  118,    2, 0x0a /* Public */,
+      13,    0,  119,    2, 0x0a /* Public */,
+      14,    0,  120,    2, 0x0a /* Public */,
+      15,    0,  121,    2, 0x0a /* Public */,
+      16,    0,  122,    2, 0x0a /* Public */,
+      17,    0,  123,    2, 0x0a /* Public */,
+      19,    0,  124,    2, 0x0a /* Public */,
+      20,    1,  125,    2, 0x08 /* Private */,
+      22,    1,  128,    2, 0x08 /* Private */,
+      23,    1,  131,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,    2,
+    QMetaType::Void, QMetaType::Int,    6,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QPoint,    8,
+    QMetaType::Void, QMetaType::QPoint,   10,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    0x80000000 | 16,
+    0x80000000 | 18,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   19,
-    QMetaType::Void, QMetaType::Int,   19,
+    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void, QMetaType::Bool,    2,
 
        0        // eod
 };
@@ -126,20 +134,22 @@ void MainWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->zoomIn(); break;
         case 1: _t->zoomOut(); break;
         case 2: _t->setSnap((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 3: _t->onSetPixmap(); break;
-        case 4: _t->onSetRatio(); break;
-        case 5: _t->onMouseTracking((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
-        case 6: _t->onOpen(); break;
-        case 7: _t->onClose(); break;
-        case 8: _t->onSave(); break;
-        case 9: _t->onNew(); break;
-        case 10: _t->onAbout(); break;
-        case 11: _t->onViewHelp(); break;
-        case 12: { QDomDocument _r = _t->domDocument();
+        case 3: _t->showEffect((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->onSetPixmap(); break;
+        case 5: _t->onSetRatio(); break;
+        case 6: _t->onMouseTracking((*reinterpret_cast< const QPoint(*)>(_a[1]))); break;
+        case 7: _t->onOpen(); break;
+        case 8: _t->onClose(); break;
+        case 9: _t->onSave(); break;
+        case 10: _t->onNew(); break;
+        case 11: _t->onAbout(); break;
+        case 12: _t->onViewHelp(); break;
+        case 13: { QDomDocument _r = _t->domDocument();
             if (_a[0]) *reinterpret_cast< QDomDocument*>(_a[0]) = _r; }  break;
-        case 13: _t->onOpenRecent(); break;
-        case 14: _t->onSetOrientation((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 15: _t->onSetRation((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 14: _t->onOpenRecent(); break;
+        case 15: _t->onSetOrientation((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 16: _t->onSetRation((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 17: _t->onShowEffect((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -163,6 +173,13 @@ void MainWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             typedef void (MainWidget::*_t)(bool );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MainWidget::setSnap)) {
                 *result = 2;
+                return;
+            }
+        }
+        {
+            typedef void (MainWidget::*_t)(int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MainWidget::showEffect)) {
+                *result = 3;
                 return;
             }
         }
@@ -194,13 +211,13 @@ int MainWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 16;
+        _id -= 18;
     }
     return _id;
 }
@@ -222,5 +239,12 @@ void MainWidget::setSnap(bool _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
+void MainWidget::showEffect(int _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 QT_END_MOC_NAMESPACE

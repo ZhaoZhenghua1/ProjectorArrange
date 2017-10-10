@@ -56,6 +56,7 @@ Clipper::Clipper(QWidget *parent)
 	connect(this, &Clipper::currentItemDataEdited, m_rootWidget->central(), &Central::currentItemDataEdited);
 	connect(this, &Clipper::allItemDataEdited, m_rootWidget->central(), &Central::allItemDataEdited);
 	connect(this, &Clipper::setSnap, m_rootWidget->central(), &Central::setSnap);
+	connect(this, &Clipper::showEffect, m_rootWidget->central(), &Central::showEffect);
 
 	scene->addItem(m_rootWidget);
 // 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

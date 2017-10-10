@@ -6,6 +6,7 @@ class Clipper;
 class TreeView;
 class ItemModel;
 class AllItemModel;
+class QRadioButton;
 class MainWidget : public QMainWindow
 {
 	typedef QMainWindow Base;
@@ -32,6 +33,7 @@ signals:
 	void zoomIn();
 	void zoomOut();
 	void setSnap(bool);
+	void showEffect(int type);
 private:
 	void addRecent();
 	bool close();
@@ -44,6 +46,7 @@ private:
 private slots:
 void onSetOrientation(int id);
 void onSetRation(int id);
+void onShowEffect(bool);
 protected:
 	virtual void closeEvent(QCloseEvent *event)override;
 	virtual void dragEnterEvent(QDragEnterEvent *event);
@@ -61,5 +64,6 @@ private:
 	QDomDocument m_doc;
 	QDomDocument m_emptyDoc;
 	QMenu* m_recentMenu = nullptr;
+	QRadioButton *m_effectBtns[2] = { nullptr };
 };
 

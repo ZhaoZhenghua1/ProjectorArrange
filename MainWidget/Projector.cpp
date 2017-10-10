@@ -12,6 +12,7 @@ Projector::Projector(QGraphicsItem* parent) :Base(parent)
 	setPen(QPen(Qt::black, 0, Qt::DashLine));
 	setBrush(QBrush(QColor(255, 255, 255, 100)));
 	setZValue(7);
+	setAcceptHoverEvents(true);
 }
 
 Projector::~Projector()
@@ -48,48 +49,23 @@ void Projector::updatePosition()
 	setTransformOriginPoint(center);
 	setRotation(rotate());
 
+	if (0 == effectMode())
+	{
+		restoreBrush();
+		setZValue(7);
+	}
+	else if (1 == effectMode())
+	{
+		setZValue(brightness());
+	}
+	else if (2 == effectMode())
+	{
+		setZValue(pixelDensity());
+	}
+
 	//clearfocus so that SizeGrip hide
 	clearFocus();
 }
-
-// qreal Projector::value(Qt::Edge e)
-// {
-// 	switch (e)
-// 	{
-// 	case Qt::TopEdge:
-// 		return m_points[0].y();
-// 		break;
-// 	case Qt::LeftEdge:
-// 		return m_points[0].x();
-// 		break;
-// 	case Qt::RightEdge:
-// 		return m_points[1].x();
-// 		break;
-// 	case Qt::BottomEdge:
-// 		return m_points[1].y();
-// 		break;
-// 	}
-// 	return 0;
-// }
-
-// void Projector::setValue(Qt::Edge e, qreal value)
-// {
-// 	switch (e)
-// 	{
-// 	case Qt::TopEdge:
-// 		m_points[0].setY(value);
-// 		break;
-// 	case Qt::LeftEdge:
-// 		m_points[0].setX(value);
-// 		break;
-// 	case Qt::RightEdge:
-// 		m_points[1].setX(value);
-// 		break;
-// 	case Qt::BottomEdge:
-// 		m_points[1].setY(value);
-// 		break;
-// 	}
-// }
 
 void Projector::setData(const QDomElement& data)
 {
@@ -99,6 +75,41 @@ void Projector::setData(const QDomElement& data)
 QString Projector::index()
 {
 	return m_data.firstChildElement("index").firstChild().nodeValue();
+}
+
+qreal Projector::brightness()
+{
+	qreal liangdu = m_data.firstChildElement("liangdu").firstChild().nodeValue().toDouble();
+	qreal prowidth = m_data.firstChildElement("projectionwidth").firstChild().nodeValue().toDouble();
+	qreal proheight = m_data.firstChildElement("projectionheight").firstChild().nodeValue().toDouble();
+	if (prowidth < 1 || proheight < 1)
+	{
+		return 0;
+	}
+	return liangdu / (prowidth * proheight / 1000000);
+}
+
+qreal Projector::pixelDensity()
+{
+	QString fenbianlv = m_data.firstChildElement("fenbianlv").firstChild().nodeValue();
+	QStringList value = fenbianlv.split('x');
+	if (value.size() < 1)
+	{
+		value.push_back("1024");
+	}
+	qreal width = value[0].toDouble();
+	if (qAbs(width) < 0.00001)
+	{
+		width = 1024;
+	}
+
+	qreal prowidth = m_data.firstChildElement("projectionwidth").firstChild().nodeValue().toDouble();
+	return prowidth / width;
+}
+
+void Projector::restoreBrush()
+{
+	setBrush(QBrush(QColor(255, 255, 255, 100)));
 }
 
 QDomElement Projector::data()
@@ -117,98 +128,6 @@ void Projector::onRotate(qreal angle)
 	emit dataChanged();
 }
 
-QLineF Projector::topLine(const QRectF& rect)
-{
-	return QLineF();
-	//return QLineF(mapToScene(rect.topLeft()), mapToScene())
-}
-QLineF Projector::leftLine(const QRectF& rect)
-{
-	return QLineF();
-}
-
-QLineF Projector::rightLine(const QRectF& rect)
-{
-	return QLineF();
-}
-
-QLineF Projector::bottomLine(const QRectF& rect)
-{
-	return QLineF();
-}
-// 计算两平行直线间的距离
-// qreal distance(const QLineF& l, const QLineF& r)
-// {
-// 	if (qAbs(l.angleTo(r)) < 0.1 || qAbs(l.angleTo(r) - 360) < 0.1 || qAbs(l.angleTo(r) - 180) < 0.1)
-// 	{
-// 		if (qAbs(l.angle() - 90) < 0.1 || qAbs(l.angle() - 270) < 0.1)
-// 		{
-// 			return qAbs(r.x1() - l.x1());
-// 		}
-// 		qreal k = (r.p2().y() - r.p1().y()) / (r.p2().x() - r.p1().x());//k=(y2-y1)/(x2-x1)
-// 		qreal b1 = l.y1() - k*l.x1();
-// 		qreal b2 = r.y1() - k*r.x1();
-// 		return qAbs(b2 - b1) / qSqrt(1 + k*k);
-// 	}
-// 	return INT_MAX;
-// }
-// 
-// from直线投影到to上，得到投影直线
-// QLineF projectorTo(const QLineF& from, const QLineF& to)
-// {
-// 	if (qAbs(from.angleTo(to)) < 0.1 || qAbs(from.angleTo(to) - 180) < 0.1 || qAbs(from.angleTo(to) - 360) < 0.1)
-// 	{
-// 		if (qAbs(from.angle() - 90) < 0.1 || qAbs(from.angle() - 270) < 0.1)
-// 		{
-// 			return QLineF(QPointF(to.x1(), from.y1()), QPointF(to.x1(), from.y2()));
-// 		}
-// 		else if (qAbs(from.angle()) < 0.1 || qAbs(from.angle() - 180) < 0.1)
-// 		{
-// 			return QLineF(QPointF(from.x1(), to.y1()), QPointF(from.x2(), to.y1()));
-// 		}
-// 		else
-// 		{
-// 			qreal k = (from.p2().y() - from.p1().y()) / (from.p2().x() - from.p1().x());
-// 			qreal x1 = (from.y1() - to.y1() + k*to.x1() + 1 / k*from.x1()) / (k + 1 / k);
-// 			qreal y1 = k*(x1 - to.x1()) + to.y1();
-// 
-// 			qreal x2 = (from.y1() - to.y2() + k*to.x2() + 1 / k*from.x1()) / (k + 1 / k);
-// 			qreal y2 = k*(x1 - to.x2()) + to.y2();
-// 			return QLineF(QPointF(x1, y1), QPointF(x2, y2));
-// 		}
-// 	}
-// 	return from;
-// }
-// 
-// QPointF minPoint(const QLineF& line)
-// {
-// 	QPointF p1 = line.p1();
-// 	QPointF p2 = line.p2();
-// 	if (qAbs(p1.x() - p2.x()) < 0.01)
-// 	{
-// 		return p1.x() < p2.x() ? p1 : p2;
-// 	}
-// 	else
-// 	{
-// 		return p1.y() < p2.y() ? p1 : p2;
-// 	}
-// }
-// 
-// make line x1 < x2, y1 < y2
-// QLineF normalLine(const QLineF& line)
-// {
-// 	QPointF p1 = line.p1();
-// 	QPointF p2 = line.p2();
-// 	if (qAbs(p1.x() - p2.x()) < 0.01)
-// 	{
-// 		return p1.x() < p2.x() ? QLineF(p1,p2) : QLineF(p2,p1);
-// 	}
-// 	else
-// 	{
-// 		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
-// 	}
-// }
-
 QVariant Projector::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemPositionChange && scene() && m_bPressed)
@@ -225,6 +144,10 @@ QVariant Projector::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void Projector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (0 == effectMode())
+	{
+		setZValue(8);
+	}
 	//if is not moving mode, transparent the press event to the central to create mode;
 	if (!isMoveMode())
 	{
@@ -278,6 +201,20 @@ void Projector::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void Projector::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)
 {
+	if (0 == effectMode())
+	{
+		restoreBrush();
+	}
+	else if (effectMode() == 1)
+	{
+		int gray = getBrightnessGrey(brightness());
+		setBrush(QBrush(QColor(gray, gray, gray)));
+	}
+	else if (2 == effectMode())
+	{
+		int hue = getPixdensityHue(pixelDensity());
+		setBrush(QBrush(QColor(hue, 0, 0)));
+	}
 	painter->save();
 	QString index = m_data.firstChildElement("index").firstChild().nodeValue();
 	Base::paint(painter, option, widget);
@@ -313,7 +250,10 @@ void Projector::focusInEvent(QFocusEvent *event)
 		delete m_rotateItem;
 		m_rotateItem = new RotateItem(this);
 		connect(m_rotateItem, &RotateItem::rotate, this, &Projector::onRotate);
-		setZValue(7);
+		if (0 == effectMode())
+		{
+			setZValue(7);
+		}
 	}
 	if (isMoveMode())
 	{
@@ -328,12 +268,25 @@ void Projector::focusOutEvent(QFocusEvent *event)
 	dataChanged();
 	delete m_rotateItem;
 	m_rotateItem = nullptr;
-	setZValue(6);
+	if (0 == effectMode())
+	{
+		setZValue(6);
+	}
 	return;
+}
+
+void Projector::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+
+	return Base::hoverMoveEvent(event);
 }
 
 void Projector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	if (0 == effectMode())
+	{
+		setZValue(7);
+	}
 	m_bPressed = false;
 	Base::mouseReleaseEvent(event);
 	updateData();

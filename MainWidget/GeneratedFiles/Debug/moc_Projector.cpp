@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Projector_t {
-    QByteArrayData data[27];
-    char stringdata0[266];
+    QByteArrayData data[32];
+    char stringdata0[334];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -54,8 +54,13 @@ QT_MOC_LITERAL(21, 204, 10), // "removeData"
 QT_MOC_LITERAL(22, 215, 11), // "QDomElement"
 QT_MOC_LITERAL(23, 227, 4), // "data"
 QT_MOC_LITERAL(24, 232, 18), // "setCurrentItemData"
-QT_MOC_LITERAL(25, 251, 8), // "onRotate"
-QT_MOC_LITERAL(26, 260, 5) // "angle"
+QT_MOC_LITERAL(25, 251, 10), // "effectMode"
+QT_MOC_LITERAL(26, 262, 17), // "getBrightnessGrey"
+QT_MOC_LITERAL(27, 280, 10), // "brightness"
+QT_MOC_LITERAL(28, 291, 16), // "getPixdensityHue"
+QT_MOC_LITERAL(29, 308, 10), // "pixdensity"
+QT_MOC_LITERAL(30, 319, 8), // "onRotate"
+QT_MOC_LITERAL(31, 328, 5) // "angle"
 
     },
     "Projector\0positionToValue\0\0Qt::Orientation\0"
@@ -64,7 +69,10 @@ QT_MOC_LITERAL(26, 260, 5) // "angle"
     "QRectF&\0rect\0showValue\0value\0hideValue\0"
     "limitPos\0Qt::Edge\0isMoveMode\0dataChanged\0"
     "removeData\0QDomElement\0data\0"
-    "setCurrentItemData\0onRotate\0angle"
+    "setCurrentItemData\0effectMode\0"
+    "getBrightnessGrey\0brightness\0"
+    "getPixdensityHue\0pixdensity\0onRotate\0"
+    "angle"
 };
 #undef QT_MOC_LITERAL
 
@@ -74,30 +82,33 @@ static const uint qt_meta_data_Projector[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      14,   14, // methods
+      17,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-      12,       // signalCount
+      15,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   84,    2, 0x06 /* Public */,
-       4,    2,   89,    2, 0x06 /* Public */,
-       5,    1,   94,    2, 0x06 /* Public */,
-       7,    1,   97,    2, 0x06 /* Public */,
-       9,    2,  100,    2, 0x06 /* Public */,
-      14,    1,  105,    2, 0x06 /* Public */,
-      16,    0,  108,    2, 0x06 /* Public */,
-      17,    1,  109,    2, 0x06 /* Public */,
-      19,    0,  112,    2, 0x06 /* Public */,
-      20,    0,  113,    2, 0x06 /* Public */,
-      21,    1,  114,    2, 0x06 /* Public */,
-      24,    1,  117,    2, 0x06 /* Public */,
+       1,    2,   99,    2, 0x06 /* Public */,
+       4,    2,  104,    2, 0x06 /* Public */,
+       5,    1,  109,    2, 0x06 /* Public */,
+       7,    1,  112,    2, 0x06 /* Public */,
+       9,    2,  115,    2, 0x06 /* Public */,
+      14,    1,  120,    2, 0x06 /* Public */,
+      16,    0,  123,    2, 0x06 /* Public */,
+      17,    1,  124,    2, 0x06 /* Public */,
+      19,    0,  127,    2, 0x06 /* Public */,
+      20,    0,  128,    2, 0x06 /* Public */,
+      21,    1,  129,    2, 0x06 /* Public */,
+      24,    1,  132,    2, 0x06 /* Public */,
+      25,    0,  135,    2, 0x06 /* Public */,
+      26,    1,  136,    2, 0x06 /* Public */,
+      28,    1,  139,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      23,    0,  120,    2, 0x0a /* Public */,
-      25,    1,  121,    2, 0x08 /* Private */,
+      23,    0,  142,    2, 0x0a /* Public */,
+      30,    1,  143,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::QReal, 0x80000000 | 3, QMetaType::QReal,    2,    2,
@@ -112,10 +123,13 @@ static const uint qt_meta_data_Projector[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 22,   23,
     QMetaType::Void, 0x80000000 | 22,   23,
+    QMetaType::Int,
+    QMetaType::Int, QMetaType::Int,   27,
+    QMetaType::Int, QMetaType::QReal,   29,
 
  // slots: parameters
     0x80000000 | 22,
-    QMetaType::Void, QMetaType::QReal,   26,
+    QMetaType::Void, QMetaType::QReal,   31,
 
        0        // eod
 };
@@ -143,9 +157,15 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 9: _t->dataChanged(); break;
         case 10: _t->removeData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
         case 11: _t->setCurrentItemData((*reinterpret_cast< const QDomElement(*)>(_a[1]))); break;
-        case 12: { QDomElement _r = _t->data();
+        case 12: { int _r = _t->effectMode();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 13: { int _r = _t->getBrightnessGrey((*reinterpret_cast< int(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 14: { int _r = _t->getPixdensityHue((*reinterpret_cast< qreal(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 15: { QDomElement _r = _t->data();
             if (_a[0]) *reinterpret_cast< QDomElement*>(_a[0]) = _r; }  break;
-        case 13: _t->onRotate((*reinterpret_cast< qreal(*)>(_a[1]))); break;
+        case 16: _t->onRotate((*reinterpret_cast< qreal(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -235,6 +255,27 @@ void Projector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
                 return;
             }
         }
+        {
+            typedef int (Projector::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::effectMode)) {
+                *result = 12;
+                return;
+            }
+        }
+        {
+            typedef int (Projector::*_t)(int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::getBrightnessGrey)) {
+                *result = 13;
+                return;
+            }
+        }
+        {
+            typedef int (Projector::*_t)(qreal );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Projector::getPixdensityHue)) {
+                *result = 14;
+                return;
+            }
+        }
     }
 }
 
@@ -265,13 +306,13 @@ int Projector::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 14)
+        if (_id < 17)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 17;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 14)
+        if (_id < 17)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 14;
+        _id -= 17;
     }
     return _id;
 }
@@ -366,5 +407,32 @@ void Projector::setCurrentItemData(const QDomElement & _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 11, _a);
+}
+
+// SIGNAL 12
+int Projector::effectMode()
+{
+    int _t0 = int();
+    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)) };
+    QMetaObject::activate(this, &staticMetaObject, 12, _a);
+    return _t0;
+}
+
+// SIGNAL 13
+int Projector::getBrightnessGrey(int _t1)
+{
+    int _t0 = int();
+    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 13, _a);
+    return _t0;
+}
+
+// SIGNAL 14
+int Projector::getPixdensityHue(qreal _t1)
+{
+    int _t0 = int();
+    void *_a[] = { const_cast<void*>(reinterpret_cast<const void*>(&_t0)), const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 14, _a);
+    return _t0;
 }
 QT_END_MOC_NAMESPACE

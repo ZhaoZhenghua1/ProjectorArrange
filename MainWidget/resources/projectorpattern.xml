@@ -28,7 +28,7 @@
   <liumingm2 name="每平米亮度(流明/㎡)" des="幕上每平米流明数。250~400流明/㎡：全暗环境下较清晰；400~600流明/㎡:昏暗光线下较清晰；600~800流明/㎡:正常光线下较清晰；" edittype="read;">
     (data.getValue('projector.liangdu')/(data.getValue('projector.projectionwidth')*data.getValue('projector.projectionheight')/1000000)).toFixed(1);
   </liumingm2>
-  <xianshilidu name="显示粒度" des="投影机成像面板每像素所占幕的尺寸，单位毫米，数值越小，画面越精细。" edittype="read;">
+  <xianshilidu name="像素尺寸" des="投影机成像面板每像素所占幕的尺寸，单位毫米，数值越小，画面越精细。" edittype="read;">
     fenbianlv = data.getValue('projector.fenbianlv');
     strs = fenbianlv.split("x");
     width = strs[0];

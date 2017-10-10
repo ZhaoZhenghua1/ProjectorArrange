@@ -115,7 +115,9 @@ void Central::setData(const QDomElement& data)
 		connect(proj, &Projector::hideValue, this, &Central::hideValue);
 		connect(proj, &Projector::dataChanged, this, &Central::dataChanged);
 		connect(proj, &Projector::setCurrentItemData, this, &Central::setCurrentItemData);
-
+		connect(proj, &Projector::effectMode, this, &Central::effectMode);
+		connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
+		connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
 		proj->setData(elem);
 		
 		proj->updatePosition();
@@ -156,6 +158,20 @@ void Central::resizeEvent(QGraphicsSceneResizeEvent *event)
 
 void Central::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
+	if (m_projectorRatio == QSize(1, 0))
+	{
+		setCursor(Qt::ArrowCursor);
+	}
+	else if (m_projectorRatio.isValid())
+	{
+		setCursor(Qt::CrossCursor);
+	}
+
+	else if (m_projectorRatio.isEmpty())
+	{
+		setCursor(Qt::PointingHandCursor);
+	}
+	
 	emit mouseTracking(QPointF(positionToValue(Qt::Vertical, event->pos().x() - 7), positionToValue(Qt::Horizontal, event->pos().y() - 7)));
 	return Base::hoverMoveEvent(event);
 }
@@ -215,6 +231,9 @@ Projector* Central::createProjector(const QPointF& pos)
 	connect(proj, &Projector::hideValue, this, &Central::hideValue);
 	connect(proj, &Projector::dataChanged, this, &Central::dataChanged);
 	connect(proj, &Projector::setCurrentItemData, this, &Central::setCurrentItemData);
+	connect(proj, &Projector::effectMode, this, &Central::effectMode);
+	connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
+	connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
 
 	return proj;
 }
@@ -239,6 +258,116 @@ QDomElement Central::createProjectorNode()
 	proElement.firstChildElement("projectionheight").firstChild().setNodeValue(QString("%1").arg(int(m_projectorRatio.height()*onePixWidth + 0.5)));
 
 	return proElement;
+}
+
+QPixmap Central::createBrightnessMap()
+{
+	QPixmap map(rect().width(), rect().height());
+	map.fill(Qt::black);
+	QPainter painter(&map);
+
+	QList<Projector*> projectors;
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			projectors.push_back(pro);
+	}
+	if (!projectors.isEmpty())
+	{
+		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->brightness() < r->brightness();});
+		qreal minBrightness = projectors.first()->brightness();
+		qreal maxBrightness = projectors.last()->brightness();
+		qreal demarcation = 128;
+		qreal k1 = 128 / (200 - minBrightness);
+		qreal b1 = 128 - 200 * k1;
+
+		qreal k2 = (255 - 128) / (maxBrightness - 200);
+		qreal b2 = 255 - maxBrightness * k2;
+
+		for (Projector* pro : projectors)
+		{
+			pro->setZValue(pro->brightness());
+// 			QPolygonF points({ pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,
+// 				pro->mapToParent(pro->rect().bottomRight()), pro->mapToParent(pro->rect().bottomLeft()) });
+
+			qreal brightness = pro->brightness();
+
+			qreal gray;
+			if (qAbs(brightness - 200) < 0.00001)
+			{
+				gray = 128;
+			}
+			else if (brightness < 200)
+			{
+				gray = k1*brightness + b1;
+			}
+			else
+			{
+				gray = k2*brightness + b2;
+			}
+			pro->setBrush(QBrush(QColor(gray, gray, gray)));
+//			QPainterPath path;
+//			path.addPolygon(points);
+//			painter.fillPath(path, QBrush(QColor(gray, gray, gray)));
+		}
+	}
+
+	return map;
+}
+
+QPixmap Central::createPixDensityMap()
+{
+	QPixmap map(rect().width(), rect().height());
+	map.fill(Qt::black);
+	QPainter painter(&map);
+
+	QList<Projector*> projectors;
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			projectors.push_back(pro);
+	}
+	if (!projectors.isEmpty())
+	{
+		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->brightness() < r->brightness();});
+		qreal minBrightness = projectors.first()->brightness();
+		qreal maxBrightness = projectors.first()->brightness();
+		qreal demarcation = 128;
+		qreal k1 = 128 / (200 - minBrightness);
+		qreal b1 = 128 - 200 * k1;
+
+		qreal k2 = (255 - 128) / (maxBrightness - 200);
+		qreal b2 = 255 - maxBrightness * k2;
+
+		for (Projector* pro : projectors)
+		{
+			QPolygonF points({ pro->mapToParent(pro->rect().topLeft()), pro->mapToParent(pro->rect().topRight()) ,
+				pro->mapToParent(pro->rect().bottomRight()), pro->mapToParent(pro->rect().bottomLeft()) });
+
+			qreal brightness = pro->brightness();
+
+			qreal gray;
+			if (qAbs(brightness - 200) < 0.00001)
+			{
+				gray = 128;
+			}
+			else if (brightness < 200)
+			{
+				gray = k1*brightness + b1;
+			}
+			else
+			{
+				gray = k2*brightness + b2;
+			}
+			QPainterPath path;
+			path.addPolygon(points);
+			painter.fillPath(path, QBrush(QColor(gray, gray, gray)));
+		}
+	}
+
+	return map.copy(m_centralMapItem->rect().toRect());
 }
 
 //计算两平行直线间的距离
@@ -475,13 +604,74 @@ QPointF Central::attached(const QPointF& newPos)
 	return newPos + offset;
 }
 
+//求向量l和向量r夹角向量
+const float ZERO = 0.00001;
+QPointF getVector(const QPointF& l, const QPointF& r)
+{
+	if (qAbs(l.x()) > ZERO && qAbs(l.y()) > ZERO &&qAbs(r.x()) > ZERO &&qAbs(r.y()) > ZERO)
+	{
+		qreal k1 = -l.x() / l.y();
+		qreal k2 = -r.x() / r.y();
+		if (qAbs(k1 - k2) < ZERO)
+		{
+			return l;
+		}
+
+		qreal x = (l.y() - r.y() - k1*l.x() + k2*r.x()) / (k2 - k1);
+		qreal y = k1*(x - l.x()) + l.y();
+		return{ x,y };
+	}
+	//zero vector
+	else if (l.manhattanLength() < ZERO)
+	{
+		return r;
+	}
+	else if (r.manhattanLength() < ZERO)
+	{
+		return l;
+	}
+	//坐标轴向量
+	else if (qAbs(l.x()) < ZERO && qAbs(r.y()) < ZERO)
+	{
+		return{r.x(), l.y()};
+	}
+	else if (qAbs(l.y()) < ZERO && qAbs(r.x()) < ZERO)
+	{
+		return{l.x(), r.y()};
+	}
+	else if (qAbs(l.x()) < ZERO)
+	{
+		qreal k = -r.x() / r.y();
+		return{(l.y() - r.y())/k + r.x() ,l.y() };
+	}
+	else if (qAbs(r.x()) < ZERO)
+	{
+		qreal k = -l.x() / l.y();
+		return{ (r.y() - l.y()) / k + l.x() ,r.y() };
+	}
+	else if (qAbs(l.y()) < ZERO)
+	{
+		qreal k = -r.x() / r.y();
+		return{ l.x(), k*(l.x() - r.x()) + r.y() };
+	}
+	else if (qAbs(r.y()) < ZERO)
+	{
+		qreal k = -l.x() / l.y();
+		return{ r.x(), k*(r.x() - l.x()) + l.y() };
+	}
+	else
+	{
+		return l;
+	}
+}
+
 QPointF Central::attachedPos(const QPointF& newPos)
 {
 	if (!m_bSnap)
 	{
 		return newPos;
 	}
-	QPointF offset;
+	QPointF offsetHor, offsetVer;
 
 	QList<QGraphicsRectItem*> attachItems;
 	attachItems.push_back(m_centralMapItem);
@@ -512,7 +702,7 @@ QPointF Central::attachedPos(const QPointF& newPos)
 				if (distance(newPos, lineT) <= 7)
 				{
 					QPointF pointP = projectorTo(newPos, lineT);
-					offset += (pointP - newPos);
+					offsetHor += (pointP - newPos);
 					horSetted = true;
 					break;
 				}
@@ -527,7 +717,7 @@ QPointF Central::attachedPos(const QPointF& newPos)
 				if (distance(newPos, lineT) <= 7)
 				{
 					QPointF pointP = projectorTo(newPos, lineT);
-					offset += (pointP - newPos);
+					offsetVer += (pointP - newPos);
 					verSetted = true;
 					break;
 				}
@@ -535,7 +725,7 @@ QPointF Central::attachedPos(const QPointF& newPos)
 		}
 	}
 
-	return newPos + offset;
+	return newPos + getVector(offsetHor, offsetVer);
 }
 
 void Central::showTapeLineValue(Qt::Orientation o, qreal value)
@@ -615,6 +805,178 @@ bool Central::isMoveMode()
 void Central::setSnap(bool b)
 {
 	m_bSnap = b;
+}
+
+// void Central::showBrightness()
+// {
+// 	QPixmap map(m_centralMapItem->rect().width(), m_centralMapItem->rect().height());
+// 	map.fill(Qt::black);
+// 	m_centralMapItem->setPixmap(map);
+// 
+// 	QList<Projector*> projectors;
+// 	QList<QGraphicsItem*> childItems = this->childItems();
+// 	for (QGraphicsItem* item : childItems)
+// 	{
+// 		if (Projector* pro = dynamic_cast<Projector*>(item))
+// 			projectors.push_back(pro);
+// 	}
+// 	if (!projectors.isEmpty())
+// 	{
+// 		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->brightness() < r->brightness();});
+// 		qreal minBrightness = projectors.first()->brightness();
+// 		qreal maxBrightness = projectors.last()->brightness();
+// 		qreal demarcation = 128;
+// 		qreal k1 = 128 / (200 - minBrightness);
+// 		qreal b1 = 128 - 200 * k1;
+// 
+// 		qreal k2 = (255 - 128) / (maxBrightness - 200);
+// 		qreal b2 = 255 - maxBrightness * k2;
+// 
+// 		for (Projector* pro : projectors)
+// 		{
+// 			pro->setZValue(pro->brightness());
+// 			
+// 			qreal brightness = pro->brightness();
+// 
+// 			qreal gray;
+// 			if (qAbs(brightness - 200) < 0.00001)
+// 			{
+// 				gray = 128;
+// 			}
+// 			else if (brightness < 200)
+// 			{
+// 				gray = k1*brightness + b1;
+// 			}
+// 			else
+// 			{
+// 				gray = k2*brightness + b2;
+// 			}
+// 			pro->setBrush(QBrush(QColor(gray, gray, gray)));
+// 		}
+// 	}
+// }
+
+// void Central::showNormal()
+// {
+// 	m_centralMapItem->setPixmap(QPixmap(":/background.jpg"));
+// 
+// 	QList<Projector*> projectors;
+// 	QList<QGraphicsItem*> childItems = this->childItems();
+// 	for (QGraphicsItem* item : childItems)
+// 	{
+// 		if (Projector* pro = dynamic_cast<Projector*>(item))
+// 			projectors.push_back(pro);
+// 	}
+// 	if (!projectors.isEmpty())
+// 	{
+// 		for (Projector* pro : projectors)
+// 		{
+// 			pro->restoreBrush();
+// 		}
+// 	}
+// }
+
+void Central::showEffect(int type)
+{
+	m_effectMode = type;
+	if (0 == type)
+	{
+		m_centralMapItem->setPixmap(QPixmap(":/background.jpg"));
+	}
+	if (1 == type)
+	{
+		QPixmap map(m_centralMapItem->rect().width(), m_centralMapItem->rect().height());
+		map.fill(Qt::black);
+		m_centralMapItem->setPixmap(map);
+	}
+	else if (2 == type)
+	{
+		QPixmap map(m_centralMapItem->rect().width(), m_centralMapItem->rect().height());
+		map.fill(QColor(0,110,160));
+		m_centralMapItem->setPixmap(map);
+	}
+
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			pro->updatePosition();
+	}
+	
+	update();
+}
+
+int Central::effectMode()
+{
+	return m_effectMode;
+}
+
+int Central::getBrightnessGrey(int brightness)
+{
+	QList<Projector*> projectors;
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			projectors.push_back(pro);
+	}
+	if (!projectors.isEmpty())
+	{
+		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->brightness() < r->brightness();});
+		qreal minBrightness = projectors.first()->brightness();
+		qreal maxBrightness = projectors.last()->brightness();
+		qreal demarcation = 128;
+		qreal k1 = (128 - 32) / (200 - minBrightness);
+		qreal b1 = 128 - 200 * k1;
+
+		qreal k2 = (255 - 128) / (maxBrightness - 200);
+		qreal b2 = 255 - maxBrightness * k2;
+
+		qreal gray;
+		if (qAbs(brightness - 200) < 0.00001)
+		{
+			gray = 128;
+		}
+		else if (brightness < 200)
+		{
+			gray = k1*brightness + b1;
+		}
+		else
+		{
+			gray = k2*brightness + b2;
+		}
+		
+		return gray;
+	}
+	return 0;
+}
+
+int Central::getPixdensityHue(qreal pixdensity)
+{
+	QList<Projector*> projectors;
+	QList<QGraphicsItem*> childItems = this->childItems();
+	for (QGraphicsItem* item : childItems)
+	{
+		if (Projector* pro = dynamic_cast<Projector*>(item))
+			projectors.push_back(pro);
+	}
+	if (!projectors.isEmpty())
+	{
+		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->pixelDensity() < r->pixelDensity();});
+		qreal minBrightness = projectors.first()->pixelDensity();
+		qreal maxBrightness = projectors.last()->pixelDensity();
+		
+		if (qAbs(minBrightness - maxBrightness) < 0.1)
+		{
+			return 255;
+		}
+
+		qreal k = (255 - 32) / (maxBrightness - minBrightness);
+		qreal b = 32 - minBrightness * k;
+
+		return k*pixdensity + b;
+	}
+	return 0;
 }
 
 void Central::removeData(const QDomElement& data)

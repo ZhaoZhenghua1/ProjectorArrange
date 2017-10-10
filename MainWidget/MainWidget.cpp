@@ -18,6 +18,9 @@
 #include <QMimeData>
 #include "ui_ratio.h"
 #include <thread>
+#include <QPainter>
+#include <QPixmapCache>
+#include <QStringBuilder>
 #include "ui_about.h"
 #include "TableView/TreeView.h"
 #include "TableView/ItemModel.h"
@@ -80,8 +83,51 @@ QStatusBar {
 	color:rgb(255,255,255);
 })";
 
+void registerMap(const QString& map)
+{
+	QPixmap mappath = ":/" + map + ".png";
+	QPixmap hoverPath = ":/hover.png";
+	QPixmap pressedPath = ":/pressed.png";
+
+	QPixmap *normalMap = new QPixmap(50, 40);
+	normalMap->fill(QColor(83, 83, 83));
+	QPainter painter(normalMap);
+	painter.drawPixmap(normalMap->rect().adjusted(9, 4, -9, -4), mappath, mappath.rect());
+	normalMap->save(map + "_normal.png");
+
+	QPixmap *hoverMap = new QPixmap(50, 40);
+	QLinearGradient hoverGradient;
+	hoverGradient.setColorAt(0, QColor(117, 117, 117));
+	hoverGradient.setColorAt(1, QColor(98, 98, 98));
+	QBrush brush(hoverGradient);
+	QPainter painterHover(hoverMap);
+	painterHover.fillRect(hoverMap->rect(), brush);
+	painterHover.drawPixmap(hoverMap->rect().adjusted(9, 4, -9, -4), mappath, mappath.rect());
+	painterHover.drawPixmap(hoverMap->rect(), hoverPath, hoverPath.rect());
+	hoverMap->save(map + "_hover.png");
+	
+	QPixmap *pressedMap = new QPixmap(50, 40);
+	{
+		QLinearGradient pressedGradient;
+		pressedGradient.setColorAt(0, QColor(63, 63, 63));
+		pressedGradient.setColorAt(1, QColor(55, 55, 55));
+		QBrush brush(pressedGradient);
+		QPainter painterPressed(pressedMap);
+		painterPressed.fillRect(pressedMap->rect(), brush);
+		painterPressed.drawPixmap(pressedMap->rect().adjusted(9, 4, -9, -4), mappath, mappath.rect());
+		painterPressed.drawPixmap(pressedMap->rect(), pressedPath, pressedPath.rect());
+		pressedMap->save(map + "_pressed.png");
+	}
+
+}
+
 MainWidget::MainWidget(const QString& file)
 {
+// 	registerMap("brightness");
+// 	registerMap("vertical");
+ //	registerMap("collineation");
+
+
 	setAcceptDrops(true);
 	setWindowTitle(TITLE_HEADER);
 	initMenu();
@@ -108,7 +154,8 @@ MainWidget::MainWidget(const QString& file)
 	connect(this, &MainWidget::zoomIn, m_clipper, &Clipper::zoomIn);
 	connect(this, &MainWidget::zoomOut, m_clipper, &Clipper::zoomOut);
 	connect(this, &MainWidget::setSnap, m_clipper, &Clipper::setSnap);
-
+	connect(this, &MainWidget::showEffect, m_clipper, &Clipper::showEffect);
+	
 	QGroupBox* groupBox1 = new QGroupBox;
 	QHBoxLayout* layout1 = new QHBoxLayout;
 	groupBox1->setLayout(layout1);
@@ -175,7 +222,7 @@ enum ECREATE_FLAG
 };
 
 const QList<std::tuple<QString, int, QString, QString, QString> > RATIOS = {
-	{"Guides Tool: Image positioning aid", eMove, ":/arror_normal.png", ":/arror_hover.png" , ":/arror_pressed.png" },
+	{"Select Mode", eMove, ":/arror_normal.png", ":/arror_hover.png" , ":/arror_pressed.png" },
 	{"800x600",e800x600, ":/800x600_normal.png" , ":/800x600_hover.png" , ":/800x600_pressed.png" },
 	{"1024x768",e1024x768, ":/1024x768_normal.png" , ":/1024x768_hover.png" , ":/1024x768_pressed.png" },
 	{"1280x720",e1280x720 , ":/1280x720_normal.png" , ":/1280x720_hover.png" , ":/1280x720_pressed.png" },
@@ -200,6 +247,7 @@ QToolTip {
     border-radius: 3px;
     opacity: 200;
 })";
+
 void initToolBar(QToolBar* toolBar)
 {
 	QPalette palette;
@@ -231,7 +279,7 @@ void MainWidget::initToolBarItem()
 
 	QRadioButton* attachBtn = new QRadioButton;
 	attachBtn->setToolTip(tr("Snap"));
-	attachBtn->setStyleSheet(RADIO_STYLE.arg(":/snap_normal.png").arg(":/snap_hover.png").arg(":/snap_pressed.png"));
+	attachBtn->setStyleSheet(RADIO_STYLE.arg(":/collineation_normal.png").arg(":/collineation_hover.png").arg(":/collineation_pressed.png"));
 	toolBarPutStyle->addWidget(attachBtn);
 	connect(attachBtn, &QRadioButton::toggled, this, &MainWidget::setSnap);
 	attachBtn->setChecked(true);
@@ -251,6 +299,26 @@ void MainWidget::initToolBarItem()
 	}
 	groupRatio->buttons().first()->setChecked(true);
 	connect(groupRatio, SIGNAL(buttonClicked(int)), this, SLOT(onSetRation(int)));
+
+	QToolBar* toolBarEffect = new QToolBar;
+	addToolBar(Qt::TopToolBarArea, toolBarEffect);
+	initToolBar(toolBarEffect);
+	QRadioButton* brightness = new QRadioButton;
+	brightness->setToolTip(tr("Brightness distribution diagram"));
+	brightness->setStyleSheet(RADIO_STYLE.arg(":/brightness_normal.png").arg(":/brightness_hover.png").arg(":/brightness_pressed.png"));
+	brightness->setAutoExclusive(false);
+	toolBarEffect->addWidget(brightness);
+	connect(brightness, SIGNAL(toggled(bool)), this, SLOT(onShowEffect(bool)));
+	m_effectBtns[0] = brightness;
+
+	QRadioButton* pixdensity = new QRadioButton;
+	pixdensity->setToolTip(tr("Brightness distribution diagram"));
+	pixdensity->setStyleSheet(RADIO_STYLE.arg(":/pixdensity_normal.png").arg(":/pixdensity_hover.png").arg(":/pixdensity_pressed.png"));
+	pixdensity->setAutoExclusive(false);
+	toolBarEffect->addWidget(pixdensity);
+	m_effectBtns[1] = pixdensity;
+	connect(pixdensity, SIGNAL(toggled(bool)), this, SLOT(onShowEffect(bool)));
+	
 }
 
 void MainWidget::onSetOrientation(int id)
@@ -301,6 +369,19 @@ void MainWidget::onSetRation(int id)
 			}
 		}
 	}
+}
+
+void MainWidget::onShowEffect(bool checked)
+{
+	QObject* sender = this->sender();
+	if (checked)
+	{
+		bool firstChecked = sender == m_effectBtns[0];
+		m_effectBtns[0]->setChecked(firstChecked);
+		m_effectBtns[1]->setChecked(!firstChecked);
+	}
+	int type = (m_effectBtns[0]->isChecked() ? 1 : 0) | (m_effectBtns[1]->isChecked() ? 2 : 0);
+	showEffect(type);
 }
 
 void MainWidget::initMenu()

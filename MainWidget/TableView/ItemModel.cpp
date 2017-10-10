@@ -29,7 +29,7 @@ ItemModel::~ItemModel()
 
 void ItemModel::dataChanged()
 {
-	layoutChanged();
+	QAbstractItemModel::dataChanged(index(0,1), index(rowCount(), 1));
 }
 
 void ItemModel::setCurrentItemData(const QDomElement& data)
@@ -167,6 +167,18 @@ Qt::ItemFlags ItemModel::flags(const QModelIndex &index) const
 
 QVariant ItemModel::headerData(int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/) const 
 {
+	if (Qt::EditRole == role || Qt::DisplayRole == role)
+	{
+		switch (section)
+		{
+		case 0:
+			return tr("Attribute");
+		case 1:
+			return tr("Value");
+		default:
+			return QVariant();
+		}
+	}
 	return QVariant();
 }
 

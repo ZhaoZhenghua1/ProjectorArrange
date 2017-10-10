@@ -19,6 +19,10 @@ public:
 	void setData(const QDomElement& data);
 
 	QString index();
+
+	qreal brightness();
+	qreal pixelDensity();
+	void restoreBrush();
 signals:
 	qreal positionToValue(Qt::Orientation, qreal);
 	qreal valueToPosition(Qt::Orientation, qreal);
@@ -36,6 +40,9 @@ signals:
 
 	void removeData(const QDomElement& data);
 	void setCurrentItemData(const QDomElement& data);
+	int effectMode();
+	int getBrightnessGrey(int brightness);
+	int getPixdensityHue(qreal pixdensity);
 	public slots:
 	QDomElement data();
 	private slots:
@@ -50,6 +57,7 @@ protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */) override;
 	virtual void focusInEvent(QFocusEvent *event)override;
 	virtual void focusOutEvent(QFocusEvent *event)override;
+	virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event)override;
 private:
 	bool isFreeRotate();
 	void setRotate(int rotate);

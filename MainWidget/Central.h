@@ -49,6 +49,12 @@ public slots:
 	void allItemDataEdited()const;
 	bool isMoveMode();
 	void setSnap(bool);
+// 	void showBrightness();
+// 	void showNormal();
+	void showEffect(int type);
+	int effectMode();
+	int getBrightnessGrey(int brightness);
+	int getPixdensityHue(qreal pixdensity);
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
@@ -59,6 +65,8 @@ protected:
 private:
 	Projector* createProjector(const QPointF& pos);
 	QDomElement createProjectorNode();
+	QPixmap createBrightnessMap();
+	QPixmap createPixDensityMap();
 private:
 	QGraphicsTextItem* m_valueShow = nullptr;
 	QGraphicsLineItem* m_line = nullptr;
@@ -68,5 +76,6 @@ private:
 	QSize m_projectorRatio;
 	unsigned int m_projectorRotate = 0;
 	bool m_bSnap = true;
+	int m_effectMode = 0;
 };
 
