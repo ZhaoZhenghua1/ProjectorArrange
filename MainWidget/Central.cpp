@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QtMath>
 #include "Projector.h"
+#include "GridCover.h"
 
 const int LINEWIDTH = 1;
 const int ATTACH_DIS = 7;
@@ -74,14 +75,16 @@ Central::Central()
 	setFlags(QGraphicsItem::ItemIsSelectable);
 
 	m_valueShow = new TextItem(this);
-	m_valueShow->setZValue(10);
+	m_valueShow->setZValue(1000);
 	m_valueShow->setDefaultTextColor(Qt::white);
 	m_valueShow->hide();
 
 	m_centralMapItem = new MapItem(this);
 
 	m_line = new LineItem(this);
-	m_line->setZValue(10);
+	m_line->setZValue(100000);
+
+	m_grid = new GridCover(this);
 }
 
 Central::~Central()
@@ -118,6 +121,7 @@ void Central::setData(const QDomElement& data)
 		connect(proj, &Projector::effectMode, this, &Central::effectMode);
 		connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
 		connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
+		connect(proj, &Projector::showEffectValue, this, &Central::showValue);
 		proj->setData(elem);
 		
 		proj->updatePosition();
@@ -154,6 +158,8 @@ void Central::resizeEvent(QGraphicsSceneResizeEvent *event)
 			area->updatePosition();
 		}
 	}
+
+	m_grid->setGeometry(QRectF(0, 0, rect().width(), rect().height()));
 }
 
 void Central::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
@@ -234,6 +240,7 @@ Projector* Central::createProjector(const QPointF& pos)
 	connect(proj, &Projector::effectMode, this, &Central::effectMode);
 	connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
 	connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
+	connect(proj, &Projector::showEffectValue, this, &Central::showValue);
 
 	return proj;
 }
@@ -735,9 +742,14 @@ void Central::showTapeLineValue(Qt::Orientation o, qreal value)
 	QPoint viewPos = view->viewport()->mapFromGlobal(gloPos);
 	QPointF scenePos = view->mapToScene(viewPos);
 	QPointF pos = mapFromScene(scenePos) + QPointF(10, -30);
-	m_valueShow->setPos(pos);
 	QString text = QString("Length:%1mm").arg(int(value + 0.5));
-	m_valueShow->setPlainText(text);
+	showValue(pos, text);
+}
+
+void Central::showValue(const QPointF& pos, const QString& value)
+{
+	m_valueShow->setPos(pos);
+	m_valueShow->setPlainText(value);
 	m_valueShow->update();
 	m_valueShow->show();
 }
@@ -806,75 +818,6 @@ void Central::setSnap(bool b)
 {
 	m_bSnap = b;
 }
-
-// void Central::showBrightness()
-// {
-// 	QPixmap map(m_centralMapItem->rect().width(), m_centralMapItem->rect().height());
-// 	map.fill(Qt::black);
-// 	m_centralMapItem->setPixmap(map);
-// 
-// 	QList<Projector*> projectors;
-// 	QList<QGraphicsItem*> childItems = this->childItems();
-// 	for (QGraphicsItem* item : childItems)
-// 	{
-// 		if (Projector* pro = dynamic_cast<Projector*>(item))
-// 			projectors.push_back(pro);
-// 	}
-// 	if (!projectors.isEmpty())
-// 	{
-// 		std::sort(projectors.begin(), projectors.end(), [](Projector* l, Projector* r) {return l->brightness() < r->brightness();});
-// 		qreal minBrightness = projectors.first()->brightness();
-// 		qreal maxBrightness = projectors.last()->brightness();
-// 		qreal demarcation = 128;
-// 		qreal k1 = 128 / (200 - minBrightness);
-// 		qreal b1 = 128 - 200 * k1;
-// 
-// 		qreal k2 = (255 - 128) / (maxBrightness - 200);
-// 		qreal b2 = 255 - maxBrightness * k2;
-// 
-// 		for (Projector* pro : projectors)
-// 		{
-// 			pro->setZValue(pro->brightness());
-// 			
-// 			qreal brightness = pro->brightness();
-// 
-// 			qreal gray;
-// 			if (qAbs(brightness - 200) < 0.00001)
-// 			{
-// 				gray = 128;
-// 			}
-// 			else if (brightness < 200)
-// 			{
-// 				gray = k1*brightness + b1;
-// 			}
-// 			else
-// 			{
-// 				gray = k2*brightness + b2;
-// 			}
-// 			pro->setBrush(QBrush(QColor(gray, gray, gray)));
-// 		}
-// 	}
-// }
-
-// void Central::showNormal()
-// {
-// 	m_centralMapItem->setPixmap(QPixmap(":/background.jpg"));
-// 
-// 	QList<Projector*> projectors;
-// 	QList<QGraphicsItem*> childItems = this->childItems();
-// 	for (QGraphicsItem* item : childItems)
-// 	{
-// 		if (Projector* pro = dynamic_cast<Projector*>(item))
-// 			projectors.push_back(pro);
-// 	}
-// 	if (!projectors.isEmpty())
-// 	{
-// 		for (Projector* pro : projectors)
-// 		{
-// 			pro->restoreBrush();
-// 		}
-// 	}
-// }
 
 void Central::showEffect(int type)
 {

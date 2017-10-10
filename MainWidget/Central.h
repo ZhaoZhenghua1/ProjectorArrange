@@ -9,6 +9,7 @@ class QGraphicsTextItem;
 class MapItem;
 class Projector;
 class QGraphicsLineItem;
+class GridCover;
 class Central : public QGraphicsWidget
 {
 	Q_OBJECT
@@ -55,6 +56,8 @@ public slots:
 	int effectMode();
 	int getBrightnessGrey(int brightness);
 	int getPixdensityHue(qreal pixdensity);
+
+	void showValue(const QPointF& pos, const QString& value);
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
@@ -77,5 +80,6 @@ private:
 	unsigned int m_projectorRotate = 0;
 	bool m_bSnap = true;
 	int m_effectMode = 0;
+	GridCover* m_grid = nullptr;
 };
 

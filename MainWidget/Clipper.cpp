@@ -12,6 +12,7 @@
 #include <QDomElement>
 #include "Ruler.h"
 #include "Central.h"
+#include "GridCover.h"
 #include "ui_BarSet.h"
 #include "ui_SelectRectSet.h"
 

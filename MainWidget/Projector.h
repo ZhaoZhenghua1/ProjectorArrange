@@ -43,6 +43,7 @@ signals:
 	int effectMode();
 	int getBrightnessGrey(int brightness);
 	int getPixdensityHue(qreal pixdensity);
+	void showEffectValue(const QPointF& pos, const QString& value);
 	public slots:
 	QDomElement data();
 	private slots:
@@ -58,6 +59,7 @@ protected:
 	virtual void focusInEvent(QFocusEvent *event)override;
 	virtual void focusOutEvent(QFocusEvent *event)override;
 	virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event)override;
+	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event)override;
 private:
 	bool isFreeRotate();
 	void setRotate(int rotate);
@@ -73,4 +75,3 @@ private:
 	RotateItem* m_rotateItem = nullptr;
 	QDomElement m_data;
 };
-

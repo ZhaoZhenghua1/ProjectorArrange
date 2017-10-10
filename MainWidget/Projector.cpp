@@ -277,8 +277,31 @@ void Projector::focusOutEvent(QFocusEvent *event)
 
 void Projector::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-
+	QString text;
+	if (1 == effectMode())
+	{
+		text = QString("Brightness:%1").arg(brightness(),0, 'f', 1);
+	}
+	else if (2 == effectMode())
+	{
+		text = QString("PixDensity:%1").arg(pixelDensity(), 0, 'f', 1);
+	}
+	if (!text.isEmpty())
+	{
+		QPointF pos = event->pos();
+		pos.setX(pos.x() + 15);
+		showEffectValue(mapToParent(pos), text);
+	}
 	return Base::hoverMoveEvent(event);
+}
+
+void Projector::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+	if (0 != effectMode())
+	{
+		hideValue();
+	}
+	return Base::hoverLeaveEvent(event);
 }
 
 void Projector::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
