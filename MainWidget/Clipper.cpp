@@ -89,6 +89,8 @@ void Clipper::setRatio(unsigned int x, unsigned int y)
 	const unsigned int min = 10;
 	x = qMax(x, min);
 	y = qMax(y, min);
+	m_rootWidget->ruler(Qt::Horizontal)->setRefer(nullptr);
+	m_rootWidget->ruler(Qt::Vertical)->setRefer(nullptr);
 	m_rootWidget->ruler(Qt::Horizontal)->setRange(x);
 	m_rootWidget->ruler(Qt::Vertical)->setRange(y);
 	updateSceneRatio();

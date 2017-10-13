@@ -168,6 +168,7 @@ MainWidget::MainWidget(const QString& file)
 	connect(m_itemModel, &ItemModel::currentItemDataEdited, m_clipper, &Clipper::currentItemDataEdited);
 	m_itemView->setModel(m_itemModel);
 	m_itemView->setItemDelegate(new TreeviewDelegate);
+	m_itemView->setColumnWidth(0, 180);
 	layout1->addWidget(m_itemView);
 
 // 	QGroupBox* groupBox2 = new QGroupBox;
@@ -615,6 +616,8 @@ void MainWidget::onSave()
 		file.close();
 	}
 
+	m_emptyDoc.setContent(m_doc.toString());
+
 	setWindowTitle(TITLE_HEADER + " - " + m_filename);
 
 	addToRecentFiles(m_filename);
@@ -650,7 +653,7 @@ void MainWidget::onAbout()
 
 void MainWidget::onViewHelp()
 {
-	QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Help/LightMagic TrancoderV1.0 Manual.pdf"));
+	QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Help/LightMagic ProjectorV1.0 Manual.pdf"));
 }
 
 QDomDocument MainWidget::domDocument()

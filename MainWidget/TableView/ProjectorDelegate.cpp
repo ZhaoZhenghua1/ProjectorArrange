@@ -52,6 +52,8 @@
 #include <QPainter>
 #include <QLineEdit>
 #include <QTreeView>
+#include <QMouseEvent>
+#include <QTime>
 #include "RotatePropertyWidget.h"
 #include "PositionWidget.h"
 #include "DomItem.h"
@@ -194,6 +196,24 @@ void TreeviewDelegate::setEditorData(QWidget *editor,
 		positionWidget->setData(value.toString());
 	}
 
+	if (!m_bIsPainting)
+	{
+		if (QLayout* layout = editor->layout())
+		{
+			layout->activate();
+		}
+
+		QPoint gloPos = QCursor::pos();
+		QPoint curPos = editor->mapFromGlobal(gloPos);
+
+		QWidget* widget = editor->childAt(curPos);
+		if (!widget)
+		{
+			widget = editor;
+		}
+		QMouseEvent * event = new QMouseEvent(QEvent::MouseButtonPress, widget->mapFromGlobal(gloPos),editor->topLevelWidget()->mapFromGlobal(gloPos), gloPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+		QApplication::postEvent(widget, event);
+	}
 }
 //! [2]
 
@@ -240,18 +260,22 @@ void TreeviewDelegate::updateEditorGeometry(QWidget *editor,
 
 void TreeviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const 
 {
+	const_cast<TreeviewDelegate*>(this)->m_bIsPainting = true;
+
 	QStyledItemDelegate::paint(painter, option, index);
 	QWidget* parent = const_cast<QWidget*>(option.widget);
 	QTreeView* treeView = qobject_cast<QTreeView*>(parent);
 	if (QWidget* widget = createEditor(treeView->viewport(), option, index))
 	{
-		setEditorData(widget, index);
 		updateEditorGeometry(widget, option, index);
+		setEditorData(widget, index);
 		QPixmap map = widget->grab();
 		QRect rectMap = option.rect;
 		painter->drawPixmap(rectMap, map, map.rect());
-		widget->deleteLater();
+		const_cast<TreeviewDelegate*>(this)->closeEditor(widget, NoHint);
 	}
+
+	const_cast<TreeviewDelegate*>(this)->m_bIsPainting = false;
 }
 
 //ÊµÊ±Ë¢ÐÂ

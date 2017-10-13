@@ -20,9 +20,39 @@ TreeView::TreeView(QWidget *parent):Base(parent)
     padding: 2px;
     border-radius: 3px;
     opacity: 200;
-})");
 }
 
+QSpinBox {
+    border: 1px solid #7a7a7a;
+	selection-background-color: darkgray;
+}
+QDoubleSpinBox {
+    border: 1px solid #7a7a7a;
+	selection-background-color: darkgray;
+}
+QLineEdit {
+    border: 1px solid #7a7a7a;
+    selection-background-color: darkgray;
+}
+
+
+QTreeView::item {
+     border: 1px solid #7A7A7A;
+	color: #ffffff
+}
+
+QTreeView::item:hover {
+    border: 1px solid #7A7A7A;
+}
+
+QTreeView::item:selected {
+    border: 1px solid #7A7A7A;
+}
+
+
+
+)");
+}
 
 TreeView::~TreeView()
 {
@@ -35,17 +65,6 @@ void TreeView::onSetData()
 
 void TreeView::mousePressEvent(QMouseEvent *event)
 {
-// 	do 
-// 	{
-// 		const QPersistentModelIndex persistent = indexAt(event->pos());
-// 
-// 		if (!persistent.isValid())
-// 			break;
-// 
-// 		edit(persistent, DoubleClicked, event);
-// 			
-// 	} while (false);
-
 	QTreeView::mousePressEvent(event);
 	if (!m_bInDoubleClick)
 	{
@@ -57,13 +76,11 @@ void TreeView::mousePressEvent(QMouseEvent *event)
 	{
 		QTreeView::mousePressEvent(event);
 	}
-
-//	return QTreeView::mousePressEvent(event);
 }
 
 void TreeView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-
+	//DO NOTHING, SO THAT BASE CLASS DO NOTHING
 }
 
 void TreeView::focusOutEvent(QFocusEvent *event)

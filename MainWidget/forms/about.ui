@@ -55,7 +55,7 @@ background-color: rgb(83,83, 83);</string>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LightMagic TransCoder V1.0 &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LightMagic Projector V1.0 &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -94,9 +94,7 @@ background-color: rgb(83,83, 83);</string>
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="qmlproj.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>pushButton</sender>

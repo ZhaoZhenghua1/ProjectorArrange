@@ -49,7 +49,10 @@ void Ruler::setRange(unsigned int range)
 void Ruler::setRefer(Ruler* referTo)
 {
 	m_referTo = referTo;
-	referTo->m_referTo = nullptr;
+	if (referTo)
+	{
+		referTo->m_referTo = nullptr;
+	}
 	updateRuler();
 }
 

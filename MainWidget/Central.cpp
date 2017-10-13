@@ -75,16 +75,18 @@ Central::Central()
 	setFlags(QGraphicsItem::ItemIsSelectable);
 
 	m_valueShow = new TextItem(this);
-	m_valueShow->setZValue(1000);
+	m_valueShow->setZValue(10000000);
 	m_valueShow->setDefaultTextColor(Qt::white);
 	m_valueShow->hide();
 
 	m_centralMapItem = new MapItem(this);
 
 	m_line = new LineItem(this);
-	m_line->setZValue(100000);
+	m_line->setZValue(10000000);
 
 	m_grid = new GridCover(this);
+	connect(m_grid, &GridCover::valueToPosition, this, &Central::valueToPosition);
+	connect(m_grid, &GridCover::positionToValue, this, &Central::positionToValue);
 }
 
 Central::~Central()
@@ -140,26 +142,21 @@ void Central::updatePosition()
 	qreal x2 = valueToPosition(Qt::Vertical, m_ratio.width());
 	qreal y2 = valueToPosition(Qt::Horizontal, m_ratio.height());
 	m_centralMapItem->setRect(x1, y1, x2 - x1, y2 - y1);
+
+	for (QGraphicsItem* item : childItems())
+	{
+		if (Projector* area = dynamic_cast<Projector*>(item))
+		{
+			area->updatePosition();
+		}
+	}
+	m_grid->setGeometry(QRectF(0, 0, rect().width(), rect().height()));
 }
 
 void Central::resizeEvent(QGraphicsSceneResizeEvent *event)
 {
 	Base::resizeEvent(event);
 	updatePosition();
-
-	for (QGraphicsItem* item : childItems())
-	{
-		if (Bar* bar = dynamic_cast<Bar*>(item))
-		{
-			bar->updatePosition();
-		}
-		else if (Projector* area = dynamic_cast<Projector*>(item))
-		{
-			area->updatePosition();
-		}
-	}
-
-	m_grid->setGeometry(QRectF(0, 0, rect().width(), rect().height()));
 }
 
 void Central::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
@@ -247,7 +244,7 @@ Projector* Central::createProjector(const QPointF& pos)
 
 QDomElement Central::createProjectorNode()
 {
-	const QStringList strElems = {"index", "position", "fenbianlv","liangdu","rotate","projectionwidth", "projectionheight","projectorratio", "prodis" };
+	const QStringList strElems = {"index", "position", "fenbianlv","liangdu","rotate","projectionwidth", "projectionheight","projectorratio"/*, "prodis"*/ };
 	QDomElement proElement = domDocument().createElement("projector");
 	for (const QString& elem : strElems)
 	{
@@ -394,20 +391,47 @@ qreal distance(const QLineF& l, const QLineF& r)
 	return INT_MAX;
 }
 
+//make line x1 < x2, y1 < y2
+QLineF normalLine(const QLineF& line)
+{
+	QPointF p1 = line.p1();
+	QPointF p2 = line.p2();
+	if (qAbs(p1.x() - p2.x()) < 0.01)
+	{
+		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
+	}
+	else
+	{
+		return p1.x() < p2.x() ? QLineF(p1, p2) : QLineF(p2, p1);
+	}
+}
+
 //计算点到直线间的距离
 qreal distance(const QPointF& l, const QLineF& to)
 {
 	qreal toangle = to.angle();
 	if (qAbs(toangle) < 0.1 || qAbs(toangle - 180) < 0.1 || qAbs(toangle - 360) < 0.1)
 	{
+		if ((l.x() < (to.p1().x() - 7)) || (l.x() > (to.p2().x() + 7)))
+		{
+			return INT_MAX;
+		}
 		return qAbs(l.y() - to.p1().y());
 	}
 	else if (qAbs(toangle - 90) < 0.1 || qAbs(toangle - 270) < 0.1)
 	{
+		if ((l.y() < (to.p1().y() - 7)) || (l.y() > (to.p2().y() + 7)))
+		{
+			return INT_MAX;
+		}
 		return qAbs(l.x() - to.p1().x());
 	}
 	else
 	{
+		if ((l.x() < (to.p1().x() - 7)) || (l.x() > (to.p2().x() + 7)))
+		{
+			return INT_MAX;
+		}
 		qreal k = (to.p2().y() - to.p1().y()) / (to.p2().x() - to.p1().x());//k=(y2-y1)/(x2-x1)
 		qreal b2 = -to.y1() + k*to.x1();
 		return qAbs(l.y() - k*l.x() + b2) / qSqrt(1 + k*k);
@@ -474,21 +498,6 @@ QPointF minPoint(const QLineF& line)
 	else
 	{
 		return p1.y() < p2.y() ? p1 : p2;
-	}
-}
-
-//make line x1 < x2, y1 < y2
-QLineF normalLine(const QLineF& line)
-{
-	QPointF p1 = line.p1();
-	QPointF p2 = line.p2();
-	if (qAbs(p1.x() - p2.x()) < 0.01)
-	{
-		return p1.x() < p2.x() ? QLineF(p1, p2) : QLineF(p2, p1);
-	}
-	else
-	{
-		return p1.y() < p2.y() ? QLineF(p1, p2) : QLineF(p2, p1);
 	}
 }
 
@@ -637,6 +646,10 @@ QPointF getVector(const QPointF& l, const QPointF& r)
 	{
 		return l;
 	}
+	else if ((qAbs(l.x()) < ZERO && qAbs(r.x()) < ZERO) ||(qAbs(l.y()) < ZERO && qAbs(r.y()) < ZERO))
+	{
+		return l;
+	}
 	//坐标轴向量
 	else if (qAbs(l.x()) < ZERO && qAbs(r.y()) < ZERO)
 	{
@@ -649,21 +662,37 @@ QPointF getVector(const QPointF& l, const QPointF& r)
 	else if (qAbs(l.x()) < ZERO)
 	{
 		qreal k = -r.x() / r.y();
+		if (qAbs(k) < ZERO)
+		{
+			return r;
+		}
 		return{(l.y() - r.y())/k + r.x() ,l.y() };
 	}
 	else if (qAbs(r.x()) < ZERO)
 	{
 		qreal k = -l.x() / l.y();
+		if (qAbs(k) < ZERO)
+		{
+			return l;
+		}
 		return{ (r.y() - l.y()) / k + l.x() ,r.y() };
 	}
 	else if (qAbs(l.y()) < ZERO)
 	{
 		qreal k = -r.x() / r.y();
+		if (qAbs(k) < ZERO)
+		{
+			return r;
+		}
 		return{ l.x(), k*(l.x() - r.x()) + r.y() };
 	}
 	else if (qAbs(r.y()) < ZERO)
 	{
 		qreal k = -l.x() / l.y();
+		if (qAbs(k) < ZERO)
+		{
+			return l;
+		}
 		return{ r.x(), k*(r.x() - l.x()) + l.y() };
 	}
 	else

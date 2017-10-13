@@ -63,7 +63,7 @@ public:
     {
         AboutDialog->setWindowTitle(QApplication::translate("AboutDialog", "About", 0));
         pushButton->setText(QApplication::translate("AboutDialog", "OK", 0));
-        labelUrl->setText(QApplication::translate("AboutDialog", "<html><head/><body><p>LightMagic TransCoder V1.0 </p></body></html>", 0));
+        labelUrl->setText(QApplication::translate("AboutDialog", "<html><head/><body><p>LightMagic Projector V1.0 </p></body></html>", 0));
         label->setText(QString());
         label_2->setText(QApplication::translate("AboutDialog", "www.lightmagictech.com", 0));
     } // retranslateUi

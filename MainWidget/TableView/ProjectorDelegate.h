@@ -67,6 +67,8 @@ public:
 		const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 public slots:
 void onValueChanged();
+private:
+	bool m_bIsPainting = false;
 };
 //! [0]
 
