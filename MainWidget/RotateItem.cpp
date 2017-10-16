@@ -10,7 +10,9 @@ RotateItem::RotateItem(QGraphicsItem* parent):Base(parent)
 {
 	setPen(Qt::NoPen);
 	QRectF parRect(parent->boundingRect());
-	setRect(parRect.adjusted(parRect.width() / 4, parRect.height() / 4, -parRect.width() / 4, -parRect.height() / 4));
+	qreal min = parRect.width() > parRect.height() ? parRect.height() : parRect.width();
+	min /= 2; 
+	setRect(parRect.adjusted((parRect.width() - min)/ 2, (parRect.height() - min) / 2, -(parRect.width() - min) / 2, -(parRect.height() - min) / 2));
 }
 
 

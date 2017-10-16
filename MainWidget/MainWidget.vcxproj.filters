@@ -176,6 +176,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_GridCover.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="RadioToolButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_RadioToolButton.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_RadioToolButton.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Bar.h">
@@ -241,6 +250,9 @@
     <CustomBuild Include="GridCover.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="RadioToolButton.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -270,8 +282,14 @@
     <ClInclude Include="GeneratedFiles\ui_PositionWidget.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MainWidget.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\ProjectionSketch2D.ico" />
   </ItemGroup>
 </Project>

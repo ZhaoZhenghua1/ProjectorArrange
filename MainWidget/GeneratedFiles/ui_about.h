@@ -32,9 +32,9 @@ public:
     {
         if (AboutDialog->objectName().isEmpty())
             AboutDialog->setObjectName(QStringLiteral("AboutDialog"));
-        AboutDialog->resize(398, 132);
-        AboutDialog->setMinimumSize(QSize(398, 132));
-        AboutDialog->setMaximumSize(QSize(398, 132));
+        AboutDialog->resize(400, 132);
+        AboutDialog->setMinimumSize(QSize(400, 132));
+        AboutDialog->setMaximumSize(QSize(400, 132));
         AboutDialog->setStyleSheet(QLatin1String("color: rgb(255, 255, 255);\n"
 "background-color: rgb(83,83, 83);"));
         AboutDialog->setModal(false);
@@ -43,7 +43,7 @@ public:
         pushButton->setGeometry(QRect(300, 87, 75, 23));
         labelUrl = new QLabel(AboutDialog);
         labelUrl->setObjectName(QStringLiteral("labelUrl"));
-        labelUrl->setGeometry(QRect(138, 31, 183, 22));
+        labelUrl->setGeometry(QRect(138, 31, 241, 22));
         label = new QLabel(AboutDialog);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(26, 11, 110, 110));
@@ -63,7 +63,7 @@ public:
     {
         AboutDialog->setWindowTitle(QApplication::translate("AboutDialog", "About", 0));
         pushButton->setText(QApplication::translate("AboutDialog", "OK", 0));
-        labelUrl->setText(QApplication::translate("AboutDialog", "<html><head/><body><p>LightMagic Projector V1.0 </p></body></html>", 0));
+        labelUrl->setText(QApplication::translate("AboutDialog", "<html><head/><body><p>LightMagic Projection Sketch2D V1.0</p></body></html>", 0));
         label->setText(QString());
         label_2->setText(QApplication::translate("AboutDialog", "www.lightmagictech.com", 0));
     } // retranslateUi

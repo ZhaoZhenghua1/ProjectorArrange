@@ -35,6 +35,7 @@ void ItemModel::dataChanged()
 void ItemModel::setCurrentItemData(const QDomElement& data)
 {
 	m_domData = data;
+	dataChanged();
 }
 
 QString ItemModel::getValue(const QScriptValue& expression)

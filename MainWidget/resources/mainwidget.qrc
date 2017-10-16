@@ -3,7 +3,6 @@
         <file>rect_normal.png</file>
         <file>rect_pressed.png</file>
         <file>background.jpg</file>
-        <file>TransCoder.ico</file>
         <file>arror_normal.png</file>
         <file>arror_pressed.png</file>
         <file>logo.png</file>
@@ -70,5 +69,7 @@
         <file>pixdensity_normal.png</file>
         <file>pixdensity_pressed.png</file>
         <file>brightness_hover.png</file>
+        <file>ProjectionSketch2D.ico</file>
+        <file>downArrow.png</file>
     </qresource>
 </RCC>

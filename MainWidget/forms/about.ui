@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
+    <width>400</width>
     <height>132</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>398</width>
+    <width>400</width>
     <height>132</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>398</width>
+    <width>400</width>
     <height>132</height>
    </size>
   </property>
@@ -50,12 +50,12 @@ background-color: rgb(83,83, 83);</string>
     <rect>
      <x>138</x>
      <y>31</y>
-     <width>183</width>
+     <width>241</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LightMagic Projector V1.0 &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LightMagic Projection Sketch2D V1.0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">

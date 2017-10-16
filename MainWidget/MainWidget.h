@@ -7,6 +7,7 @@ class TreeView;
 class ItemModel;
 class AllItemModel;
 class QRadioButton;
+class RadioToolButton;
 class MainWidget : public QMainWindow
 {
 	typedef QMainWindow Base;
@@ -43,9 +44,10 @@ private:
 	bool dispatchData();
 	void initToolBarItem();
 	void initMenu();
+	void setData(const QDomElement& data);
 private slots:
 void onSetOrientation(int id);
-void onSetRation(int id);
+void onSetRation(int id, bool checked);
 void onShowEffect(bool);
 protected:
 	virtual void closeEvent(QCloseEvent *event)override;
@@ -65,5 +67,6 @@ private:
 	QDomDocument m_emptyDoc;
 	QMenu* m_recentMenu = nullptr;
 	QRadioButton *m_effectBtns[2] = { nullptr };
+	RadioToolButton* m_radioToolBtn = nullptr;
 };
 

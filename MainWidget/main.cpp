@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	a.setWindowIcon(QPixmap(":/TransCoder.ico"));
+	a.setWindowIcon(QPixmap(":/ProjectionSketch2D.ico"));
 //	QTranslator* translator = new QTranslator;
 //	bool loaded = translator->load(":/clipper_zh_CN.qm");
 //	bool ret = a.installTranslator(translator);

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWidget_t {
-    QByteArrayData data[24];
-    char stringdata0[224];
+    QByteArrayData data[25];
+    char stringdata0[232];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -52,7 +52,8 @@ QT_MOC_LITERAL(19, 166, 12), // "onOpenRecent"
 QT_MOC_LITERAL(20, 179, 16), // "onSetOrientation"
 QT_MOC_LITERAL(21, 196, 2), // "id"
 QT_MOC_LITERAL(22, 199, 11), // "onSetRation"
-QT_MOC_LITERAL(23, 211, 12) // "onShowEffect"
+QT_MOC_LITERAL(23, 211, 7), // "checked"
+QT_MOC_LITERAL(24, 219, 12) // "onShowEffect"
 
     },
     "MainWidget\0zoomIn\0\0zoomOut\0setSnap\0"
@@ -60,7 +61,7 @@ QT_MOC_LITERAL(23, 211, 12) // "onShowEffect"
     "onMouseTracking\0pos\0onOpen\0onClose\0"
     "onSave\0onNew\0onAbout\0onViewHelp\0"
     "domDocument\0QDomDocument\0onOpenRecent\0"
-    "onSetOrientation\0id\0onSetRation\0"
+    "onSetOrientation\0id\0onSetRation\0checked\0"
     "onShowEffect"
 };
 #undef QT_MOC_LITERAL
@@ -97,8 +98,8 @@ static const uint qt_meta_data_MainWidget[] = {
       17,    0,  123,    2, 0x0a /* Public */,
       19,    0,  124,    2, 0x0a /* Public */,
       20,    1,  125,    2, 0x08 /* Private */,
-      22,    1,  128,    2, 0x08 /* Private */,
-      23,    1,  131,    2, 0x08 /* Private */,
+      22,    2,  128,    2, 0x08 /* Private */,
+      24,    1,  133,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -119,7 +120,7 @@ static const uint qt_meta_data_MainWidget[] = {
     0x80000000 | 18,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   21,
-    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void, QMetaType::Int, QMetaType::Bool,   21,   23,
     QMetaType::Void, QMetaType::Bool,    2,
 
        0        // eod
@@ -148,7 +149,7 @@ void MainWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             if (_a[0]) *reinterpret_cast< QDomDocument*>(_a[0]) = _r; }  break;
         case 14: _t->onOpenRecent(); break;
         case 15: _t->onSetOrientation((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 16: _t->onSetRation((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 16: _t->onSetRation((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 17: _t->onShowEffect((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }

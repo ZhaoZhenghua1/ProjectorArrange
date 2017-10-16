@@ -104,7 +104,7 @@ qreal Projector::pixelDensity()
 	}
 
 	qreal prowidth = m_data.firstChildElement("projectionwidth").firstChild().nodeValue().toDouble();
-	return prowidth / width;
+	return width / prowidth;
 }
 
 void Projector::restoreBrush()

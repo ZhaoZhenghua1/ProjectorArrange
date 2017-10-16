@@ -21,11 +21,13 @@
 #include <QPainter>
 #include <QPixmapCache>
 #include <QStringBuilder>
+#include <QToolButton>
 #include "ui_about.h"
 #include "TableView/TreeView.h"
 #include "TableView/ItemModel.h"
 #include "TableView/AllItemModel.h"
 #include "TableView/ProjectorDelegate.h"
+#include "RadioToolButton.h"
 
 const QString RADIO_STYLE = R"(
 QRadioButton{spacing:0px;}
@@ -76,7 +78,7 @@ public:
 	Ui::Dialog ui;
 };
 
-const QString TITLE_HEADER = "LightMagic Projector V1.0";
+const QString TITLE_HEADER = "LightMagic Projection Sketch2D V1.0";
 const QString StatusBarStyle = R"(
 QStatusBar {
     background-color: rgb(83,83,83);
@@ -99,7 +101,7 @@ void registerMap(const QString& map)
 	QLinearGradient hoverGradient;
 	hoverGradient.setColorAt(0, QColor(117, 117, 117));
 	hoverGradient.setColorAt(1, QColor(98, 98, 98));
-	QBrush brush(hoverGradient);
+	QBrush brush(hoverGradient); 
 	QPainter painterHover(hoverMap);
 	painterHover.fillRect(hoverMap->rect(), brush);
 	painterHover.drawPixmap(hoverMap->rect().adjusted(9, 4, -9, -4), mappath, mappath.rect());
@@ -132,7 +134,7 @@ MainWidget::MainWidget(const QString& file)
 	setWindowTitle(TITLE_HEADER);
 	initMenu();
 
-	QSettings settings("LightMagic", "Projector");
+	QSettings settings("LightMagic", "Lmps2d");
 	QSize normalSize = settings.value("geo/size", QSize(1200, 800)).toSize();
 	bool maxed = settings.value("geo/maxed").toBool();
 
@@ -223,19 +225,20 @@ enum ECREATE_FLAG
 };
 
 const QList<std::tuple<QString, int, QString, QString, QString> > RATIOS = {
-	{"Select Mode", eMove, ":/arror_normal.png", ":/arror_hover.png" , ":/arror_pressed.png" },
-	{"800x600",e800x600, ":/800x600_normal.png" , ":/800x600_hover.png" , ":/800x600_pressed.png" },
-	{"1024x768",e1024x768, ":/1024x768_normal.png" , ":/1024x768_hover.png" , ":/1024x768_pressed.png" },
-	{"1280x720",e1280x720 , ":/1280x720_normal.png" , ":/1280x720_hover.png" , ":/1280x720_pressed.png" },
-	{"1280x800",e1280x800 , ":/1280x800_normal.png" , ":/1280x800_hover.png" , ":/1280x800_pressed.png" },
-	{"1920x1080",e1920x1080 , ":/1920x1080_normal.png" , ":/1920x1080_hover.png" , ":/1920x1080_pressed.png" },
-	{"1920x1200",e1920x1200 , ":/1920x1200_normal.png" , ":/1920x1200_hover.png" , ":/1920x1200_pressed.png" },
-	{"2048x1080",e2048x1080 , ":/2048x1080_normal.png" , ":/2048x1080_hover.png" , ":/2048x1080_pressed.png" },
-	{"3840x2160",e3840x2160 , ":/3840x2160_normal.png" , ":/3840x2160_hover.png" , ":/3840x2160_pressed.png" },
-	{"3840x2400",e3840x2400 , ":/3840x2400_normal.png" , ":/3840x2400_hover.png" , ":/3840x2400_pressed.png" },
-	{"4096x2160",e4096x2160 , ":/4096x2160_normal.png" , ":/4096x2160_hover.png" , ":/4096x2160_pressed.png" },
-	{"Self Defining", eSelfDef , ":/selfdef_normal.png" , ":/selfdef_hover.png" , ":/selfdef_pressed.png" },
-	{"Tape measure", eTape , ":/tape_normal.png" , ":/tape_hover.png" , ":/tape_pressed.png" } };
+	{"Select Mode", eMove, ":/arror_normal.png", ":/arror_hover.png" , ":/arror_pressed.png" }
+	,{"800x600",e800x600, ":/800x600_normal.png" , ":/800x600_hover.png" , ":/800x600_pressed.png" }
+	,{"1024x768",e1024x768, ":/1024x768_normal.png" , ":/1024x768_hover.png" , ":/1024x768_pressed.png" }
+	,{"1280x720",e1280x720 , ":/1280x720_normal.png" , ":/1280x720_hover.png" , ":/1280x720_pressed.png" }
+	,{"1280x800",e1280x800 , ":/1280x800_normal.png" , ":/1280x800_hover.png" , ":/1280x800_pressed.png" }
+	,{"1920x1080",e1920x1080 , ":/1920x1080_normal.png" , ":/1920x1080_hover.png" , ":/1920x1080_pressed.png" }
+	,{"1920x1200",e1920x1200 , ":/1920x1200_normal.png" , ":/1920x1200_hover.png" , ":/1920x1200_pressed.png" }
+	,{"2048x1080",e2048x1080 , ":/2048x1080_normal.png" , ":/2048x1080_hover.png" , ":/2048x1080_pressed.png" }
+	,{"3840x2160",e3840x2160 , ":/3840x2160_normal.png" , ":/3840x2160_hover.png" , ":/3840x2160_pressed.png" }
+	,{"3840x2400",e3840x2400 , ":/3840x2400_normal.png" , ":/3840x2400_hover.png" , ":/3840x2400_pressed.png" }
+	,{"4096x2160",e4096x2160 , ":/4096x2160_normal.png" , ":/4096x2160_hover.png" , ":/4096x2160_pressed.png" }
+	,{"Self Defining", eSelfDef , ":/selfdef_normal.png" , ":/selfdef_hover.png" , ":/selfdef_pressed.png" }
+//	,{"Tape measure", eTape , ":/tape_normal.png" , ":/tape_hover.png" , ":/tape_pressed.png" } 
+};
 
 QList<std::tuple<QString, int, QString, QString, QString> > PUT_STYLES = {
 	{ "Horizontal", Qt::Horizontal , ":/horizontal_normal.png" , ":/horizontal_hover.png" , ":/horizontal_pressed.png"},
@@ -263,7 +266,7 @@ void initToolBar(QToolBar* toolBar)
 }
 void MainWidget::initToolBarItem()
 {
-	QToolBar* toolBarPutStyle = new QToolBar("Put");
+	QToolBar* toolBarPutStyle = new QToolBar("Put Style");
 	addToolBar(Qt::TopToolBarArea, toolBarPutStyle);
 	initToolBar(toolBarPutStyle);
 	QButtonGroup* groupPut = new QButtonGroup(this);
@@ -299,9 +302,17 @@ void MainWidget::initToolBarItem()
 		toolBarRatio->addWidget(radioBtn);
 	}
 	groupRatio->buttons().first()->setChecked(true);
-	connect(groupRatio, SIGNAL(buttonClicked(int)), this, SLOT(onSetRation(int)));
+	connect(groupRatio, SIGNAL(buttonToggled(int , bool )), this, SLOT(onSetRation(int, bool)));
 
-	QToolBar* toolBarEffect = new QToolBar;
+	RadioToolButton* btnTape = new RadioToolButton;
+	m_radioToolBtn = btnTape;
+	toolBarRatio->addWidget(btnTape);
+	groupRatio->addButton(btnTape->radioButton(), eTape);
+	connect(btnTape, &RadioToolButton::rtBtnToggled, [groupRatio, this]() {
+		onSetRation(groupRatio->id(m_radioToolBtn->radioButton()), true);
+	});
+
+	QToolBar* toolBarEffect = new QToolBar("Distribution Diagram");
 	addToolBar(Qt::TopToolBarArea, toolBarEffect);
 	initToolBar(toolBarEffect);
 	QRadioButton* brightness = new QRadioButton;
@@ -313,7 +324,7 @@ void MainWidget::initToolBarItem()
 	m_effectBtns[0] = brightness;
 
 	QRadioButton* pixdensity = new QRadioButton;
-	pixdensity->setToolTip(tr("Brightness distribution diagram"));
+	pixdensity->setToolTip(tr("Pix density distribution diagram"));
 	pixdensity->setStyleSheet(RADIO_STYLE.arg(":/pixdensity_normal.png").arg(":/pixdensity_hover.png").arg(":/pixdensity_pressed.png"));
 	pixdensity->setAutoExclusive(false);
 	toolBarEffect->addWidget(pixdensity);
@@ -327,8 +338,12 @@ void MainWidget::onSetOrientation(int id)
 	m_clipper->setProRotate((id == Qt::Vertical) ? 90 : 0);
 }
 
-void MainWidget::onSetRation(int id)
+void MainWidget::onSetRation(int id, bool checked)
 {
+	if (!checked)
+	{
+		return;
+	}
 	if (id == eMove)
 	{
 		m_clipper->setProRatio(QSize());
@@ -356,7 +371,15 @@ void MainWidget::onSetRation(int id)
 	}
 	else if (id == eTape)
 	{
-		m_clipper->setProRatio(QSize(1,0));
+		switch (m_radioToolBtn->tapeMode())
+		{
+		case RadioToolButton::ePix:
+			m_clipper->setProRatio(QSize(0, 1));
+			break;
+		case  RadioToolButton::eDistance:
+			m_clipper->setProRatio(QSize(1, 0));
+			break;
+		}
 	}
 	else
 	{
@@ -448,8 +471,8 @@ QMenuBar::item:pressed {
 	helpMenu->setStyleSheet(MENU_STYLE);
 	QAction* pAAbout = helpMenu->addAction(tr("About"));
 	connect(pAAbout, &QAction::triggered, this, &MainWidget::onAbout);
-	QAction* pAViewHelp = helpMenu->addAction(tr("View Help"));
-	connect(pAViewHelp, &QAction::triggered, this, &MainWidget::onViewHelp);
+//	QAction* pAViewHelp = helpMenu->addAction(tr("View Help"));
+//	connect(pAViewHelp, &QAction::triggered, this, &MainWidget::onViewHelp);
 
 	QAction* pAZoonIn = new QAction(menuBar());
 	menuBar()->addAction(pAZoonIn);
@@ -468,7 +491,7 @@ MainWidget::~MainWidget()
 
 void MainWidget::addToRecentFiles(const QString& file)
 {
-	QSettings setting("LightMagic", "Projector");
+	QSettings setting("LightMagic", "Lmps2d");
 	QString recent = setting.value("recent").toString();
 	QStringList recents = recent.split(';');
 	recents.removeAll("");
@@ -495,10 +518,17 @@ bool MainWidget::dispatchData()
 		return false;
 	}
 
+	this->setData(root);
 	m_clipper->setData(areas);
 //	m_globalModel->setDomData(areas);
 
 	return true;
+}
+
+void MainWidget::setData(const QDomElement& data)
+{
+	QString pixmappath = data.attribute("pixmap");
+	m_clipper->setPixmap(pixmappath);
 }
 
 void MainWidget::openFile(const QString& file)
@@ -555,6 +585,8 @@ void MainWidget::onSetPixmap()
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Set reference picture"), QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), "Images (*.png *.xpm *.jpg);");
 	if (!fileName.isEmpty())
 	{
+		QDomElement root = m_doc.firstChildElement("root");
+		root.setAttribute("pixmap", fileName);
 		m_clipper->setPixmap(fileName);
 	}
 }
@@ -585,7 +617,7 @@ void MainWidget::onOpen()
 		return;
 	}
 
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), "Lmpro(*.Lmpro)");
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), "Lmps2d(*.Lmps2d)");
 	openFile(fileName);
 }
 
@@ -598,7 +630,7 @@ void MainWidget::onSave()
 {
 	if (!QFile(m_filename).exists())
 	{
-		QString savefile = QFileDialog::getSaveFileName(this, tr("Save file name"), m_filename, "Lmpro(*.Lmpro)");
+		QString savefile = QFileDialog::getSaveFileName(this, tr("Save file name"), m_filename, "Lmps2d(*.Lmps2d)");
 		if (savefile.isEmpty())
 		{
 			return;
@@ -672,7 +704,7 @@ void MainWidget::onOpenRecent()
 void MainWidget::addRecent()
 {
 	m_recentMenu->clear();
-	QSettings settings("LightMagic", "Projector");
+	QSettings settings("LightMagic", "Lmps2d");
 	QString recent = settings.value("recent").toString();
 	QStringList recentFiles = recent.split(';');
 	for (QString file : recentFiles)
@@ -737,7 +769,7 @@ bool MainWidget::close()
 //if file is error, remove the recent file 
 void MainWidget::errorFile(const QString& file)
 {
-	QSettings setting("LightMagic", "Projector");
+	QSettings setting("LightMagic", "Lmps2d");
 	QString recent = setting.value("recent").toString();
 	QStringList recents = recent.split(';');
 	recents.removeAll("");
@@ -755,7 +787,7 @@ QString MainWidget::getAvailableFileName() const
 	QString file;
 	while (true)
 	{
-		file = QString("new %1.Lmpro").arg(index);
+		file = QString("new %1.Lmps2d").arg(index);
 		if (!QFile(file).exists())
 		{
 			break;
@@ -770,7 +802,7 @@ void MainWidget::closeEvent(QCloseEvent *event)
 {
 	if (close())
 	{
-		QSettings settings("LightMagic", "Projector");
+		QSettings settings("LightMagic", "Lmps2d");
 		settings.setValue("geo/size", normalGeometry().size());
 		settings.setValue("geo/maxed", isMaximized());
 		return Base::closeEvent(event);
@@ -793,7 +825,7 @@ void MainWidget::dragEnterEvent(QDragEnterEvent *event)
 		QString file = urlList.at(i).toLocalFile();
 		if (!file.isEmpty())
 		{
-			if (0 == QString("Lmpro").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
+			if (0 == QString("Lmps2d").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
 			{
 				valid = true;
 				break;
@@ -831,7 +863,7 @@ void MainWidget::dropEvent(QDropEvent *event)
 		QString file = urlList.at(i).toLocalFile();
 		if (!file.isEmpty())
 		{
-			if (0 == QString("Lmpro").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
+			if (0 == QString("Lmps2d").compare(QFileInfo(file).suffix(), Qt::CaseInsensitive))
 			{
 				openFile(file);
 				break;

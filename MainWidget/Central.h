@@ -81,5 +81,6 @@ private:
 	bool m_bSnap = true;
 	int m_effectMode = 0;
 	GridCover* m_grid = nullptr;
+	QPixmap m_normalCentralMap = QPixmap(":/background.jpg");
 };
 

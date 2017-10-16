@@ -90,21 +90,28 @@ Central::Central()
 }
 
 Central::~Central()
-{
+{ 
 }
 
 void Central::setPixmap(const QPixmap& pixmap)
 {
+	if (pixmap.isNull())
+	{
+		return;
+	}
 	m_centralMapItem->setPixmap(pixmap);
+	m_centralMapItem->update();
+	m_normalCentralMap = pixmap;
 }
 
 void Central::setData(const QDomElement& data)
 {
+	emit setCurrentItemData(QDomElement());
 	m_data = data;
 	for (QGraphicsItem* item : childItems()) {
 		if (Bar* bar = dynamic_cast<Bar*>(item))
 			delete bar;
-		else if (Projector* area = dynamic_cast<Projector*>(item))
+		else if (Projector* area = dynamic_cast<Projector*>(item)) 
 			delete area;
 	}
 
@@ -124,7 +131,7 @@ void Central::setData(const QDomElement& data)
 		connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
 		connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
 		connect(proj, &Projector::showEffectValue, this, &Central::showValue);
-		proj->setData(elem);
+		proj->setData(elem); 
 		
 		proj->updatePosition();
 	}
@@ -161,7 +168,7 @@ void Central::resizeEvent(QGraphicsSceneResizeEvent *event)
 
 void Central::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-	if (m_projectorRatio == QSize(1, 0))
+	if (m_projectorRatio == QSize(1, 0) || m_projectorRatio == QSize(0, 1))
 	{
 		setCursor(Qt::ArrowCursor);
 	}
@@ -764,14 +771,22 @@ QPointF Central::attachedPos(const QPointF& newPos)
 	return newPos + getVector(offsetHor, offsetVer);
 }
 
-void Central::showTapeLineValue(Qt::Orientation o, qreal value)
+void Central::showTapeLineValue(Qt::Orientation , qreal value)
 {
 	QPoint gloPos = QCursor::pos();
 	QGraphicsView* view = scene()->views().first();
 	QPoint viewPos = view->viewport()->mapFromGlobal(gloPos);
 	QPointF scenePos = view->mapToScene(viewPos);
 	QPointF pos = mapFromScene(scenePos) + QPointF(10, -30);
-	QString text = QString("Length:%1mm").arg(int(value + 0.5));
+	QString text;
+	if (m_projectorRatio == QSize(1, 0))
+	{
+		text = QString("Distance:%1mm").arg(int(value + 0.5));
+	}
+	else
+	{
+		text = QString("Pix length:%1px").arg(int(value + 0.5));
+	}
 	showValue(pos, text);
 }
 
@@ -853,7 +868,7 @@ void Central::showEffect(int type)
 	m_effectMode = type;
 	if (0 == type)
 	{
-		m_centralMapItem->setPixmap(QPixmap(":/background.jpg"));
+		m_centralMapItem->setPixmap(m_normalCentralMap);
 	}
 	if (1 == type)
 	{
@@ -954,6 +969,7 @@ int Central::getPixdensityHue(qreal pixdensity)
 void Central::removeData(const QDomElement& data)
 {
 	m_data.removeChild(data);
+	emit setCurrentItemData(QDomElement());
 }
 
 void Central::createBar(Qt::Orientation o, const QPointF& scenePos)
@@ -994,14 +1010,16 @@ void Central::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	if (Projector* pro = createProjector(pressedPos))
 	{
 		pro->updatePosition();
+		emit setCurrentItemData(pro->data());
 	}
 
-	if (m_projectorRatio == QSize(1,0))
+	if (m_projectorRatio == QSize(1,0) || m_projectorRatio == QSize(0,1))
 	{
 		QPointF pos = attachedPos(event->pos());
 		m_line->setLine(QLineF(pos, pos));
 		m_line->show();
 	}
+
 	Base::mousePressEvent(event);
 }
 
@@ -1014,11 +1032,20 @@ void Central::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Central::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	if (m_projectorRatio == QSize(1, 0))
+	if (m_projectorRatio == QSize(1, 0) || m_projectorRatio == QSize(0, 1))
 	{
 		QPointF pos = attachedPos(event->pos());
 		m_line->setLine(QLineF(m_line->line().p1(), pos));
-		showTapeLineValue(Qt::Horizontal, positionToValue(Qt::Horizontal, valueToPosition(Qt::Horizontal,0) + m_line->line().length()));
+		if (m_projectorRatio == QSize(1, 0))
+		{
+			showTapeLineValue(Qt::Horizontal, positionToValue(Qt::Horizontal, valueToPosition(Qt::Horizontal,0) + m_line->line().length()));
+		}
+		else
+		{
+			double onePixWidth = 4000 / 1920.0;
+			double oneWidth = valueToPosition(Qt::Horizontal, 1) - valueToPosition(Qt::Horizontal, 0);
+			showTapeLineValue(Qt::Horizontal, m_line->line().length() / onePixWidth / oneWidth);
+		}
 	}
 	emit mouseTracking(QPointF(positionToValue(Qt::Vertical, event->pos().x()), positionToValue(Qt::Horizontal, event->pos().y())));
 	return Base::mouseMoveEvent(event);

@@ -20,8 +20,8 @@ void PositionWidget::setData(const QString& data)
 	QStringList positions = data.split(',');
 	while (positions.size() < 2)
 		positions.push_back("0");
-	spinBoxx->setValue(positions[0].toInt());
-	spinBoxy->setValue(positions[1].toInt());
+	spinBoxx->setValue(positions[0].toDouble() + 0.5);
+	spinBoxy->setValue(positions[1].toDouble() + 0.5);
 }
 
 QString PositionWidget::data()
