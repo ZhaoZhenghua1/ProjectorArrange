@@ -9,11 +9,6 @@
         <file>rotate.png</file>
         <file>projectordesign.xml</file>
         <file>projectorpattern.xml</file>
-        <file>collineation.png</file>
-        <file>horizontal.png</file>
-        <file>hover.png</file>
-        <file>pressed.png</file>
-        <file>vertical.png</file>
         <file>horizontal_hover.png</file>
         <file>horizontal_pressed.png</file>
         <file>horizontal_normal.png</file>
@@ -53,12 +48,9 @@
         <file>4096x2160_hover.png</file>
         <file>4096x2160_normal.png</file>
         <file>4096x2160_pressed.png</file>
-        <file>tape.png</file>
         <file>tape_hover.png</file>
         <file>tape_normal.png</file>
         <file>tape_pressed.png</file>
-        <file>arror.png</file>
-        <file>selfdef.png</file>
         <file>arror_hover.png</file>
         <file>selfdef_hover.png</file>
         <file>selfdef_normal.png</file>
