@@ -1,6 +1,7 @@
 #include "ProjectConverter.h"
 #include <QtMath>
 #include <QMessageBox>
+#include <QPainter>
 
 #include<cv.h>
 #include<highgui.h>
@@ -16,7 +17,7 @@ ProjectConverter::ProjectConverter()
 {
 	ui.setupUi(this);
 
-	ui.widgetProjector->setPixmap(m_map);
+//	ui.widgetProjector->setPixmap(m_map);
 }
 
 
@@ -29,15 +30,63 @@ void ProjectConverter::setPixmap(const QString& map)
 	ui.widgetProjector->setPixmap(map);
 	m_map = map;
 }
+
+void ProjectConverter::setSrc(const QVector<QVector3D>& pointsC)
+{
+	QVector<QVector3D> points = pointsC;
+	Calculator::positivePoints(points);
+	qreal projectorWidth = points.last().x() - points.first().x();
+	qreal projectorHeight = points.last().y() - points.first().y();
+	QPixmap map(projectorWidth, projectorHeight);
+	QPainter painter(&map);
+	for (int i = 0 ; i < points.size(); ++i)
+	{
+		const QVector3D& point = points[i];
+		int col = i % 11;
+		int row = i / 11;
+		//draw hor
+		if (col != 10)
+		{
+			painter.drawLine(QPointF(point.x(), point.y()), QPointF(points[i+1].x(), points[i+1].y()));
+		}
+		//draw ver
+		if (row != (points.size()/11-1))
+		{
+			painter.drawLine(QPointF(point.x(), point.y()), QPointF(points[(row + 1)*11 + col].x(), points[(row + 1) * 11 + col].y()));
+		}
+	}
+	ui.widgetProjector->setPixmap(map);
+}
+
 void ProjectConverter::project()
 {
-	const qreal toRadian = M_PI / 180;
+	//plane x*cos(angleX) + y*cos(angleY) + z*cos(angleZ) = distance
+	qreal projectorWidth = ui.doubleSpinBoxScreenWidth->value();
+	qreal projectorHeight = ui.doubleSpinBoxScreenHeight->value();
+	qreal projectorDis = ui.doubleSpinBoxDistanceToScreen->value();
+	qreal projectorBelow = ui.spinBoxDisBelow->value();
+	qreal projectorMid = ui.spinBoxDisMid->value();
+	QRectF projectorRect(-projectorWidth / 2 + projectorMid, -projectorBelow, projectorWidth, projectorHeight);
+	//line 
+	QVector<QVector3D> points;
+// 	= { QVector3D(projectorRect.topLeft().x(),projectorRect.topLeft().y(), projectorDis),
+// 		QVector3D(projectorRect.topRight().x(),projectorRect.topRight().y(),projectorDis),
+// 		QVector3D(projectorRect.bottomLeft().x(),projectorRect.bottomLeft().y(), projectorDis),
+// 		QVector3D(projectorRect.bottomRight().x(),projectorRect.bottomRight().y(),projectorDis) };
+	for (qreal x = projectorRect.left(); x <= projectorRect.right(); x += projectorRect.width() / 10.0)
+	{
+		for (qreal y = projectorRect.top(); y <= projectorRect.bottom(); y += projectorRect.height() / 10.0)
+		{
+			points.push_back(QVector3D(x, y, projectorDis));
+		}
+	}
+	setSrc(points);
 
+	const qreal toRadian = M_PI / 180;
 	qreal distance = ui.doubleSpinBoxDistanceToRealScreen->value();
 	qreal angleX = ui.doubleSpinBoxRotateX->value() * toRadian;
 	qreal angleY = ui.doubleSpinBoxRotateY->value() * toRadian;
 	qreal angleZ = ui.doubleSpinBoxRotateZ->value() * toRadian;
-
 	qreal tempValue = qCos(angleX)*qCos(angleX) + qCos(angleY)*qCos(angleY) + qCos(angleZ)*qCos(angleZ);
 	if (qAbs(tempValue - 1) > 0.01)
 	{
@@ -45,30 +94,15 @@ void ProjectConverter::project()
 		return;
 	}
 
-	//plane x*cos(angleX) + y*cos(angleY) + z*cos(angleZ) = distance
-
-	qreal projectorWidth = ui.doubleSpinBoxScreenWidth->value();
-	qreal projectorHeight = ui.doubleSpinBoxScreenHeight->value();
-	qreal projectorDis = ui.doubleSpinBoxDistanceToScreen->value();
-	QRectF projectorRect(-projectorWidth/2, -projectorHeight/2, projectorWidth, projectorHeight);
-	//line 
-	QVector3D points[4] = { QVector3D(projectorRect.topLeft().x(),projectorRect.topLeft().y(), projectorDis ),
-		QVector3D(projectorRect.topRight().x(),projectorRect.topRight().y(),projectorDis ),
-		QVector3D(projectorRect.bottomLeft().x(),projectorRect.bottomLeft().y(), projectorDis),
-		QVector3D(projectorRect.bottomRight().x(),projectorRect.bottomRight().y(),projectorDis)};
-
-	QVector3D pointsResult[4] = {};
+	QVector<QVector3D> pointsResult;
+	//求直线和面的交点
+	for (QVector3D&point : points)
 	{
-		QVector3D *pointResult = pointsResult;
-		//求直线和面的交点
-		for (QVector3D&point : points)
-		{
-			//xcos(α)+xcos(β)+zcos(γ) = distance
-			//x/x1 = y/y1 = z/z1 直线方程
-			*pointResult = Calculator::intersectLinePlane(QVector3D(), point, angleX, angleY, angleZ, distance);
-			pointResult++;
-		}
+		//xcos(α)+xcos(β)+zcos(γ) = distance
+		//x/x1 = y/y1 = z/z1 直线方程
+		pointsResult.push_back(Calculator::intersectLinePlane(QVector3D(), point, angleX, angleY, angleZ, distance));
 	}
+	
 
 	QString message;
 	for (QVector3D&point : pointsResult)
@@ -77,44 +111,7 @@ void ProjectConverter::project()
 		message += '\n';
 	}
 
-	//三维平面转换为二维平面
-	//一个点作为原点
-	pointsResult[3] -= pointsResult[0];
-	pointsResult[2] -= pointsResult[0];
-	pointsResult[1] -= pointsResult[0];
-	pointsResult[0] -= pointsResult[0];
-
-	QVector3D normalVector = QVector3D::crossProduct(pointsResult[1], pointsResult[2]);//{l[1]*r[2] - l[2]*r[1], l[2]*r[0] - l[0]*r[2], l[0]*r[1] - l[1]*r[0]};//平面法向量
-
-	//参考系
-	QVector3D corVec[2] = { pointsResult[1]
-		,QVector3D::crossProduct(normalVector, pointsResult[1])// { normalVector[1] * l[2] - normalVector[2] * l[1], normalVector[2] * l[0] - normalVector[0] * l[2], normalVector[0] * l[1] - normalVector[1] * l[0] }
-	};
-
-	//单位化参考系
-	for (QVector3D &point : corVec)
-	{
-		point /= point.length();
-	}
-
-	//在当前参考系下点的坐标值
-	QPointF vector2d[4] = { { 0,0 },{ pointsResult[1].length() / corVec[0].length() ,0 },{ 0,0 },{ 0,0 } };
-	QPointF*v2d = &vector2d[2];
-	for (QVector3D *vector = &pointsResult[2]; vector < &pointsResult[4]; ++vector)//qreal(&vector)[3] : pointsVector)
-	{
-		qreal matLValue[2][2] = {
-			{ corVec[0][0], corVec[0][1] }
-			,{ corVec[1][0], corVec[1][1] }
-		};
-		qreal matRValue[2][1] = { (*vector)[0], (*vector)[1] };
-		mat L = mat((qreal *)matLValue, 2, 2);
-		mat R = mat((qreal*)matRValue, 2, 1);
-
-		mat Res = solve(L, R);
-
-		*v2d = QPointF(Res.at(0, 0), Res.at(1, 0));
-		++v2d;
-	}
+	QVector<QPointF> vector2d = Calculator::convertTo2dPoints(pointsResult);
 
 	//计算像素值
 	QPixmap map = ui.widgetProjector->pixmap();
@@ -142,7 +139,7 @@ void ProjectConverter::project()
 	CvSize size;
 	{
 		qreal minW = 0, maxW = 0, minH = 0, maxH = 0;
-		for (QPointF *vector= &vector2d[0]; vector < &vector2d[4]; ++vector)
+		for (auto vector= vector2d.begin(); vector != vector2d.end(); ++vector)
 		{
 			if ((*vector).x() > maxW)
 				maxW = (*vector).x();
@@ -157,7 +154,7 @@ void ProjectConverter::project()
 				minH = (*vector).y();
 		}
 		//坐标全部转为正
-		for (QPointF *vector = &vector2d[0]; vector < &vector2d[4]; ++vector)
+		for (auto vector = vector2d.begin(); vector != vector2d.end(); ++vector)
 		{
 			if (minW < 0)
 				(*vector) += QPointF(-minW, 0);
@@ -208,7 +205,7 @@ void ProjectConverter::project()
 
 	QImage cvMat2QImage(const cv::Mat& mat);
 	QImage imageto = cvMat2QImage(cv::cvarrToMat(dst));
-	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
+//	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
 	update();
 }
 
@@ -428,7 +425,7 @@ void ProjectConverter::project2()
 
 	QImage cvMat2QImage(const cv::Mat& mat);
 	QImage imageto = cvMat2QImage(cv::cvarrToMat(dst));
-	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
+//	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
 	update();
 }
 
@@ -483,18 +480,15 @@ void ProjectConverter::invertProject()
 	QVector3D points[2] = { QVector3D(projectorRect.topLeft().x(),projectorRect.topLeft().y(), projectorDis )
 		,QVector3D(projectorRect.topRight().x(),projectorRect.topRight().y(), projectorDis)};
 
-	QVector3D topPoints[2] = {};
+	QVector<QVector3D> topPoints;
+	//求直线和面的交点
+	for (QVector3D&point : points)
 	{
-		QVector3D*pointResult = &topPoints[0];
-		//求直线和面的交点
-		for (QVector3D&point : points)
-		{
-			//xcos(α)+xcos(β)+zcos(γ) = distance
-			//x/x1 = y/y1 = z/z1 直线方程
-			*pointResult = Calculator::intersectLinePlane(QVector3D(), point, angleX, angleY, angleZ, distance);
-			pointResult++;
-		}
+		//xcos(α)+xcos(β)+zcos(γ) = distance
+		//x/x1 = y/y1 = z/z1 直线方程
+		topPoints.push_back(Calculator::intersectLinePlane(QVector3D(), point, angleX, angleY, angleZ, distance));
 	}
+	
 
 	//投影直线向量
 	QVector3D horLine = topPoints[1] - topPoints[0];
@@ -517,21 +511,16 @@ void ProjectConverter::invertProject()
 	verLine[1] *= verLineLength;
 	verLine[2] *= verLineLength;
 	
-	QVector3D bottomPoints[2] = { topPoints[0] + verLine, topPoints[1] + verLine };
+	QVector<QVector3D> bottomPoints = { topPoints[0] + verLine, topPoints[1] + verLine };
 
-	QVector3D proPoints[4] = { { points[0] },{ points[1]},{},{} };
+	QVector<QVector3D> proPoints = { { points[0] },{ points[1]}};
 	//求直线和面的交点
+	for (QVector3D&point : bottomPoints)
 	{
-		QVector3D*pointResult = &proPoints[2];
-		for (QVector3D&point : bottomPoints)
-		{
-			//xcos(α)+xcos(β)+zcos(γ) = distance
-			//x/x1 = y/y1 = z/z1 直线方程
-			*pointResult = Calculator::intersectLinePlane(QVector3D(), point, M_PI/2, M_PI / 2, 0, projectorDis);
-			pointResult++;
-		}
+		//xcos(α)+xcos(β)+zcos(γ) = distance
+		//x/x1 = y/y1 = z/z1 直线方程
+		proPoints.push_back(Calculator::intersectLinePlane(QVector3D(), point, M_PI / 2, M_PI / 2, 0, projectorDis));
 	}
-
 
 	QString message;
 	for (QVector3D&point : proPoints)
@@ -539,68 +528,34 @@ void ProjectConverter::invertProject()
 		message += QString("pos x:%1,y:%2,z:%3").arg(point[0]).arg(point[1]).arg(point[2]);
 		message += '\n';
 	}
+	QVector<QPointF> pro2dPoints = Calculator::convertTo2dPoints(proPoints);
+	Calculator::positivePoints(pro2dPoints);
 
 //	qreal mm1Width = mapSize.width() / projectorWidth;
 	//投影后不同位置对应的宽高对应的像素值不同，这里暂时只考虑宽度对应
 //	for (qreal(*vector)[3] = (qreal(*)[3])proPoints[0]; vector < (qreal(*)[3])proPoints[4]; ++vector)
-	{
+//	{
 //		(*vector)[0] *= mm1Width;
 //		(*vector)[1] *= mm1Width;
-	}
-	qreal srcPoints[4][3] = { {}, {}, {}, {} };
+//	}
+	QVector<QVector3D> srcPoints;
+	srcPoints.append(topPoints);
+	srcPoints.append(bottomPoints);
+	QVector<QPointF> src2dPoints = Calculator::convertTo2dPoints(srcPoints);
+	Calculator::positivePoints(src2dPoints);
+	QSizeF src2dSize = Calculator::size(src2dPoints);
 
 	CvPoint2D32f srcTri[4], dstTri[4];
 	CvMat*       warp_mat = cvCreateMat(3, 3, CV_32FC1);
 	//	IplImage*    src = NULL;
 	IplImage*    dst = NULL;
 
-//	map = ui.widget_2->pixmap();
 	QImage image = map.toImage();
 
 	cv::Mat QImage2cvMat(QImage image);
 	image.convertToFormat(QImage::Format_RGB32);
 	cv::Mat mat = QImage2cvMat(image);
 	IplImage src = IplImage(mat);//cvDecodeImage(&mat, 1);
-								 // 	src = cvLoadImage("E:\\origpic.png");//("D:\\1.jpg");//("E:\\图像处理\\25.bmp");
-	CvSize size;
-	{
-		qreal minW = 0, maxW = 0, minH = 0, maxH = 0;
-		for (QVector3D*vector = &proPoints[0]; vector < &proPoints[4]; ++vector)
-		{
-			if ((*vector)[0] > maxW)
-			{
-				maxW = (*vector)[0];
-			}
-			if ((*vector)[0] < minW)
-			{
-				minW = (*vector)[0];
-			}
-
-			if ((*vector)[1] > maxH)
-			{
-				maxH = (*vector)[1];
-			}
-			if ((*vector)[1] < minH)
-			{
-				minH = (*vector)[1];
-			}
-		}
-		//坐标全部转为正
-
-		for (QVector3D*vector = &proPoints[0]; vector < &proPoints[4]; ++vector)
-		{
-			if (minW < 0)
-				(*vector)[0] += -minW;
-
-			if (minH < 0)
-				(*vector)[1] += -minH;
-		}
-		
-		size = CvSize(maxW - minW, maxH - minH);
-	}
-	//	size = CvSize(src.width, src.height);
-	message += QString("size width:%1,height:%2").arg(size.width).arg(size.height);
-	ui.textBrowser->setText(message);
 
 	QRectF srcRect = image.rect();
 	srcTri[0].x = srcRect.topLeft().x();//topPoints[0][0];//
@@ -615,9 +570,10 @@ void ProjectConverter::invertProject()
 
 	for (int i = 0; i < 4; ++i)
 	{
-		dstTri[i].x = proPoints[i][0];//srcTri[i].x;
-		dstTri[i].y = proPoints[i][1];//srcTri[i].y;
+		dstTri[i].x = src2dPoints[i].x();//srcTri[i].x;
+		dstTri[i].y = src2dPoints[i].y();//srcTri[i].y;
 	}
+	CvSize size = CvSize(src2dSize.width() + 0.5, src2dSize.height() + 0.5);
 	while (size.width > 10000 || size.width > 10000)
 	{
 		size.width /= 10;
@@ -636,16 +592,48 @@ void ProjectConverter::invertProject()
 	cvGetPerspectiveTransform(srcTri, dstTri, warp_mat);
 	cvWarpPerspective(&src, dst, warp_mat);
 
+
+	CvPoint2D32f dstToScreen[4];
+	QSizeF pro2dSize = Calculator::size(pro2dPoints);
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			dstToScreen[i].x = pro2dPoints[i].x();//srcTri[i].x;
+			dstToScreen[i].y = pro2dPoints[i].y();//srcTri[i].y;
+		}
+		CvSize size = CvSize(pro2dSize.width() + 0.5, pro2dSize.height() + 0.5);
+		while (size.width > 10000 || size.width > 10000)
+		{
+			size.width /= 10;
+			size.height /= 10;
+			for (CvPoint2D32f& po : dstToScreen)
+			{
+				po.x /= 10;
+				po.y /= 10;
+			}
+		}
+	}
+	cvGetPerspectiveTransform(dstTri, dstToScreen, warp_mat);
+	CvSize proSize = CvSize(pro2dSize.width(), pro2dSize.height());
+	IplImage* proImage = cvCreateImage(proSize, dst->depth, dst->nChannels);
+	proImage->origin = dst->origin;
+	cvZero(proImage);
+	cvWarpPerspective(dst, proImage, warp_mat);
+
 	QImage cvMat2QImage(const cv::Mat& mat);
-	QImage imageto = cvMat2QImage(cv::cvarrToMat(dst));
-	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
+	QImage imageto = cvMat2QImage(cv::cvarrToMat(proImage));
+//	ui.widget_2->setPixmap(QPixmap::fromImage(imageto));
 	update();
 }
 
+CvPoint3D64f getLinePlaneIntersection(const CvPoint3D64f& p1, const CvPoint3D64f& p2)
+{
+	return{};
+}
 void ProjectConverter::swapPixmap()
 {
-	ui.widgetProjector->setPixmap(ui.widget_2->pixmap());
-	ui.widget_2->setPixmap(QPixmap());
+//	ui.widgetProjector->setPixmap(ui.widget_2->pixmap());
+//	ui.widget_2->setPixmap(QPixmap());
 	update();
 }
 

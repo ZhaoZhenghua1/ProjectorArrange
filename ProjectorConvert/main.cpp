@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 }
  #include<cv.h>
  #include<highgui.h>
-
+//cv::Mat a;
 // #pragma comment(lib, "cv.lib")
 // #pragma comment(lib, "cxcore.lib")
 // #pragma comment(lib, "highgui.lib")

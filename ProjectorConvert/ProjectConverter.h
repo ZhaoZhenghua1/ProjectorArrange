@@ -14,6 +14,8 @@ public slots:
 	void invertProject();
 	void swapPixmap();
 private:
+	void setSrc(const QVector<QVector3D>& points);
+private:
 	Ui::ProjectorConverter ui;
 	QPixmap m_map = QPixmap(":/Resources/origpic.png");
 };

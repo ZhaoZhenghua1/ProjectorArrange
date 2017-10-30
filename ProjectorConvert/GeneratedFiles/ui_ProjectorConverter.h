@@ -31,6 +31,32 @@ class Ui_ProjectorConverter
 public:
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
+    MapWidget *widgetProjector;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
+    QLabel *label_8;
+    QHBoxLayout *horizontalLayout_3;
+    QLabel *label_2;
+    QDoubleSpinBox *doubleSpinBoxScreenWidth;
+    QLabel *label_3;
+    QHBoxLayout *horizontalLayout_4;
+    QLabel *label_4;
+    QDoubleSpinBox *doubleSpinBoxScreenHeight;
+    QLabel *label_5;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *label_6;
+    QDoubleSpinBox *doubleSpinBoxDistanceToScreen;
+    QLabel *label_7;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *label;
+    QSpinBox *spinBoxDisBelow;
+    QLabel *label_12;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_20;
+    QSpinBox *spinBoxDisMid;
+    QLabel *label_11;
+    QHBoxLayout *horizontalLayout_11;
+    QTextBrowser *textBrowser;
     QVBoxLayout *verticalLayout_2;
     QLabel *label_17;
     QHBoxLayout *horizontalLayout_10;
@@ -49,44 +75,163 @@ public:
     QLabel *label_13;
     QDoubleSpinBox *doubleSpinBoxRotateZ;
     QLabel *label_14;
-    QVBoxLayout *verticalLayout_3;
-    QLabel *label;
-    QHBoxLayout *horizontalLayout_7;
-    QLabel *label_11;
-    QSpinBox *spinBox;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_12;
-    QSpinBox *spinBox_2;
-    QVBoxLayout *verticalLayout;
-    QHBoxLayout *horizontalLayout;
-    QLabel *label_8;
-    QHBoxLayout *horizontalLayout_3;
-    QLabel *label_2;
-    QDoubleSpinBox *doubleSpinBoxScreenWidth;
-    QLabel *label_3;
-    QHBoxLayout *horizontalLayout_4;
-    QLabel *label_4;
-    QDoubleSpinBox *doubleSpinBoxScreenHeight;
-    QLabel *label_5;
-    QHBoxLayout *horizontalLayout_5;
-    QLabel *label_6;
-    QDoubleSpinBox *doubleSpinBoxDistanceToScreen;
-    QLabel *label_7;
-    QHBoxLayout *horizontalLayout_11;
-    QTextBrowser *textBrowser;
-    MapWidget *widgetProjector;
-    MapWidget *widget_2;
-    MapWidget *widget;
 
     void setupUi(QWidget *ProjectorConverter)
     {
         if (ProjectorConverter->objectName().isEmpty())
             ProjectorConverter->setObjectName(QStringLiteral("ProjectorConverter"));
-        ProjectorConverter->resize(870, 784);
+        ProjectorConverter->resize(870, 422);
         gridLayout_2 = new QGridLayout(ProjectorConverter);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        widgetProjector = new MapWidget(ProjectorConverter);
+        widgetProjector->setObjectName(QStringLiteral("widgetProjector"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(1);
+        sizePolicy.setVerticalStretch(1);
+        sizePolicy.setHeightForWidth(widgetProjector->sizePolicy().hasHeightForWidth());
+        widgetProjector->setSizePolicy(sizePolicy);
+
+        gridLayout->addWidget(widgetProjector, 1, 0, 1, 1);
+
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        label_8 = new QLabel(ProjectorConverter);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        horizontalLayout->addWidget(label_8);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        label_2 = new QLabel(ProjectorConverter);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        horizontalLayout_3->addWidget(label_2);
+
+        doubleSpinBoxScreenWidth = new QDoubleSpinBox(ProjectorConverter);
+        doubleSpinBoxScreenWidth->setObjectName(QStringLiteral("doubleSpinBoxScreenWidth"));
+        doubleSpinBoxScreenWidth->setMaximum(1e+15);
+        doubleSpinBoxScreenWidth->setValue(800);
+
+        horizontalLayout_3->addWidget(doubleSpinBoxScreenWidth);
+
+        label_3 = new QLabel(ProjectorConverter);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        horizontalLayout_3->addWidget(label_3);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        label_4 = new QLabel(ProjectorConverter);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        horizontalLayout_4->addWidget(label_4);
+
+        doubleSpinBoxScreenHeight = new QDoubleSpinBox(ProjectorConverter);
+        doubleSpinBoxScreenHeight->setObjectName(QStringLiteral("doubleSpinBoxScreenHeight"));
+        doubleSpinBoxScreenHeight->setMaximum(1e+15);
+        doubleSpinBoxScreenHeight->setValue(600);
+
+        horizontalLayout_4->addWidget(doubleSpinBoxScreenHeight);
+
+        label_5 = new QLabel(ProjectorConverter);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        horizontalLayout_4->addWidget(label_5);
+
+
+        verticalLayout->addLayout(horizontalLayout_4);
+
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        label_6 = new QLabel(ProjectorConverter);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        horizontalLayout_5->addWidget(label_6);
+
+        doubleSpinBoxDistanceToScreen = new QDoubleSpinBox(ProjectorConverter);
+        doubleSpinBoxDistanceToScreen->setObjectName(QStringLiteral("doubleSpinBoxDistanceToScreen"));
+        doubleSpinBoxDistanceToScreen->setMaximum(1e+15);
+        doubleSpinBoxDistanceToScreen->setValue(180);
+
+        horizontalLayout_5->addWidget(doubleSpinBoxDistanceToScreen);
+
+        label_7 = new QLabel(ProjectorConverter);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        horizontalLayout_5->addWidget(label_7);
+
+
+        verticalLayout->addLayout(horizontalLayout_5);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        label = new QLabel(ProjectorConverter);
+        label->setObjectName(QStringLiteral("label"));
+
+        horizontalLayout_2->addWidget(label);
+
+        spinBoxDisBelow = new QSpinBox(ProjectorConverter);
+        spinBoxDisBelow->setObjectName(QStringLiteral("spinBoxDisBelow"));
+
+        horizontalLayout_2->addWidget(spinBoxDisBelow);
+
+        label_12 = new QLabel(ProjectorConverter);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        horizontalLayout_2->addWidget(label_12);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_20 = new QLabel(ProjectorConverter);
+        label_20->setObjectName(QStringLiteral("label_20"));
+
+        horizontalLayout_7->addWidget(label_20);
+
+        spinBoxDisMid = new QSpinBox(ProjectorConverter);
+        spinBoxDisMid->setObjectName(QStringLiteral("spinBoxDisMid"));
+
+        horizontalLayout_7->addWidget(spinBoxDisMid);
+
+        label_11 = new QLabel(ProjectorConverter);
+        label_11->setObjectName(QStringLiteral("label_11"));
+
+        horizontalLayout_7->addWidget(label_11);
+
+
+        verticalLayout->addLayout(horizontalLayout_7);
+
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
+        textBrowser = new QTextBrowser(ProjectorConverter);
+        textBrowser->setObjectName(QStringLiteral("textBrowser"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(textBrowser->sizePolicy().hasHeightForWidth());
+        textBrowser->setSizePolicy(sizePolicy1);
+        textBrowser->setMaximumSize(QSize(300, 16777215));
+
+        horizontalLayout_11->addWidget(textBrowser);
+
+
+        verticalLayout->addLayout(horizontalLayout_11);
+
+
+        gridLayout->addLayout(verticalLayout, 1, 1, 1, 1);
+
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         label_17 = new QLabel(ProjectorConverter);
@@ -183,174 +328,7 @@ public:
         verticalLayout_2->addLayout(horizontalLayout_8);
 
 
-        gridLayout->addLayout(verticalLayout_2, 1, 1, 1, 1);
-
-        verticalLayout_3 = new QVBoxLayout();
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        label = new QLabel(ProjectorConverter);
-        label->setObjectName(QStringLiteral("label"));
-
-        verticalLayout_3->addWidget(label);
-
-        horizontalLayout_7 = new QHBoxLayout();
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
-        label_11 = new QLabel(ProjectorConverter);
-        label_11->setObjectName(QStringLiteral("label_11"));
-
-        horizontalLayout_7->addWidget(label_11);
-
-        spinBox = new QSpinBox(ProjectorConverter);
-        spinBox->setObjectName(QStringLiteral("spinBox"));
-        spinBox->setMaximum(10000);
-
-        horizontalLayout_7->addWidget(spinBox);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_7);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        label_12 = new QLabel(ProjectorConverter);
-        label_12->setObjectName(QStringLiteral("label_12"));
-
-        horizontalLayout_2->addWidget(label_12);
-
-        spinBox_2 = new QSpinBox(ProjectorConverter);
-        spinBox_2->setObjectName(QStringLiteral("spinBox_2"));
-        spinBox_2->setMaximum(10000);
-
-        horizontalLayout_2->addWidget(spinBox_2);
-
-
-        verticalLayout_3->addLayout(horizontalLayout_2);
-
-
-        gridLayout->addLayout(verticalLayout_3, 0, 1, 1, 1);
-
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        label_8 = new QLabel(ProjectorConverter);
-        label_8->setObjectName(QStringLiteral("label_8"));
-
-        horizontalLayout->addWidget(label_8);
-
-
-        verticalLayout->addLayout(horizontalLayout);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        label_2 = new QLabel(ProjectorConverter);
-        label_2->setObjectName(QStringLiteral("label_2"));
-
-        horizontalLayout_3->addWidget(label_2);
-
-        doubleSpinBoxScreenWidth = new QDoubleSpinBox(ProjectorConverter);
-        doubleSpinBoxScreenWidth->setObjectName(QStringLiteral("doubleSpinBoxScreenWidth"));
-        doubleSpinBoxScreenWidth->setMaximum(1e+15);
-        doubleSpinBoxScreenWidth->setValue(800);
-
-        horizontalLayout_3->addWidget(doubleSpinBoxScreenWidth);
-
-        label_3 = new QLabel(ProjectorConverter);
-        label_3->setObjectName(QStringLiteral("label_3"));
-
-        horizontalLayout_3->addWidget(label_3);
-
-
-        verticalLayout->addLayout(horizontalLayout_3);
-
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        label_4 = new QLabel(ProjectorConverter);
-        label_4->setObjectName(QStringLiteral("label_4"));
-
-        horizontalLayout_4->addWidget(label_4);
-
-        doubleSpinBoxScreenHeight = new QDoubleSpinBox(ProjectorConverter);
-        doubleSpinBoxScreenHeight->setObjectName(QStringLiteral("doubleSpinBoxScreenHeight"));
-        doubleSpinBoxScreenHeight->setMaximum(1e+15);
-        doubleSpinBoxScreenHeight->setValue(600);
-
-        horizontalLayout_4->addWidget(doubleSpinBoxScreenHeight);
-
-        label_5 = new QLabel(ProjectorConverter);
-        label_5->setObjectName(QStringLiteral("label_5"));
-
-        horizontalLayout_4->addWidget(label_5);
-
-
-        verticalLayout->addLayout(horizontalLayout_4);
-
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        label_6 = new QLabel(ProjectorConverter);
-        label_6->setObjectName(QStringLiteral("label_6"));
-
-        horizontalLayout_5->addWidget(label_6);
-
-        doubleSpinBoxDistanceToScreen = new QDoubleSpinBox(ProjectorConverter);
-        doubleSpinBoxDistanceToScreen->setObjectName(QStringLiteral("doubleSpinBoxDistanceToScreen"));
-        doubleSpinBoxDistanceToScreen->setMaximum(1e+15);
-        doubleSpinBoxDistanceToScreen->setValue(1000);
-
-        horizontalLayout_5->addWidget(doubleSpinBoxDistanceToScreen);
-
-        label_7 = new QLabel(ProjectorConverter);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        horizontalLayout_5->addWidget(label_7);
-
-
-        verticalLayout->addLayout(horizontalLayout_5);
-
-        horizontalLayout_11 = new QHBoxLayout();
-        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
-        textBrowser = new QTextBrowser(ProjectorConverter);
-        textBrowser->setObjectName(QStringLiteral("textBrowser"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(textBrowser->sizePolicy().hasHeightForWidth());
-        textBrowser->setSizePolicy(sizePolicy);
-        textBrowser->setMaximumSize(QSize(300, 16777215));
-
-        horizontalLayout_11->addWidget(textBrowser);
-
-
-        verticalLayout->addLayout(horizontalLayout_11);
-
-
-        gridLayout->addLayout(verticalLayout, 2, 1, 1, 1);
-
-        widgetProjector = new MapWidget(ProjectorConverter);
-        widgetProjector->setObjectName(QStringLiteral("widgetProjector"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(1);
-        sizePolicy1.setHeightForWidth(widgetProjector->sizePolicy().hasHeightForWidth());
-        widgetProjector->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(widgetProjector, 2, 0, 1, 1);
-
-        widget_2 = new MapWidget(ProjectorConverter);
-        widget_2->setObjectName(QStringLiteral("widget_2"));
-        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy2.setHorizontalStretch(1);
-        sizePolicy2.setVerticalStretch(1);
-        sizePolicy2.setHeightForWidth(widget_2->sizePolicy().hasHeightForWidth());
-        widget_2->setSizePolicy(sizePolicy2);
-        widget_2->setMinimumSize(QSize(100, 0));
-
-        gridLayout->addWidget(widget_2, 1, 0, 1, 1);
-
-        widget = new MapWidget(ProjectorConverter);
-        widget->setObjectName(QStringLiteral("widget"));
-        sizePolicy1.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy1);
-
-        gridLayout->addWidget(widget, 0, 0, 1, 1);
+        gridLayout->addLayout(verticalLayout_2, 0, 1, 1, 1);
 
 
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
@@ -363,19 +341,7 @@ public:
 
     void retranslateUi(QWidget *ProjectorConverter)
     {
-        ProjectorConverter->setWindowTitle(QApplication::translate("ProjectorConverter", "Form", 0));
-        label_17->setText(QApplication::translate("ProjectorConverter", "\345\261\217\345\271\225\345\217\202\346\225\260", 0));
-        label_18->setText(QApplication::translate("ProjectorConverter", "\350\267\235\345\261\217\345\271\225\350\267\235\347\246\273", 0));
-        label_19->setText(QApplication::translate("ProjectorConverter", "mm", 0));
-        label_9->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254x:", 0));
-        label_10->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
-        label_15->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254y:", 0));
-        label_16->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
-        label_13->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254z:", 0));
-        label_14->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
-        label->setText(QApplication::translate("ProjectorConverter", "\346\212\225\345\275\261\345\217\202\346\225\260", 0));
-        label_11->setText(QApplication::translate("ProjectorConverter", "Width", 0));
-        label_12->setText(QApplication::translate("ProjectorConverter", "Height", 0));
+        ProjectorConverter->setWindowTitle(QApplication::translate("ProjectorConverter", "ProjectorSetting", 0));
         label_8->setText(QApplication::translate("ProjectorConverter", "\346\212\225\345\275\261\346\234\272\345\217\202\346\225\260", 0));
         label_2->setText(QApplication::translate("ProjectorConverter", "\345\261\217\345\271\225\345\256\275\345\272\246", 0));
         label_3->setText(QApplication::translate("ProjectorConverter", "mm", 0));
@@ -383,6 +349,19 @@ public:
         label_5->setText(QApplication::translate("ProjectorConverter", "mm", 0));
         label_6->setText(QApplication::translate("ProjectorConverter", "\350\267\235\345\261\217\345\271\225\350\267\235\347\246\273", 0));
         label_7->setText(QApplication::translate("ProjectorConverter", "mm", 0));
+        label->setText(QApplication::translate("ProjectorConverter", "\346\212\225\345\275\261\346\234\272\344\270\213\346\262\277\345\210\260\345\261\217\345\271\225\344\270\213\346\262\277\350\267\235\347\246\273", 0));
+        label_12->setText(QApplication::translate("ProjectorConverter", "mm", 0));
+        label_20->setText(QApplication::translate("ProjectorConverter", "\346\212\225\345\275\261\346\234\272\344\270\255\351\227\264\345\210\260\345\261\217\345\271\225\344\270\255\351\227\264\350\267\235\347\246\273", 0));
+        label_11->setText(QApplication::translate("ProjectorConverter", "mm", 0));
+        label_17->setText(QApplication::translate("ProjectorConverter", "\345\261\217\345\271\225\345\217\202\346\225\260", 0));
+        label_18->setText(QApplication::translate("ProjectorConverter", "\350\267\235\346\212\225\345\275\261\346\234\272\350\267\235\347\246\273", 0));
+        label_19->setText(QApplication::translate("ProjectorConverter", "mm", 0));
+        label_9->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254x:", 0));
+        label_10->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
+        label_15->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254y:", 0));
+        label_16->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
+        label_13->setText(QApplication::translate("ProjectorConverter", "\346\227\213\350\275\254z:", 0));
+        label_14->setText(QApplication::translate("ProjectorConverter", "\302\260", 0));
     } // retranslateUi
 
 };

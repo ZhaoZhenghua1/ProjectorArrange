@@ -1,6 +1,7 @@
 #include "Calculator.h"
 #include <QtMath>
 #include <armadillo>
+#include<cv.h>
 
 QVector3D Calculator::intersectLinePlane(const QVector3D& pos1, const QVector3D& pos2, qreal alpha, qreal beta, qreal gamma, qreal dis)
 {
@@ -24,9 +25,29 @@ QVector3D Calculator::intersectLinePlane(const QVector3D& pos1, const QVector3D&
 	arma::mat L = arma::mat((qreal *)matLValue, 3, 3);
 	arma::mat R = arma::mat((qreal*)matRValue, 3, 1);
 
+	qreal matLValue2[3][3] = {
+		{ matLValue[0][0],matLValue[1][0],matLValue[2][0] } ,
+		{ matLValue[0][1],matLValue[1][1],matLValue[2][1] } ,
+		{ matLValue[0][2],matLValue[1][2],matLValue[2][2] } };
+	CvMat  *l = cvCreateMat(3, 3, CV_64FC1);
+	cvSetData(l, matLValue2, CV_AUTOSTEP);
+
+	CvMat  *r = cvCreateMat(3, 1, CV_64FC1);
+	cvSetData(r, matRValue, CV_AUTOSTEP);
+
+	CvMat  *result = cvCreateMat(3, 1, CV_64FC1);
+
+	cvSolve(l, r, result, CV_LU);
+
 	arma::mat Res = arma::solve(L, R);
 
-	return QVector3D(Res.at(0, 0),Res.at(1, 0), Res.at(2, 0));
+	QVector3D d1 = QVector3D(result->data.db[0], result->data.db[1], result->data.db[2]);
+	cvReleaseMat(&l);
+	cvReleaseMat(&r);
+	cvReleaseMat(&result);
+
+	QVector3D d2 = QVector3D(Res.at(0, 0), Res.at(1, 0), Res.at(2, 0));
+	return d1;
 }
 
 QVector3D Calculator::unitRefrence(const QVector3D& vector)
@@ -44,7 +65,7 @@ QVector<QPointF> Calculator::convertTo2dPoints(const QVector<QVector3D>& points3
 	QVector<QVector3D> temp = points3d;
 	for (auto ite = temp.rbegin(); ite != temp.rend(); ++ite)
 	{
-		(*ite) -= temp.first;
+		(*ite) -= temp.first();
 	}
 	//平面法向量
 	QVector3D normalVector = QVector3D::crossProduct(temp[1], temp[2]);
@@ -78,4 +99,90 @@ QVector<QPointF> Calculator::convertTo2dPoints(const QVector<QVector3D>& points3
 		vector2d.push_back(QPointF(Res.at(0, 0), Res.at(1, 0)));
 	}
 	return vector2d;
+}
+//坐标全部转为正
+void Calculator::positivePoints(QVector<QPointF>& points)
+{
+	qreal minW = 0, minH = 0;
+	for (auto ite = points.begin(); ite != points.end(); ++ite)
+	{
+		if ((*ite).x() < minW)
+		{
+			minW = (*ite).x();
+		}
+
+		if ((*ite).y() < minH)
+		{
+			minH = (*ite).y();
+		}
+	}
+	//坐标全部转为正
+	for (auto ite = points.begin(); ite != points.end(); ++ite)
+	{
+		if (minW < 0)
+			(*ite) += QPointF(-minW,0);
+
+		if (minH < 0)
+			(*ite) += QPointF(0,-minH);
+	}
+}
+
+void Calculator::positivePoints(QVector<QVector3D>& points)
+{
+	qreal minW = 0, minH = 0, minZ = 0;
+	for (auto ite = points.begin(); ite != points.end(); ++ite)
+	{
+		if ((*ite).x() < minW)
+		{
+			minW = (*ite).x();
+		}
+
+		if ((*ite).y() < minH)
+		{
+			minH = (*ite).y();
+		}
+
+		if ((*ite).z() < minZ)
+		{
+			minZ = (*ite).z();
+		}
+	}
+	//坐标全部转为正
+	for (auto ite = points.begin(); ite != points.end(); ++ite)
+	{
+		if (minW < 0)
+			(*ite) += QVector3D(-minW, 0, 0);
+
+		if (minH < 0)
+			(*ite) += QVector3D(0, -minH, 0);
+
+		if (minZ < 0)
+			(*ite) += QVector3D(0, 0, -minZ);
+	}
+}
+
+QSizeF Calculator::size(const QVector<QPointF>& points)
+{
+	qreal minW = 0, maxW = 0, minH = 0, maxH = 0;
+	for (auto ite = points.begin(); ite != points.end(); ++ite)
+	{
+		if ((*ite).x() > maxW)
+		{
+			maxW = (*ite).x();
+		}
+		if ((*ite).x() < minW)
+		{
+			minW = (*ite).x();
+		}
+
+		if ((*ite).y() > maxH)
+		{
+			maxH = (*ite).y();
+		}
+		if ((*ite).y() < minH)
+		{
+			minH = (*ite).y();
+		}
+	}
+	return QSizeF(maxW - minW, maxH - minH);
 }

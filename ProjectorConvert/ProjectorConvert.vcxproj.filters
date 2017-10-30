@@ -68,6 +68,9 @@
     <ClCompile Include="Calculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DestWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="projectorconvert.h">
@@ -85,6 +88,9 @@
     <CustomBuild Include="ProjectConverter.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="RealScreen.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_projectorconvert.h">
@@ -98,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="Calculator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DestWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_RealScreen.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

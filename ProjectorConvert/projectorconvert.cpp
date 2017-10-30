@@ -13,8 +13,8 @@ ProjectorConvert::ProjectorConvert(QWidget *parent)
 	m_converter = converter;
 	setCentralWidget(converter);
 
-	QAction* action = menuBar()->addAction("set map");
-	connect(action, &QAction::triggered, this, &ProjectorConvert::onSetPixmap);
+	QAction* action = nullptr;// = menuBar()->addAction("set map");
+//	connect(action, &QAction::triggered, this, &ProjectorConvert::onSetPixmap);
 	
 	action = menuBar()->addAction("project");
 	connect(action, &QAction::triggered, converter, &ProjectConverter::project);
