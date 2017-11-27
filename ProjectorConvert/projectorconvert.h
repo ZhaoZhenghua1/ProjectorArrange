@@ -12,8 +12,6 @@ class ProjectorConvert : public QMainWindow
 public:
 	ProjectorConvert(QWidget *parent = 0);
 	~ProjectorConvert();
-private slots:
-void onSetPixmap();
 
 private:
 	Ui::ProjectorConvertClass ui;

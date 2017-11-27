@@ -63,8 +63,15 @@ void Projector::updatePosition()
 		setZValue(pixelDensity());
 	}
 
+	if (parentItem()->focusItem() == this)
+	{
+		setCurrentOnePixWidth(curOnePixWidth());
+	}
+
 	//clearfocus so that SizeGrip hide
-	clearFocus();
+	//clearFocus();
+	delete m_rotateItem;
+	m_rotateItem = nullptr;
 }
 
 void Projector::setData(const QDomElement& data)
@@ -258,6 +265,7 @@ void Projector::focusInEvent(QFocusEvent *event)
 	if (isMoveMode())
 	{
 		emit setCurrentItemData(m_data);
+		setCurrentOnePixWidth(curOnePixWidth());
 	}
 	return Base::focusInEvent(event);
 }
@@ -341,4 +349,15 @@ int Projector::rotate()
 	QString rotate = m_data.firstChildElement("rotate").firstChild().nodeValue();
 	QStringList rotateValue = rotate.split(';');
 	return rotateValue[0].toInt();
+}
+
+qreal Projector::curOnePixWidth()
+{
+	QString fenbianlv = m_data.firstChildElement("fenbianlv").firstChild().nodeValue();
+	QStringList fenbianlvValue = fenbianlv.split('x');
+	if (fenbianlvValue.size() != 2)
+	{
+		return 4000 / 1920.0;
+	}
+	return m_data.firstChildElement("projectionwidth").firstChild().nodeValue().toDouble() / fenbianlvValue[0].toDouble();
 }

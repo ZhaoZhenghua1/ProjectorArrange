@@ -12,7 +12,12 @@ DestWidget::~DestWidget()
 {
 }
 
-void DestWidget::setPixmap(const QPixmap& map)
+void DestWidget::setPoints(const QVector<QVector<QPointF>>& points)
 {
-	ui.widget_2->setPixmap(map);
+	ui.widget_2->setPoints(points);
+}
+
+void DestWidget::setRatio(const QSizeF& ratio)
+{
+	ui.widget_2->setRatio(ratio);
 }

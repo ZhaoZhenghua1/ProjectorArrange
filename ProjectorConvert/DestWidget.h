@@ -8,7 +8,8 @@ public:
 	~DestWidget();
 
 public:
-	void setPixmap(const QPixmap& map);
+	void setPoints(const QVector<QVector<QPointF>>& points);
+	void setRatio(const QSizeF& ratio);
 private:
 	Ui::RealScreen ui;
 };

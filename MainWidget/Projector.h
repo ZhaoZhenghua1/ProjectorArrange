@@ -44,6 +44,7 @@ signals:
 	int getBrightnessGrey(int brightness);
 	int getPixdensityHue(qreal pixdensity);
 	void showEffectValue(const QPointF& pos, const QString& value);
+	void setCurrentOnePixWidth(qreal w);
 	public slots:
 	QDomElement data();
 	private slots:
@@ -64,6 +65,7 @@ private:
 	bool isFreeRotate();
 	void setRotate(int rotate);
 	int rotate();
+	qreal curOnePixWidth();
 private:
 	QLineF topLine(const QRectF& rect);
 	QLineF leftLine(const QRectF& rect);

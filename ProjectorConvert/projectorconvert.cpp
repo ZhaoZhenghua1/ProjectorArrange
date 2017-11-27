@@ -20,22 +20,28 @@ ProjectorConvert::ProjectorConvert(QWidget *parent)
 	connect(action, &QAction::triggered, converter, &ProjectConverter::project);
 
 	action = menuBar()->addAction("inverse project");
-	connect(action, &QAction::triggered, converter, &ProjectConverter::invertProject);
+	connect(action, &QAction::triggered, converter, &ProjectConverter::inverseProject);
 
-	action = menuBar()->addAction("move dst to projector");
-	connect(action, &QAction::triggered, converter, &ProjectConverter::swapPixmap);
+// 	action = menuBar()->addAction("inner ball pro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::innerballpro);
+// 
+// 	action = menuBar()->addAction("out ball pro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::outterballpro);
+// 
+// 	action = menuBar()->addAction("inverse ball pro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::inverseballpro);
+// 
+// 	action = menuBar()->addAction("inner cylinder pro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::innercylinderpro);
+// 
+// 	action = menuBar()->addAction("out cylinder pro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::outtercylinderpro);
+// 	
+// 	action = menuBar()->addAction("inversecylinderpro");
+// 	connect(action, &QAction::triggered, converter, &ProjectConverter::inversecylinderpro);
 }
 
 ProjectorConvert::~ProjectorConvert()
 {
 
-}
-
-void ProjectorConvert::onSetPixmap()
-{
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Set reference picture"), QStandardPaths::writableLocation(QStandardPaths::PicturesLocation), "Images (*.png *.xpm *.jpg);");
-	if (!fileName.isEmpty())
-	{
-		m_converter->setPixmap(fileName);
-	}
 }

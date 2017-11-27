@@ -56,7 +56,7 @@ public slots:
 	int effectMode();
 	int getBrightnessGrey(int brightness);
 	int getPixdensityHue(qreal pixdensity);
-
+	void setCurrentOnePixWidth(qreal pixWidth);
 	void showValue(const QPointF& pos, const QString& value);
 protected:
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = Q_NULLPTR */)override;
@@ -82,5 +82,6 @@ private:
 	int m_effectMode = 0;
 	GridCover* m_grid = nullptr;
 	QPixmap m_normalCentralMap = QPixmap(":/background.jpg");
+	qreal m_onePixWidth = 4000 / 1920;
 };
 

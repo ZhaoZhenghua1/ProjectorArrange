@@ -131,6 +131,7 @@ void Central::setData(const QDomElement& data)
 		connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
 		connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
 		connect(proj, &Projector::showEffectValue, this, &Central::showValue);
+		connect(proj, &Projector::setCurrentOnePixWidth, this, &Central::setCurrentOnePixWidth);
 		proj->setData(elem); 
 		
 		proj->updatePosition();
@@ -245,6 +246,7 @@ Projector* Central::createProjector(const QPointF& pos)
 	connect(proj, &Projector::getBrightnessGrey, this, &Central::getBrightnessGrey);
 	connect(proj, &Projector::getPixdensityHue, this, &Central::getPixdensityHue);
 	connect(proj, &Projector::showEffectValue, this, &Central::showValue);
+	connect(proj, &Projector::setCurrentOnePixWidth, this, &Central::setCurrentOnePixWidth);
 
 	return proj;
 }
@@ -264,7 +266,7 @@ QDomElement Central::createProjectorNode()
 	proElement.firstChildElement("liangdu").firstChild().setNodeValue("5000");
 	proElement.firstChildElement("rotate").firstChild().setNodeValue(QString("%1").arg(m_projectorRotate));
 	proElement.firstChildElement("fenbianlv").firstChild().setNodeValue(QString("%1x%2").arg(m_projectorRatio.width()).arg(m_projectorRatio.height()));
-	double onePixWidth = 4000 / 1920.0;
+	double onePixWidth = m_onePixWidth;//4000 / 1920.0;
 	proElement.firstChildElement("projectionwidth").firstChild().setNodeValue(QString("%1").arg(int(m_projectorRatio.width()*onePixWidth + 0.5)));
 	proElement.firstChildElement("projectionheight").firstChild().setNodeValue(QString("%1").arg(int(m_projectorRatio.height()*onePixWidth + 0.5)));
 
@@ -966,6 +968,14 @@ int Central::getPixdensityHue(qreal pixdensity)
 	return 0;
 }
 
+void Central::setCurrentOnePixWidth(qreal pixWidth)
+{
+	if (pixWidth > 0)
+	{
+		m_onePixWidth = pixWidth;
+	}
+}
+
 void Central::removeData(const QDomElement& data)
 {
 	m_data.removeChild(data);
@@ -1009,6 +1019,7 @@ void Central::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 	if (Projector* pro = createProjector(pressedPos))
 	{
+		scene()->setFocusItem(pro);
 		pro->updatePosition();
 		emit setCurrentItemData(pro->data());
 	}
