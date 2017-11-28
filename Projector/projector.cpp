@@ -40,15 +40,15 @@ Projector::Projector(QWidget *parent)
 
 	m_widget = new MapWidget;
 	m_widget->setBrush(QBrush(QColor(0, 100, 100)));
-	DragItem* dragItem = new DragItem(m_widget);
-	connect(dragItem, &DragItem::positionChanged, this, &Projector::onDragItemChanged);
+//	DragItem* dragItem = new DragItem(m_widget);
+//	connect(dragItem, &DragItem::positionChanged, this, &Projector::onDragItemChanged);
 
-	m_dragItem = dragItem;
-	m_dragItem->setBrush(QBrush(QColor(153, 217, 234, 150)));
-	dragItem->setRect(QRectF(0, 0, 50, 50));
-	dragItem->setFlag(QGraphicsItem::ItemIsMovable );
-	dragItem->setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
-	new SizeGripItem(new RectResizer, dragItem);
+// 	m_dragItem = dragItem;
+// 	m_dragItem->setBrush(QBrush(QColor(153, 217, 234, 150)));
+//	dragItem->setRect(QRectF(0, 0, 50, 50));
+//	dragItem->setFlag(QGraphicsItem::ItemIsMovable );
+//	dragItem->setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+//	new SizeGripItem(new RectResizer, dragItem);
 
 	GraphicsView * view = new GraphicsView;
 	view->show();
@@ -121,29 +121,36 @@ void Projector::onDragItemChanged()
 	//生成4个点
 	std::array<QVector3D, 4> points;
 	int i = 0;
-	qreal cosTheta = qCos(rotate*M_PI / 180);
-	qreal sinTheta = qSin(rotate*M_PI / 180);
-	float data4x4[] = { cosTheta, sinTheta, 0, 0,
-		-sinTheta, cosTheta, 0,0,
-		0, 0, 1,0,
-		0,0,0,1
-	};
-	QMatrix4x4 m4x4(data4x4);
 
+	QVector3D k = QVector3D(_cosalpha, _cosbeta, _cosgamma);
+	qreal cosTheta = qCos(rotate * M_PI / 180);
+	qreal sinTheta = qSin(rotate * M_PI / 180);
 	for (qreal y = yMin; y <= yMax; y += yMax - yMin)
 	{
 		for (qreal x = xMin; x <= xMax; x += xMax - xMin)
 		{
 			//qreal tempy = y - (x - xMin)*qTan(rotate*M_PI / 360);
 			//Z rotate
-			qreal tempx = x - (xMax + xMin) / 2;
-			qreal tempy = y - (yMax + yMin) / 2;
-			qreal z = (_A*tempx + _B*tempy + _D) / (-_C);
+// 			qreal tempx = x - (xMax + xMin) / 2;
+// 			qreal tempy = y - (yMax + yMin) / 2;
+// 			qreal z = (_A*tempx + _B*tempy + _D) / (-_C);
+// 
+// 			QVector4D v(tempx, tempy, z, 1);
+// 			QVector4D result = m4x4*v;
 
-			QVector4D v(tempx, tempy, z, 1);
-			QVector4D result = m4x4*v;
+			qreal centralX = (xMin + xMax) / 2;
+			qreal centralY = (yMin + yMax) / 2;
+			qreal centralZ = (_A*centralX + _B*centralY + _D) / (-_C);
 
-			points[i++] = QVector3D(result.x() + (xMax + xMin) / 2, result.y() + (yMax + yMin) / 2, result.z());
+			qreal tempx = x - centralX;
+			qreal tempy = y - centralY;
+			//Z rotate
+			qreal z = (_A*tempx + _B*tempy + _D) / (-_C) - centralZ;
+			QVector3D v(tempx, tempy, z);
+			//https://baike.baidu.com/item/%E7%BD%97%E5%BE%B7%E9%87%8C%E6%A0%BC%E6%97%8B%E8%BD%AC%E5%85%AC%E5%BC%8F/18878562
+			QVector3D result = cosTheta*v + (1 - cosTheta)*QVector3D::dotProduct(v, k)*k + sinTheta*QVector3D::crossProduct(k, v);
+
+			points[i++] = QVector3D(result.x() + centralX, result.y() + centralY, result.z()+ centralZ);
 		}
 	}
 
@@ -223,6 +230,7 @@ void Projector::projectPlane()
 	qreal d = qAbs(D) / qSqrt(A*A + B*B + C*C);
 	//标准式获取方向余弦
 	qreal cosalpha = -A*d/D, cosbeta = -B*d/D, cosgamma = -C*d/D;
+	_cosalpha = cosalpha, _cosbeta = cosbeta, _cosgamma = cosgamma;
 
 	//幕投影到斜面上的四角点
 	std::array<QVector3D, 4> dstPoints = { destPoint(proPoints[0],A,B,C,D), destPoint(proPoints[1],A,B,C,D), 
@@ -246,15 +254,10 @@ void Projector::projectPlane()
 	}
 	//生成20个点
 	QVector<QVector<QVector3D>> points;
-	qreal cosTheta = qCos(rotate*M_PI / 180);
-	qreal sinTheta = qSin(rotate*M_PI / 180);
-	float rdata4x4[] = { cosTheta, sinTheta, 0, 0,
-		-sinTheta, cosTheta, 0,0,
-		0, 0, 1,0,
-		0,0,0,1
-	};
-	QMatrix4x4 rm4x4(rdata4x4);
-//	m_dragItem->setMatrix(QMatrix(cosTheta, -sinTheta, sinTheta, cosTheta,0,0));
+
+	QVector3D k = QVector3D(cosalpha, cosbeta, cosgamma);
+	qreal cosTheta = qCos(rotate * M_PI / 180);
+	qreal sinTheta = qSin(rotate * M_PI / 180);
 
 	qreal space = qMin(xMax - xMin, yMax - yMin) / 20;
 	for (qreal x = xMin - (xMin + xMax); x <= xMax+ (xMin + xMax); x+= space)
@@ -262,14 +265,18 @@ void Projector::projectPlane()
 		QVector<QVector3D> temp;
 		for (qreal y = yMin - (xMin + xMax); y<= yMax + (xMin + xMax); y+= space)
 		{
-			qreal tempx = x - (xMin + xMax) / 2;
-			qreal tempy = y - (yMin + yMax) / 2;
+			qreal centralX = (xMin + xMax) / 2;
+			qreal centralY = (yMin + yMax) / 2;
+			qreal centralZ = (A*centralX + B*centralY + D) / (-C);
+
+			qreal tempx = x - centralX;
+			qreal tempy = y - centralY;
 			//Z rotate
-			qreal z = (A*tempx + B*tempy + D) / (-C);
-			QVector4D v(tempx, tempy,z,1);
-			QVector4D result = rm4x4*v;
-//			qreal tempy = y - (x - xMin)*qTan(rotate*M_PI / 360);
-			temp.push_back(QVector3D(result.x() + (xMin + xMax) / 2, result.y() + (yMin + yMax) / 2, result.z()));
+			qreal z = (A*tempx + B*tempy + D) / (-C) - centralZ;
+			QVector3D v(tempx, tempy,z);
+			//https://baike.baidu.com/item/%E7%BD%97%E5%BE%B7%E9%87%8C%E6%A0%BC%E6%97%8B%E8%BD%AC%E5%85%AC%E5%BC%8F/18878562
+			QVector3D result = cosTheta*v + (1-cosTheta)*QVector3D::dotProduct(v,k)*k+sinTheta*QVector3D::crossProduct(k,v);
+			temp.push_back(QVector3D(result.x() + centralX, result.y() + centralY, result.z() + centralZ));
 		}
 		points.push_back(temp);
 	}

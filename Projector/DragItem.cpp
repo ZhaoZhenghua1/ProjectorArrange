@@ -134,6 +134,10 @@ void DragItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 	CvPoint2D32f dstTri[4] = { CvPoint2D32f(temp[0].x(), temp[0].y()),CvPoint2D32f(temp[1].x(), temp[1].y()),CvPoint2D32f(temp[2].x(), temp[2].y()),CvPoint2D32f(temp[3].x(), temp[3].y()) };
 	qreal width = 2*qSqrt((xMax - xMin)*(xMax - xMin));
+	if (width > 9999)
+	{
+		return;
+	}
 	size = CvSize(width, width);
 
 	IplImage*    dst = cvCreateImage(size, src.depth, src.nChannels);

@@ -31,6 +31,7 @@ private:
 	DragItem* m_dragItem = nullptr;
 	MapWidget* m_widget = nullptr;
 	qreal _A = 0, _B = 0, _C = 0, _D = 0;
+	qreal _cosalpha = 0, _cosbeta = 0, _cosgamma = 0;
 	std::array<QVector3D, 4> m_proPoints;
 };
 
