@@ -327,7 +327,7 @@ void CylinderWidget::paintDragItem(QPainter *painter)
 	//src image
 	QImage image = map.toImage();
 	//调整大小
-	image = image.scaled(m_dragSize.toSize() * 2);
+	image.scaled(m_dragSize.toSize() * 2);
 
 	//目的图片
 	QImage imageDst(rect().size().toSize(), QImage::Format_ARGB32);
@@ -342,19 +342,11 @@ void CylinderWidget::paintDragItem(QPainter *painter)
 	//柱子上的图片映射到投影面
 	for (qreal the = theta - delta; the < theta + delta; the += pixdel)
 	{
-		if (i >= image.height())
-		{
-			break;
-		}
 		qreal tx = r*qCos(the);
 		qreal tz = r*qSin(the);
 		int j = 0;
 		for (int ty = m_dragCentral.y() - m_dragSize.height(); ty < m_dragCentral.y() + m_dragSize.height(); ++ty)
 		{
-			if (j >= image.width())
-			{
-				break;
-			}
 			float d[] = { tx,ty,tz };
 			QMatrix1x3 point13(d);
 			QMatrix1x3 ret = rmZ*(rmX*point13);
@@ -365,8 +357,10 @@ void CylinderWidget::paintDragItem(QPainter *painter)
 			pos.setX(pos.x() * xmmpix);
 			pos.setY(pos.y()*ymmpix);
 			pos += rect().topLeft();
-
-			imageDst.setPixelColor(pos.toPoint(), image.pixelColor(i, j));
+			if (rect().contains(pos))
+			{
+				imageDst.setPixelColor(pos.toPoint(), image.pixelColor(i, j));
+			}
 			
 			++j;
 		}
