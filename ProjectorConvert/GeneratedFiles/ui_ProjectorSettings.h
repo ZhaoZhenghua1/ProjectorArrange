@@ -22,7 +22,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "mapwidget.h"
+#include "PlaneWidget.h"
 
 QT_BEGIN_NAMESPACE
 

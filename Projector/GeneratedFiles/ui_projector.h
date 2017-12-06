@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -69,6 +70,24 @@ public:
     QLabel *label_5;
     QSpinBox *bottomrightLength;
     QWidget *cylinder;
+    QVBoxLayout *verticalLayout_6;
+    QVBoxLayout *verticalLayout_5;
+    QHBoxLayout *horizontalLayout_6;
+    QLabel *label_4;
+    QSpinBox *cyr;
+    QSpacerItem *horizontalSpacer_4;
+    QLabel *label_6;
+    QSpinBox *cyx;
+    QSpacerItem *horizontalSpacer_6;
+    QLabel *label_7;
+    QSpinBox *cyz;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_8;
+    QSpinBox *cyrotateX;
+    QSpacerItem *horizontalSpacer_7;
+    QLabel *label_9;
+    QSpinBox *cyrotateZ;
+    QComboBox *cyProType;
     QWidget *ball;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -276,6 +295,105 @@ public:
         tabWidget->addTab(plane, QString());
         cylinder = new QWidget();
         cylinder->setObjectName(QStringLiteral("cylinder"));
+        verticalLayout_6 = new QVBoxLayout(cylinder);
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        label_4 = new QLabel(cylinder);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        horizontalLayout_6->addWidget(label_4);
+
+        cyr = new QSpinBox(cylinder);
+        cyr->setObjectName(QStringLiteral("cyr"));
+        cyr->setMinimum(100);
+        cyr->setMaximum(1000000000);
+
+        horizontalLayout_6->addWidget(cyr);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_4);
+
+        label_6 = new QLabel(cylinder);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        horizontalLayout_6->addWidget(label_6);
+
+        cyx = new QSpinBox(cylinder);
+        cyx->setObjectName(QStringLiteral("cyx"));
+        cyx->setMinimum(-10000000);
+        cyx->setMaximum(100000000);
+
+        horizontalLayout_6->addWidget(cyx);
+
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_6);
+
+        label_7 = new QLabel(cylinder);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        horizontalLayout_6->addWidget(label_7);
+
+        cyz = new QSpinBox(cylinder);
+        cyz->setObjectName(QStringLiteral("cyz"));
+        cyz->setMinimum(200);
+        cyz->setMaximum(10000000);
+
+        horizontalLayout_6->addWidget(cyz);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_6);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(6);
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_8 = new QLabel(cylinder);
+        label_8->setObjectName(QStringLiteral("label_8"));
+
+        horizontalLayout_7->addWidget(label_8);
+
+        cyrotateX = new QSpinBox(cylinder);
+        cyrotateX->setObjectName(QStringLiteral("cyrotateX"));
+        cyrotateX->setMinimum(-10000000);
+        cyrotateX->setMaximum(100000000);
+
+        horizontalLayout_7->addWidget(cyrotateX);
+
+        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_7->addItem(horizontalSpacer_7);
+
+        label_9 = new QLabel(cylinder);
+        label_9->setObjectName(QStringLiteral("label_9"));
+
+        horizontalLayout_7->addWidget(label_9);
+
+        cyrotateZ = new QSpinBox(cylinder);
+        cyrotateZ->setObjectName(QStringLiteral("cyrotateZ"));
+        cyrotateZ->setMinimum(-10000000);
+        cyrotateZ->setMaximum(100000000);
+
+        horizontalLayout_7->addWidget(cyrotateZ);
+
+        cyProType = new QComboBox(cylinder);
+        cyProType->setObjectName(QStringLiteral("cyProType"));
+
+        horizontalLayout_7->addWidget(cyProType);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_7);
+
+
+        verticalLayout_6->addLayout(verticalLayout_5);
+
         tabWidget->addTab(cylinder, QString());
         ball = new QWidget();
         ball->setObjectName(QStringLiteral("ball"));
@@ -303,7 +421,7 @@ public:
 
         retranslateUi(ProjectorClass);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(ProjectorClass);
@@ -322,6 +440,16 @@ public:
         label_3->setText(QApplication::translate("ProjectorClass", "\345\267\246\344\270\213\344\276\247\351\225\277\345\272\246", 0));
         label_5->setText(QApplication::translate("ProjectorClass", "\345\217\263\344\270\213\344\276\247\351\225\277\345\272\246", 0));
         tabWidget->setTabText(tabWidget->indexOf(plane), QApplication::translate("ProjectorClass", "\345\271\263\351\235\242", 0));
+        label_4->setText(QApplication::translate("ProjectorClass", "r:", 0));
+        label_6->setText(QApplication::translate("ProjectorClass", "x:", 0));
+        label_7->setText(QApplication::translate("ProjectorClass", "z:", 0));
+        label_8->setText(QApplication::translate("ProjectorClass", "rotateX:", 0));
+        label_9->setText(QApplication::translate("ProjectorClass", "rotateZ:", 0));
+        cyProType->clear();
+        cyProType->insertItems(0, QStringList()
+         << QApplication::translate("ProjectorClass", "\345\244\226\346\212\225\345\275\261", 0)
+         << QApplication::translate("ProjectorClass", "\345\206\205\346\212\225\345\275\261", 0)
+        );
         tabWidget->setTabText(tabWidget->indexOf(cylinder), QApplication::translate("ProjectorClass", "\346\237\261\351\235\242", 0));
         tabWidget->setTabText(tabWidget->indexOf(ball), QApplication::translate("ProjectorClass", "\347\220\203\351\235\242", 0));
     } // retranslateUi

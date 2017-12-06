@@ -16,8 +16,17 @@ GraphicsView::~GraphicsView()
 
 void GraphicsView::setRootItem(QGraphicsRectItem* item)
 {
+	if (m_rootitem == item)
+	{
+		return;
+	}
+	if (m_rootitem)
+	{
+		scene()->removeItem(m_rootitem);
+	}
 	m_rootitem = item;
 	scene()->addItem(item);
+	item->setRect(QRectF(QPointF(), rect().size()));
 }
 
 void GraphicsView::resizeEvent(QResizeEvent *event)

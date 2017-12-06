@@ -50,9 +50,6 @@
     <ClCompile Include="GeneratedFiles\qrc_projector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="MapWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -77,10 +74,25 @@
     <ClCompile Include="GeneratedFiles\Release\moc_DragItem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MapWidget.cpp">
+    <ClCompile Include="PlaneWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PlaneWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MapWidget.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_PlaneWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CylinderWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CylinderWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CylinderWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
@@ -100,7 +112,10 @@
     <CustomBuild Include="DragItem.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="MapWidget.h">
+    <CustomBuild Include="PlaneWidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CylinderWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -112,6 +127,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

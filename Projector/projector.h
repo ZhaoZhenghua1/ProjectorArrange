@@ -2,12 +2,12 @@
 #define PROJECTOR_H
 
 #include <QtWidgets/QMainWindow>
+#include <QSettings>
 #include "ui_projector.h"
-#include <QVector3D>
-#include <array>
 
-class MapWidget;
-class DragItem;
+class PlaneWidget;
+class CylinderWidget;
+class GraphicsView;
 class Projector : public QMainWindow
 {
 	Q_OBJECT
@@ -17,7 +17,6 @@ public:
 	~Projector();
 public slots:
 void project();
-void onDragItemChanged();
 private:
 	void projectPlane();
 	void projectCylinder();
@@ -27,12 +26,15 @@ private:
 	//正常投影时的参数
 	std::array<QVector3D,4> proPoints();
 private:
+	GraphicsView* m_view = nullptr;
+	QSettings* m_settings;
 	Ui::ProjectorClass ui;
-	DragItem* m_dragItem = nullptr;
-	MapWidget* m_widget = nullptr;
-	qreal _A = 0, _B = 0, _C = 0, _D = 0;
-	qreal _cosalpha = 0, _cosbeta = 0, _cosgamma = 0;
-	std::array<QVector3D, 4> m_proPoints;
+
+	PlaneWidget* m_planewidget = nullptr;
+	CylinderWidget* m_cylinderWidget = nullptr;
+
+	friend class PlaneWidget;
+	friend class CylinderWidget;
 };
 
 #endif // PROJECTOR_H

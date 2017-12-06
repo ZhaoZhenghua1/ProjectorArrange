@@ -3,6 +3,7 @@
 
 int main(int argc, char *argv[])
 {
+	
 	QRectF r(0, 0, 10, 10);
 	QPointF tl =  r.topLeft();
 	QApplication a(argc, argv);
